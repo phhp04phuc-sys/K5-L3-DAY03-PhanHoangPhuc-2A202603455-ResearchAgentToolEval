@@ -123,3 +123,22 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  # ---------------- Team new tools (Nguyen Tien Cuong) ----------------
+  - name: sentiment
+    description: "Phân tích cảm xúc và sắc thái (tích cực, tiêu cực, trung lập) của một đoạn văn bản hoặc bài đăng mạng xã hội. Dùng khi người dùng muốn đánh giá tâm lý, sắc thái hoặc phản ứng của dư luận về một chủ đề/sản phẩm. KHÔNG dùng để tra cứu tin tức mới."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Nội dung văn bản cần phân tích cảm xúc"}
+        detailed: {type: boolean, default: false, description: "Có trích xuất danh sách từ khóa cảm xúc chi tiết hay không"}
+      required: [text]
+
+  - name: extract_keywords
+    description: "Trích xuất danh sách từ khóa chính, hashtag (#tag), đếm số từ và ước tính thời gian đọc của một bài viết hoặc đoạn văn bản. Dùng khi người dùng muốn rút trích từ khóa, tags hoặc thống kê độ dài bài viết. KHÔNG dùng để tìm kiếm web hay phân tích cảm xúc."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Đoạn văn bản hoặc nội dung bài viết cần trích xuất từ khóa"}
+        top_n: {type: integer, default: 5, description: "Số lượng từ khóa nổi bật nhất muốn lấy (mặc định 5)"}
+      required: [text]
