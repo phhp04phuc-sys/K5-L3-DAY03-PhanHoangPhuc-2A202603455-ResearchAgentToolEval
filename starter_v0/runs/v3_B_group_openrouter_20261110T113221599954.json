@@ -1,0 +1,704 @@
+{
+  "run_id": "v3_B_group_openrouter_20261110T113221599954",
+  "version": "v3",
+  "artifact_version": "v3+p6cd3e198919a+t3a2c14cc9b7d",
+  "prompt_hash": "6cd3e198919aa23ab0056f96b09e0929d8f212748acea7e5ec60fbcd3007191c",
+  "tools_hash": "3a2c14cc9b7d1a4ded98663154bbc55b9b8cf0d62d6adfb1e004edc547bb6429",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "C:\\Users\\Admin\\Desktop\\K5-L3-DAY03-PhanHoangPhuc-2A202603455-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\Admin\\Desktop\\K5-L3-DAY03-PhanHoangPhuc-2A202603455-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "10 case do nhóm Phan Hoàng Phúc viết thêm (5 single-turn, 5 multi-turn) kiểm tra routing, tham số, xác nhận gửi, ngoài phạm vi và tool mới sentiment.",
+  "generated_at": "2026-11-10T11:32:21",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_sentiment_new_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "new_tool_routing",
+        "difficulty": "easy",
+        "what_it_tests": "Kiểm tra model route đúng vào tool mới 'sentiment' khi user yêu cầu phân tích sắc thái/cảm xúc văn bản."
+      },
+      "input": "Phân tích cảm xúc của câu này giúp mình: 'Sản phẩm AI mới ra mắt cực kỳ xuất sắc và đạt thành công vang dội'",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {
+              "text": "Sản phẩm AI mới ra mắt cực kỳ xuất sắc và đạt thành công vang dội"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "sentiment",
+          "args": {
+            "text": "Sản phẩm AI mới ra mắt cực kỳ xuất sắc và đạt thành công vang dội"
+          },
+          "result": {
+            "status": "ok",
+            "sentiment": "neutral",
+            "score": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_lookup_month_timeframe",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe_month",
+        "difficulty": "medium",
+        "what_it_tests": "'tháng này' -> timeframe='month' và topic='news'."
+      },
+      "input": "Tổng hợp tin tức về chất bán dẫn trong tháng này trên web",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "chất bán dẫn",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "chất bán dẫn",
+            "topic": "news",
+            "timeframe": "month"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "chất bán dẫn",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "Mỹ đầu tư vào chuỗi sản xuất bán dẫn",
+                "url": "https://cafef.vn/my-dau-tu-vao-chuoi-san-xuat-ban-dan-188261022143021606.chn",
+                "source": "cafef.vn",
+                "summary": "Tổng thống Trump đánh giá các dự án đầu tư chất bán dẫn có ý nghĩa lu dài đối với nền kinh tế Mỹ, góp phần phục hồi ngành công nghiệp trong nước, tạo thêm việc làm có thu nhập cao và giảm sự phụ thuộc vào nguồn cung công nghệ từ nước ngoài. Ông đồng thời ca ngợi thành quả kinh tế của chính quyền, coi đy là bước tiến quan trọng trong chiến lược củng cố năng lực sản xuất và vị thế cạnh tranh của Mỹ.\n\nTheo Kiên Dương\n\nVTV\n\nTheo VTV  Copy link \n\nLink bài gốc  Lấy link!   \n\nChia sẻ\n\nTừ Khóa: [...] Trước đó, Tổng thống Mỹ Donald Trump thông báo công ty sản xuất chất bán dẫn GlobalFoundries sẽ đầu tư 21 tỷ USD để xy dựng hai cơ sở sản xuất chip quy mô lớn tại thành phố Malta, bang New York. Trên mạng xã hội Truth Social, ông Trump chỉ rõ dự án dự kiến tạo ra 27.000 việc làm có mức lương cao trong lĩnh vực xy dựng và chuỗi cung ứng, cùng hơn 1.000 việc làm mới đòi hỏi trình độ chuyên môn cao trong ngành sản xuất tại bang New York. Nhật Bản sẽ cung cấp nguồn vốn cho khoản đầu tư này - một [...] Theo đó, Lầu Năm Góc sẽ rót 1,5 tỷ USD vào lĩnh vực sản xuất chip bán dẫn tiên tiến. Cùng với đó, Sibelco, công ty chuyên khai thác và chế biến khoáng sản công nghiệp, dự kiến đầu tư thêm 500 triệu USD xy dựng cơ sở sản xuất vật liệu từ thạch anh - một nguyên liệu quan trọng của ngành bán dẫn.",
+                "score": 0.459586
+              },
+              {
+                "title": "Xuất khẩu bán dẫn tăng nhanh, doanh nghiệp Việt cần tìm chỗ đứng trong chuỗi giá trị",
+                "url": "https://doanhnghiephoinhap.vn/xuat-khau-ban-dan-tang-nhanh-doanh-nghiep-viet-can-tim-cho-dung-trong-chuoi-gia-tri-151467.html",
+                "source": "doanhnghiephoinhap.vn",
+                "summary": "|\n|  |\n| Việt Nam đang tăng trưởng xuất khẩu chất bán dẫn và linh kiện điện tử với tốc độ khoảng 31,8% đến gần 32% mỗi năm, đồng thời định vị mình là một mắt xích quan trọng trong chuỗi cung ứng khu vực chu Á - Thái Bình Dương - Ảnh minh họa:  | [...] Theo báo cáo về hệ sinh thái bán dẫn chu Á – Thái Bình Dương do FedEx và Frost & Sullivan công bố, xuất khẩu chất bán dẫn của Việt Nam đạt tốc độ tăng trưởng kép hằng năm 31,8% trong giai đoạn 2006–2025. Trong cùng giai đoạn, nhập khẩu nhóm hàng này cũng tăng bình qun khoảng 30% mỗi năm. Riêng năm 2023, kim ngạch xuất khẩu mạch tích hợp của Việt Nam đạt 32,4 tỷ USD. [...] Xuất khẩu chất bán dẫn của Việt Nam tăng trưởng kép bình qun 31,8% mỗi năm trong giai đoạn 2006–2025, theo báo cáo do FedEx phối hợp Frost & Sullivan thực hiện. Tuy nhiên, để biến đà tăng thương mại thành năng lực công nghiệp bền vững, doanh nghiệp trong nước cần tìm được vị trí phù hợp ở các khu có giá trị gia tăng cao hơn.\n\naa\n\nXuất khẩu tăng nhanh, vị thế trong chuỗi cung ứng còn dư địa",
+                "score": 0.45348024
+              },
+              {
+                "title": "Lần đầu ra mắt chip và nền tảng bán dẫn bảo mật do Việt Nam làm chủ thiết kế",
+                "url": "https://laodong.vn/cong-nghe/lan-dau-ra-mat-chip-va-nen-tang-ban-dan-bao-mat-do-viet-nam-lam-chu-thiet-ke-1794241.ldo",
+                "source": "laodong.vn",
+                "summary": "## Gỡ nút thắt sản xuất thử, tạo thêm mắt xích cho hệ sinh thái chip bán dẫn Việt Nam\n\nViệt Nam đang từng bước hoàn thiện hệ sinh thái bán dẫn bằng việc hình thành trung tm hỗ trợ sản xuất thử chip bán dẫn đầu tiên.\n\nBộ Quốc phòng VIETTEL Chip Đại tướng Phan Văn Giang Chất bán dẫn\n\nBình luận:\n\nBạn nghĩ gì về nội dung này?\n\nBạn cần đăng nhập để gửi bình luận.\n\n Gửi bình luận\n\nCùng chuyên mục\n\nCông nghệ 24h: Việt Nam - Nhật Bản hợp tác phát triển nông nghiệp số",
+                "score": 0.4108041
+              },
+              {
+                "title": "Mỹ, Nhật Bản hợp tác xây dựng hai nhà máy bán dẫn tại New York",
+                "url": "https://baothanhhoa.vn/my-nhat-ban-hop-tac-xay-dung-hai-nha-may-ban-dan-tai-new-york-305583.htm",
+                "source": "baothanhhoa.vn",
+                "summary": "Copy link\n\n# Mỹ, Nhật Bản hợp tác xy dựng hai nhà máy bán dẫn tại New York\n\nMỹ và Nhật Bản sẽ phối hợp xy dựng tối đa hai nhà máy sản xuất chất bán dẫn tại bang New York, trong dự án có tổng vốn đầu tư lên tới 21 tỷ USD, nhằm tăng năng lực sản xuất trong nước và giảm sự phụ thuộc vào nguồn cung bán dẫn từ nước ngoài.\n\nTin liên quan:\n\n Bà Takaichi hội đàm Tổng thống Trump trước cuộc gặp thượng đỉnh Mỹ - Trung\n Mỹ phát tín hiệu áp thuế chất bán dẫn nhập khẩu [...] Hotline: 0822.173.636   |\n\nTin mới\n\n Nền tảng số\n\nTRANG ĐIỆN TỬ VĂN HÓA & ĐỜI SỐNG\n\n## Thế giới\n\n# Mỹ, Nhật Bản hợp tác xy dựng hai nhà máy bán dẫn tại New York\n\nThanh Vn\n\n Theo dõi Thanh Hóa online trên Google News\n\n## (Baothanhhoa.vn) - Mỹ và Nhật Bản sẽ phối hợp xy dựng tối đa hai nhà máy sản xuất chất bán dẫn tại bang New York, trong dự án có tổng vốn đầu tư lên tới 21 tỷ USD, nhằm tăng năng lực sản xuất trong nước và giảm sự phụ thuộc vào nguồn cung bán dẫn từ nước ngoài.\n\nCopy link [...] GF dự kiến tạo ra khoảng 3 tỷ USD dòng tiền dư thừa đã điều chỉnh trong 10 năm tới. Apple và Renesas, nhà sản xuất chất bán dẫn ô tô lớn nhất Nhật Bản, được xác định là những khách hàng đầu tiên. Trong khi đó, General Motors (GM) đã công bố hợp đồng cung cấp trực tiếp với GF, được mô tả là thỏa thuận đầu tiên giữa một nhà sản xuất ô tô hoàn chỉnh và một công ty đúc bán dẫn.\n\nThanh Vn\n\n### Từ khóa:",
+                "score": 0.36895174
+              },
+              {
+                "title": "Phát triển nhân lực chất lượng cao, tạo nền tảng cho công nghiệp bán dẫn",
+                "url": "https://chinhsachcuocsong.vnanet.vn/phat-trien-nhan-luc-chat-luong-cao-tao-nen-tang-cho-cong-nghiep-ban-dan/100432.html",
+                "source": "chinhsachcuocsong.vnanet.vn",
+                "summary": "Khoa học - Sáng tạo\n\n# Phát triển nhn lực chất lượng cao, tạo nền tảng cho công nghiệp bán dẫn\n\nTrong phát triển các công nghệ chiến lược, bán dẫn được xác định là một trong những lĩnh vực có ý nghĩa quan trọng đối với năng lực cạnh tranh và khả năng tự chủ công nghệ của Việt Nam. [...] Tuy nhiên, theo Tiến sĩ Huỳnh Phú Minh Cường, Phó Giám đốc Trung tm Đổi mới sáng tạo Đại học Quốc gia Thành phố Hồ Chí Minh, nhn lực bán dẫn trình độ cao không chỉ cần kiến thức chuyên môn rộng mà còn phải có kinh nghiệm thực tiễn. Trong khi đó, ngành công nghiệp bán dẫn trong nước vẫn đang phát triển, số lượng doanh nghiệp còn hạn chế, khiến sự hỗ trợ trực tiếp từ môi trường sản xuất đối với hoạt động đào tạo chưa đáp ứng đầy đủ nhu cầu. [...] Hạ tầng nghiên cứu, thực hành cũng là điều kiện quan trọng để nng cao chất lượng đào tạo. Bộ Khoa học và Công nghệ đã thành lập Trung tm Quốc gia hỗ trợ sản xuất thử nghiệm chip bán dẫn, hướng tới cung cấp hạ tầng dùng chung cho doanh nghiệp, viện nghiên cứu và trường đại học. Trung tm hỗ trợ hiện thực hóa các bản thiết kế chip thành sản phẩm thương mại, qua đó tạo điều kiện để người học tiếp cận các công đoạn phát triển sản phẩm, gắn nghiên cứu với thực tiễn sản xuất.",
+                "score": 0.30395952
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_social_search_latest",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type_latest",
+        "difficulty": "medium",
+        "what_it_tests": "Tìm tweet theo chủ đề mới nhất -> social_search với search_type='Latest', limit=8."
+      },
+      "input": "Tìm 8 tweet mới nhất đang bàn luận về Claude 3.7",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Latest",
+              "limit": 8
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude 3.7",
+              "search_type": "Latest",
+              "limit": 8
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Claude 3.7",
+            "search_type": "Latest",
+            "limit": 8
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=Claude+3.7&search_type=Latest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_out_of_scope_translate",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_creative",
+        "difficulty": "easy",
+        "what_it_tests": "Dịch thơ văn học ngoài phạm vi research agent -> không gọi tool."
+      },
+      "input": "Dịch giúp mình bài thơ Truyện Kiều sang tiếng Pháp nhé",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Xin lỗi, nhưng mình không thể dịch bài thơ \"Truyện Kiều\" sang tiếng Pháp. Tuy nhiên, mình có thể giúp bạn tìm hiểu về nội dung hoặc phân tích bài thơ nếu bạn muốn.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G05_clarify_ambiguous_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_send",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động gửi tin ra ngoài chưa có xác nhận -> phải gọi clarify(yes_no)."
+      },
+      "input": "Gửi bản tóm tắt vừa rồi lên nhóm Telegram cho sếp đi",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có chắc chắn muốn gửi bản tóm tắt này lên nhóm Telegram cho sếp không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có chắc chắn muốn gửi bản tóm tắt này lên nhóm Telegram cho sếp không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có chắc chắn muốn gửi bản tóm tắt này lên nhóm Telegram cho sếp không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM01_multiturn_handle_strip_at",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "handle_strip_at",
+        "difficulty": "medium",
+        "what_it_tests": "Bỏ ký tự @ ở handle karpathy và carry sang lượt sau với limit=4."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Xem giúp mình tweet của tài khoản @karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy đúng 4 bài mới nhất thôi nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 4
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 4
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=karpathy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_multiturn_confirm_send_yes",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "confirmed_send",
+        "difficulty": "hard",
+        "what_it_tests": "Khi user xác nhận đồng ý gửi rõ ràng ở lượt tiếp theo -> gọi send(confirmed=true)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng dòng chữ 'Bản tin AI sáng nay' lên Telegram giúp mình"
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có chắc chắn muốn gửi 'Bản tin AI sáng nay' lên Telegram không?"
+        },
+        {
+          "role": "user",
+          "content": "Có, đồng ý gửi ngay đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Bản tin AI sáng nay",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Bản tin AI sáng nay",
+            "confirmed": true
+          },
+          "result": {
+            "tool": "send_telegram",
+            "error": "RuntimeError",
+            "message": "Missing TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM03_multiturn_topic_switch",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_topic_override",
+        "difficulty": "medium",
+        "what_it_tests": "Đổi từ Nvidia sang AMD nhưng giữ nguyên topic=news, timeframe=day."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin tức mới hôm nay về Nvidia"
+        },
+        {
+          "role": "user",
+          "content": "Thôi đổi sang tìm về AMD đi, vẫn trên web tin tức hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AMD",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AMD",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AMD",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AMD",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "AMD",
+                "url": "https://tavily.com/knowledge/company/iBVTij6UDHXj",
+                "source": "tavily.com",
+                "summary": "# AMD\nID: iBVTij6UDHXj\nWebsite: www.amd.com\nHeadquarters: Santa Clara, California, United States\nLinkedIn: www.linkedin.com/company/amd · 2,501,165 followers\nIndustry: Semiconductor Manufacturing\nCompany type: Public Company\nFounded: 1969 [...] Phone: 1-408-749-3124\nDescription: AMD delivers leadership high-performance and adaptive computing solutions to advance data center AI, AI PCs, intelligent edge devices, gaming, & beyond. [...] ## Financials\n- Stock: AMD\n- Stock: NASDAQ:AMD\n- Annual revenue: 34.64B USD\n- Quarterly revenue: 9.25B USD\n- Market cap: 265.56B USD as of 2024-09-30\n- Q1, 2026: revenue 10.25B gross profit 5.42B EBIT 1.48B net income 1.38B EPS 0.8399999737739563 USD\n- FY, 2025: revenue 34.64B gross profit 17.15B EBIT 3.69B net income 4.34B EPS 2.6500000953674316 USD\n- FY, 2025: revenue 34.64B gross profit 17.15B EBIT 3.69B net income 4.34B EPS 2.6500000953674316 USD",
+                "score": 0.63125396
+              },
+              {
+                "title": "Lisa Su Called the Market 'Short-Sighted' as AMD Crashed 17%. Two Sessions Later the Stock Has It All Back - 24/7 Wall St.",
+                "url": "https://247wallst.com/investing/2026/11/09/lisa-su-called-the-market-short-sighted-as-amd-crashed-17-two-sessions-later-the-stock-has-it-all-back",
+                "source": "247wallst.com",
+                "summary": "Advanced Micro Devices (NASDAQ: AMD) has won back everything Thursday’s 17% crash took, and more. The stock closed up 13% at $508.58 on Monday, adding nearly $100 billion in market value, after Oppenheimer upgraded it to Outperform with a $600 price target and AMD said its EPYC processors will run the host side of Google Cloud’s new TPU 8tx systems. The same morning Nvidia fell as much as 8.8% and closed down 4.3%, a drop worth about $192 billion of market value, a day after its board opened an [...] The history above is AMD’s, and AMD is one company whose shares lost more than half their value in the year after four of those 19 drops. The tax figures you see here use 2026 rules for both years, and the 2027 brackets will be a little wider. Medicare looks back two years, so a sale in 2026 sets the 2028 premium, and the lines will have moved by then. None of this counts state tax, which you should add for your own state. And the stock could keep going: a holder who sold at $404 on Thursday",
+                "score": 0.5106191
+              },
+              {
+                "title": "AMD: The Party Is Ending (NASDAQ:AMD) | Seeking Alpha",
+                "url": "https://seekingalpha.com/article/4965127-amd-the-party-is-ending",
+                "source": "seekingalpha.com",
+                "summary": "who may not be licensed or certified by any institute or regulatory body. [...] ## Investing Groups\n\n## Portfolios\n\n## Find & Compare\n\n# AMD: The Party Is Ending\n\n## Summary\n\nWIRED\"s The Big Interview 2025 \n\nGetty Images\n\nWIRED\"s The Big Interview 2025\n\nGetty Images\n\nIn our previous articles on Advanced Micro Devices, Inc. (AMD), we have consistently adhered to the Sell rating, despite the rapid growth of the Data Center business and the strengthening of the company's competitive position. We recognized\n\nThis article was written by [...] Seeking Alpha's Disclosure: Past performance is no guarantee of future results. No recommendation or advice is being given as to whether any investment is suitable for a particular investor. Any views or opinions expressed above may not reflect those of Seeking Alpha as a whole. Seeking Alpha is not a licensed securities dealer, broker or US investment adviser or investment bank. Our analysts are third party authors that include both professional investors and individual investors who may not",
+                "score": 0.48235655
+              },
+              {
+                "title": "AMD Joins Google AI Chip Push Against Nvidia - Advanced Micro Devices (NASDAQ:AMD)",
+                "url": "https://www.benzinga.com/markets/prediction-markets/26/11/63061050/amd-google-tpu",
+                "source": "benzinga.com",
+                "summary": "AMD shares climbed more than 10% Monday amid a broader semiconductor rebound. Oppenheimer upgraded AMD Monday to Outperform with a $600 price target.\n\nNvidia fell roughly 6%, pressured by a separate independent board investigation into reports that CEO Jensen Huang was targeted by a foreign intelligence operation.\n\nPrediction market traders expect more volatility. On Polymarket, Nvidia has a 70% chance of falling to $168 before November ends, compared with a 36% chance of climbing to $200. [...] AMD competes with Nvidia in the AI chip market, but it also sells the processors that help run AI systems built by other companies.\n\nThat means AMD can benefit even when customers choose Nvidia’s chips or Google’s own technology over its competing products.\n\nAMD says more than 10 major cloud providers and AI laboratories already use its EPYC processors alongside a range of AI chips. [...] Market News and Data brought to you by Benzinga APIs\n© 2026 Benzinga.com. Benzinga does not provide investment advice. All rights reserved.\n\n\n\n  \n\nPosted In:\n\nMarketsTechNewsLarge CapEquitiesPrediction Markets\n\nRecommended Stories",
+                "score": 0.47343868
+              },
+              {
+                "title": "AMD stock upgraded by Oppenheimer, $600 target",
+                "url": "https://www.cnbc.com/2026/11/09/amd-oppenheimer-upgrade-outperform.html",
+                "source": "cnbc.com",
+                "summary": "Advanced Micro Devices is on the verge of a big comeback after struggling of late, according to Oppenheimer. The investment firm upgraded the chipmaker to outperform from perform. Its $600 price target implies 34% upside from Friday's close. \"We are raising estimates and upgrading shares of AMD on the heels of another bullish earnings call and recent fireside chat we hosted,\" analyst Rick Schafer said Sunday in a note to clients. \"We see AMD emerging as a durable supplier of AI compute, with",
+                "score": 0.43352634
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM04_multiturn_sentiment_after_text",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_new_tool_sentiment",
+        "difficulty": "medium",
+        "what_it_tests": "Gọi đúng tool mới 'sentiment' trong hội thoại nhiều lượt."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình có một đoạn review về mô hình mới"
+        },
+        {
+          "role": "user",
+          "content": "Nội dung là: 'Tốc độ rất tệ và hay bị lỗi sập nguồn'. Hãy phân tích cảm xúc của đoạn này."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {
+              "text": "Tốc độ rất tệ và hay bị lỗi sập nguồn"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "sentiment",
+          "args": {
+            "text": "Tốc độ rất tệ và hay bị lỗi sập nguồn"
+          },
+          "result": {
+            "status": "ok",
+            "sentiment": "positive",
+            "score": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_multiturn_clarify_url_provided",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_provide_url",
+        "difficulty": "easy",
+        "what_it_tests": "Sau khi được hỏi lại và user cung cấp URL -> gọi fetch đúng link đó."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đọc và tóm tắt giúp mình trang web này"
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn vui lòng cung cấp đường dẫn URL cụ thể của bài viết."
+        },
+        {
+          "role": "user",
+          "content": "Link đây nhé: https://deepmind.google/technologies/gemini/"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://deepmind.google/technologies/gemini/"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://deepmind.google/technologies/gemini/"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://deepmind.google/technologies/gemini/"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://deepmind.google/technologies/gemini/",
+            "items": [
+              {
+                "title": "Gemini — Google DeepMind",
+                "url": "https://deepmind.google/technologies/gemini/",
+                "source": "deepmind.google",
+                "summary": "[Skip to main content](https://deepmind.google/models/gemini/#page-content)\n\n# Gemini 4\n\n[Try in Gemini](https://gemini.google.com/?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=) [Try in Google AI Studio](https://aistudio.google.com/prompts/new_chat?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=) [Try in Google Antigravity](https://antigravity.google/?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=)\n\n![](https://lh3.googleusercontent.com/O-rDY-Ewk6zMN3iWhEOHonHtrN1_xmxVJy3LZZVRdZkV7KaWo_MUX_UsCYyGOgj_9HPHCMhep1zoObX8fGpfsUyYriw8KHkjWfSo5JCeyERADq4FFQ=w1440-rw-lo)![](https://lh3.googleusercontent.com/RS81idLV6JRFjwwmuD4bLlWWaFoL0zT_syXKzTqG9wZtUG2Y6ky8cdh0ksrC4Pwc6HfEqoasrK_9L-DEZVpbioahVBYivjVMmgHm-_LoU_oG1PuyUA=w1440-rw-lo)\n\nOur next era of frontier intelligence, built to solve your hardest problems.\n\n![](https://deepmind.google/static/images/fallback/video_poster_fallback_light.57b61d57842a.jpg)![](https://deepmind.google/static/images/fallback/video_poster_fallback_dark.4d55bc99efa6.jpg)\n\nYour browser does not support the video tag.\n\n## Announcements\n\n[Learn more](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=)\n\n### Gemini 4 Carbon: Our next frontier model\n\nOctober 2026Models\n\n[Learn more](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=)\n\n![](https://lh3.googleusercontent.com/RsPrBue4DMQKl0c62ggBy4M1KowA4WqpWsvm1VBJF-P27A5qBYIc9fBt0PzblS_EzC4AUnbpNeWmxa1wvIKj9l6c7-7C4DBNvsczfnkt0JGe9xD4=w2464-h2464-n-nu)![](https://lh3.googleusercontent.com/HyFmD_pBxwQfRWbzB8-ujWBXIyK5Rfw80wj7dNrS9mPJ7jSujWuaiEOSz92KZhRomh1yGpTYUHiYi3XVyDgrH0QxcwB_PJJUD0Y-PXSPMTNPd9Bw=w2464-h2464-n-nu)\n\n[Learn more](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/)\n\n### Gemini 4 Argon: Built to solve your hardest problems\n\nOctober 2026Models\n\n[Learn more](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/)\n\n![A large, semi-transparent white number four on a blue gradient background, surrounded by scattered smaller number fours.](https://lh3.googleusercontent.com/gXnjWbofoHv9JhYGAyp8zgseu9m0ARqpAdgMQZJWNs5N1kbn41DbaDu3vYMadug-oo_DASEITtcd6Wy1HDAManWLnhPDdoSKBLCiMFYNE3s8Y94YCA=w1440-h1440-n-nu)![A large, semi-transparent number 4 on a blue gradient background, surrounded by tiny scattered number 4s.](https://lh3.googleusercontent.com/jl4eOF2qHsMPlSSzRhQOpIGhP9v7nPR_826HlOxif6m5myJlHP_GQycletxXsIwQNnWF2kfL4K1WvSycbF-Lxpv73Txf-9VZMVXwyVJKQ8f_Vua2tA=w1440-h1440-n-nu)\n\n[Learn more](https://blog.google/innovation-and-ai/technology/safety-security/gemini-4-model-safety-security/?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=)\n\n### Developing Gemini 4 Argon responsibly and safely\n\nOctober 2026Responsibility & Safety\n\n[Learn more](https://blog.google/innovation-and-ai/technology/safety-security/gemini-4-model-safety-security/?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=)\n\n![A frosted glass shield with a central star on a blue gradient background dotted with small white number 4s.](https://lh3.googleusercontent.com/EvxzqdS2RY3IlXsxx4Z-rLv_viC6pyMyH3L1JuXcra7x6r0fUwa41Jf2iYDpJ5D7KCD69YK3OHqEotk5N2OCnGZe04KO33zlUAyCDSMP6h15YuhXoA=w1440-h1440-n-nu)![A semi-transparent security shield containing a four-pointed star in the center, set against a blue gradient background scattered with small white numbers '4'.](https://lh3.googleusercontent.com/YcXp9KDFnCjc1Bu64lZgVp4MesjSrXNvGQKnu-J_SzpOyFWsEiH9dGfQnojBUQm3OPYAFi58aAasQDwQWSNhvub-zfsHXGM7VeDypuihGjd0APzYgHc=w1440-h1440-n-nu)\n\n[Learn more](https://developers.googleblog.com/gemini-4-argon-for-robotics?utm_source=deepmind.g"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

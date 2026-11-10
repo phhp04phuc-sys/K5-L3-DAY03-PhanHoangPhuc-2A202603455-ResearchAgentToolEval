@@ -1,1 +1,5 @@
 version,author,changed_artifact,artifact_version,prompt_hash,tools_hash,reason,hypothesis,metric_before,metric_after,run_file
+v0,PhanHoangPhuc,baseline,v0+peb1c8179815b+t5b22a2476d41,eb1c8179815b,5b22a2476d41,baseline,Do hanh vi chua toi uu truoc khi sua,,0.65,runs/v0_B_base_openrouter_20261110T103715495776.json
+v1,PhanHoangPhuc,system_prompt.md,v1+pf29620592316+t1850860555e1,f29620592316,1850860555e1,Sua chi dan xau & them guardrails clarify/out_of_scope,Loai bo doan mo de tang do chinh xac len >=85%,0.65,0.90,runs/v1_B_base_openrouter_20261110T105406066377.json
+v2,PhanHoangPhuc,tools.yaml+system_prompt.md,v2+p27affebe8256+t3a2c14cc9b7d,27affebe8256,3a2c14cc9b7d,Viet lai mo ta tools.yaml khi nao dung va rule multi-turn loai bo kenh cu,Kiem soat switch channel va negative constraints dua pass rate len 100%,0.90,1.00,runs/v2_B_base_openrouter_20261110T112523977723.json
+v3,PhanHoangPhuc,system_prompt.md,v3+p6cd3e198919a+t3a2c14cc9b7d,6cd3e198919a,3a2c14cc9b7d,Bo sung quy tac dinh tuyen cho bonus tools (policy/papers/paper_text) va parallel calls,Chuan hoa cho ca 3 bo base + group + extension dat 100%,1.00,1.00,runs/v3_B_base_openrouter_20261110T113130599101.json

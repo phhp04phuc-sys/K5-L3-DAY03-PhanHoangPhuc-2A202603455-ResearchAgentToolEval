@@ -1,7 +1,115 @@
 {
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "10 case do nhóm Phan Hoàng Phúc viết thêm (5 single-turn, 5 multi-turn) kiểm tra routing, tham số, xác nhận gửi, ngoài phạm vi và tool mới sentiment.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_sentiment_new_tool",
+      "phase": "B",
+      "suite": "group",
+      "query": "Phân tích cảm xúc của câu này giúp mình: 'Sản phẩm AI mới ra mắt cực kỳ xuất sắc và đạt thành công vang dội'",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "sentiment", "args": {}}]},
+      "metadata": {"skill": "new_tool_routing", "difficulty": "easy", "what_it_tests": "Kiểm tra model route đúng vào tool mới 'sentiment' khi user yêu cầu phân tích sắc thái/cảm xúc văn bản."}
+    },
+    {
+      "id": "G02_lookup_month_timeframe",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tổng hợp tin tức về chất bán dẫn trong tháng này trên web",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"topic": "news", "timeframe": "month"}}]},
+      "metadata": {"skill": "arg_timeframe_month", "difficulty": "medium", "what_it_tests": "'tháng này' -> timeframe='month' và topic='news'."}
+    },
+    {
+      "id": "G03_social_search_latest",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm 8 tweet mới nhất đang bàn luận về Claude 3.7",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"search_type": "Latest", "limit": 8}}]},
+      "metadata": {"skill": "arg_search_type_latest", "difficulty": "medium", "what_it_tests": "Tìm tweet theo chủ đề mới nhất -> social_search với search_type='Latest', limit=8."}
+    },
+    {
+      "id": "G04_out_of_scope_translate",
+      "phase": "B",
+      "suite": "group",
+      "query": "Dịch giúp mình bài thơ Truyện Kiều sang tiếng Pháp nhé",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true, "behavior": "refuse"},
+      "metadata": {"skill": "out_of_scope_creative", "difficulty": "easy", "what_it_tests": "Dịch thơ văn học ngoài phạm vi research agent -> không gọi tool."}
+    },
+    {
+      "id": "G05_clarify_ambiguous_send",
+      "phase": "B",
+      "suite": "group",
+      "query": "Gửi bản tóm tắt vừa rồi lên nhóm Telegram cho sếp đi",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"skill": "confirm_before_send", "difficulty": "medium", "what_it_tests": "Hành động gửi tin ra ngoài chưa có xác nhận -> phải gọi clarify(yes_no)."}
+    },
+    {
+      "id": "GM01_multiturn_handle_strip_at",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Xem giúp mình tweet của tài khoản @karpathy"},
+        {"role": "user", "content": "Lấy đúng 4 bài mới nhất thôi nhé"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "karpathy", "limit": 4}}]},
+      "metadata": {"skill": "handle_strip_at", "difficulty": "medium", "what_it_tests": "Bỏ ký tự @ ở handle karpathy và carry sang lượt sau với limit=4."}
+    },
+    {
+      "id": "GM02_multiturn_confirm_send_yes",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Đăng dòng chữ 'Bản tin AI sáng nay' lên Telegram giúp mình"},
+        {"role": "assistant", "content": "Bạn có chắc chắn muốn gửi 'Bản tin AI sáng nay' lên Telegram không?"},
+        {"role": "user", "content": "Có, đồng ý gửi ngay đi"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "send", "args": {"confirmed": true}}]},
+      "metadata": {"skill": "confirmed_send", "difficulty": "hard", "what_it_tests": "Khi user xác nhận đồng ý gửi rõ ràng ở lượt tiếp theo -> gọi send(confirmed=true)."}
+    },
+    {
+      "id": "GM03_multiturn_topic_switch",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm tin tức mới hôm nay về Nvidia"},
+        {"role": "user", "content": "Thôi đổi sang tìm về AMD đi, vẫn trên web tin tức hôm nay"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "AMD", "topic": "news", "timeframe": "day"}}]},
+      "metadata": {"skill": "multiturn_topic_override", "difficulty": "medium", "what_it_tests": "Đổi từ Nvidia sang AMD nhưng giữ nguyên topic=news, timeframe=day."}
+    },
+    {
+      "id": "GM04_multiturn_sentiment_after_text",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Mình có một đoạn review về mô hình mới"},
+        {"role": "user", "content": "Nội dung là: 'Tốc độ rất tệ và hay bị lỗi sập nguồn'. Hãy phân tích cảm xúc của đoạn này."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "sentiment", "args": {}}]},
+      "metadata": {"skill": "multiturn_new_tool_sentiment", "difficulty": "medium", "what_it_tests": "Gọi đúng tool mới 'sentiment' trong hội thoại nhiều lượt."}
+    },
+    {
+      "id": "GM05_multiturn_clarify_url_provided",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Đọc và tóm tắt giúp mình trang web này"},
+        {"role": "assistant", "content": "Bạn vui lòng cung cấp đường dẫn URL cụ thể của bài viết."},
+        {"role": "user", "content": "Link đây nhé: https://deepmind.google/technologies/gemini/"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://deepmind.google/technologies/gemini/"}}]},
+      "metadata": {"skill": "multiturn_provide_url", "difficulty": "easy", "what_it_tests": "Sau khi được hỏi lại và user cung cấp URL -> gọi fetch đúng link đó."}
+    }
+  ]
 }
