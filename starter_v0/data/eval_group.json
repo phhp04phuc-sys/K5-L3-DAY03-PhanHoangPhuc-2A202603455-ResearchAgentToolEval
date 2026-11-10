@@ -2,6 +2,279 @@
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_timeline_name_to_handle",
+      "phase": "B",
+      "suite": "group",
+      "query": "Bill Gates vừa đăng gì trên X?",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "billgates"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tên người nổi tiếng phải đổi thành handle không có @ (billgates) và route tới timeline, không phải social_search."
+      }
+    },
+    {
+      "id": "G02_social_top_viral",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm các bài đăng viral nhất về Claude trên X",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "search_type_top",
+        "difficulty": "medium",
+        "what_it_tests": "Từ 'viral/phổ biến nhất' phải map sang search_type=Top; query là từ khóa ngắn 'Claude'."
+      }
+    },
+    {
+      "id": "G03_lookup_month_news",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tin về robot hình người trong tháng này",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "timeframe_month",
+        "difficulty": "medium",
+        "what_it_tests": "'trong tháng này' phải map sang timeframe=month và topic=news."
+      }
+    },
+    {
+      "id": "G04_send_with_text_still_confirm",
+      "phase": "B",
+      "suite": "group",
+      "query": "Gửi dòng này lên Telegram giúp mình: 'Bản tin AI sáng nay đã sẵn sàng'",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "confirm_before_send",
+        "difficulty": "medium",
+        "what_it_tests": "Dù đã có nội dung, hành động gửi vẫn phải hỏi xác nhận yes_no trước, không gọi send ngay."
+      }
+    },
+    {
+      "id": "G05_out_of_scope_poem",
+      "phase": "B",
+      "suite": "group",
+      "query": "Viết cho mình một bài thơ về mùa thu",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu sáng tác ngoài phạm vi research agent: không gọi tool, từ chối lịch sự."
+      }
+    },
+    {
+      "id": "GM01_carry_handle_new_limit",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "Giờ cho mình xem 7 cái"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 7
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "carry_handle_update_limit",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ handle sama từ lượt 1, cập nhật limit=7 ở lượt 2."
+      }
+    },
+    {
+      "id": "GM02_social_then_top",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm tweet về OpenAI"
+        },
+        {
+          "role": "user",
+          "content": "Lấy loại phổ biến nhất thôi"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "carry_query_set_top",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ query OpenAI, đổi search_type sang Top theo lượt 2."
+      }
+    },
+    {
+      "id": "GM03_timeframe_switch",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tin tức AI trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang chỉ hôm nay thôi"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "timeframe_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 sửa timeframe từ week sang day, vẫn là topic=news."
+      }
+    },
+    {
+      "id": "GM04_confirm_after_content",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Nội dung là: Chào buổi sáng cả nhà"
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_confirm_before_send",
+        "difficulty": "hard",
+        "what_it_tests": "Sau khi người dùng đưa nội dung, agent vẫn phải xác nhận yes_no thay vì gọi send."
+      }
+    },
+    {
+      "id": "GM05_search_paper_then_read",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm paper arXiv về RAG"
+        },
+        {
+          "role": "user",
+          "content": "À thôi, đọc luôn paper 1706.03762 giúp mình, lấy 2 trang đầu"
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "1706.03762",
+              "max_pages": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "switch_tool_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi ý: bỏ tìm kiếm (papers), chuyển sang đọc paper_text với ID và max_pages=2."
+      }
+    }
+  ]
 }

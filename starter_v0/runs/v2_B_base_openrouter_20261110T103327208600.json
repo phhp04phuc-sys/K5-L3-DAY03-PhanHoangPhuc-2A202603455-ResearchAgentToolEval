@@ -1,0 +1,1290 @@
+{
+  "run_id": "v2_B_base_openrouter_20261110T103327208600",
+  "version": "v2",
+  "artifact_version": "v2+pac3a39a1dd97+t9c1e35ce70fd",
+  "prompt_hash": "ac3a39a1dd97d7a7d4adbfab0f2ef6ec7fb5fe8eee1a8153a80fa408fa51668f",
+  "tools_hash": "9c1e35ce70fd29b0e0472304702a026ee328fb511a9068e5ebac4fb53eb4318c",
+  "phase": "B",
+  "suite": "base",
+  "provider": "openrouter",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "system_prompt": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T10:33:27",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 15,
+    "provider_error_cases": 5,
+    "passed_cases": 13,
+    "case_accuracy": 0.8667,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 0.8667,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {
+      "wrong_tool": 1,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 2
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 1
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 1
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "search_type": "Latest",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "search_type": "Latest",
+            "limit": 10
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI artificial intelligence",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "query: expected 'AI', got 'AI artificial intelligence'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI artificial intelligence",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 10
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI artificial intelligence",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "The U.S.–China AI Competition: Two Paths to Artificial General Intelligence | Center for Security and Emerging Technology",
+                "url": "https://cset.georgetown.edu/article/the-u-s-china-ai-competition-two-paths-to-artificial-general-intelligence",
+                "source": "cset.georgetown.edu",
+                "summary": "AGI has no universally accepted technical definition. In the U.S. frontier-model ecosystem, discussions commonly center on whether a system can reason, learn, and perform a wide range of tasks at broadly human levels—AGI—or substantially exceed human capabilities across those tasks—artificial superintelligence (ASI). This outlook encourages investment in larger and more capable models, advanced reasoning, and agents that can carry out extended sequences of work. [...] Recent op-eds comparing the United States’ and China’s artificial intelligence (AI) programs fault the former for its focus on artificial general intelligence (AGI) while praising China for its success in applying AI throughout the whole… Read More\n\nReports #### Chinese Critiques of Large Language Models January 2025 [...] U.S. developers define AGI in terms of broadly human-level intellectual capabilities across a wide range of cognitive tasks. China’s discourse on “general AI” places greater weight on the extension of intelligent capabilities to physical and social systems.",
+                "score": 0.46337196
+              },
+              {
+                "title": "With new Democratic Congress incoming, Pritzker calls for federal AI regulations | Capitol News Illinois",
+                "url": "https://capitolnewsillinois.com/news/with-new-democratic-congress-incoming-pritzker-calls-for-federal-ai-regulations",
+                "source": "capitolnewsillinois.com",
+                "summary": "Capitol News Illinois is a nonprofit, nonpartisan news service that distributes state government coverage to hundreds of news outlets statewide. It is funded primarily by the Illinois Press Foundation and the Robert R. McCormick Foundation.\n\nTags: AIArtificial IntelligenceBamshad MobasherChicagoDaniel DidechData CentersDePaul UniversityDonald TrumpJB PritzkerMegan StokesPrivacyregulationScott WisorUniversity of Illinois Urbana-ChampaignUrbana-ChampaignVolodymyr Kindratenko\n\nBernarda Malevska [...] CNI\n\n# With new Democratic Congress incoming, Pritzker calls for federal AI regulations\n\n## Governor says new action should build on what states like Illinois have already done\n\nBernarda MalevskabyBernarda Malevska\n\nNovember 9, 2026\n\nin Government, Technology\n\nA A\n\nAI Image at a semiconductor exhibition\n\nA screen shows an image for artificial intelligence (AI) at the SK Hynix' booth during a semiconductor exhibition in Seoul, South Korea, on Friday, Oct. 16, 2026. (AP Photo/Ahn Young-joon)\n\n0 [...] Currently, no comprehensive federal regulatory framework exists. Trump signed an executive order in September to rename AI “Super Intelligence” and created a White House accord on Super Intelligence with the leaders of OpenAI, Anthropic, Meta, Google, XAI and Nvidia.",
+                "score": 0.4042963
+              },
+              {
+                "title": "FDA Artificial Intelligence & AI/ML Device Rules — CASRAI",
+                "url": "https://casrai.org/guides/fda-artificial-intelligence",
+                "source": "casrai.org",
+                "summary": "FDA artificial intelligence regulation governs how artificial intelligence and machine learning (AI/ML) algorithms used in healthcare—whether deployed as standalone Software as a Medical Device (SaMD) or embedded as Software in a Medical Device (SiMD)—are classified, validated, cleared or approved for marketing, and monitored post-market in the United States. Coordinated by the Center for Devices and Radiological Health (FDA CDRH) and its Digital Health Center of Excellence (DHCoE) alongside [...] To provide public transparency across authorized clinical algorithms, the FDA Digital Health Center of Excellence maintains the Artificial Intelligence and Machine Learning (AI/ML)-Enabled Medical Devices database. Each record on the FDA list includes: [...] GuideLaboratory Compliance & Quality\n\n# FDA Artificial Intelligence Regulation: AI/ML Medical Devices, Pathways, and GMLP\n\nThe FDA regulates artificial intelligence and machine learning (AI/ML)-enabled medical devices through risk-based 510(k), De Novo, and PMA pathways, Good Machine Learning Practice (GMLP) principles, and Predetermined Change Control Plans.\n\nWritten and maintained byCASRAI Editorial Board\n\nLast updated\n\n X\n LinkedIn\n Facebook",
+                "score": 0.38685668
+              },
+              {
+                "title": "AI financial guidance needs caution and context",
+                "url": "https://www.wftv.com/news/local/ai-financial-guidance-needs-caution-context/N6BXPOK7WRDIDMGRQ5VCIOJARU?outputType=amp",
+                "source": "wftv.com",
+                "summary": "Image 2: Chatbot Chat with AI, Artificial Intelligence. man using technology smart robot AI, artificial intelligence by enter command prompt for generates something, Futuristic technology transformation.\n\nMore restaurants turning to AI Chatbot Chat with AI, Artificial Intelligence. man using technology smart robot AI, artificial intelligence by enter command prompt for generates something, Futuristic technology transformation. (Userba011d64_201/Getty Images/iStockphoto) [...] November 9, 2026 at 7:33 p.m. UTC ByBrody Wooddell\n\nArtificial intelligence gives users another way to access financial information, from explaining market movements to helping them understand investment risks. When a conversation involves money, investments or trading, an AI response may highlight potential losses alongside possible gains. [...] An inaccurate statement about an investment opportunity could influence a person’s financial decisions. That makes accuracy, sourcing and a clear distinction between general information and personalized recommendations particularly important.\n\nThe Financial Conduct Authority’s guidance on using AI for investment research notes that AI can provide outdated or inaccurate information, particularly without access to real-time market data.",
+                "score": 0.38366494
+              },
+              {
+                "title": "Military-made AI tool helped thwart World Cup bomb threat - Federal News Network",
+                "url": "https://federalnewsnetwork.com/artificial-intelligence/2026/11/military-made-ai-tool-helped-thwart-world-cup-bomb-threat",
+                "source": "federalnewsnetwork.com",
+                "summary": "A military-made artificial intelligence tool helped law enforcement thwart a bomb threat at the FIFA World Cup in California this summer.\n\nThe previously undisclosed incident occurred June 18, when Switzerland faced Bosnia and Herzegovina at SoFi Stadium outside Los Angeles, Army Capt. Ryan Hetrick, who leads the Pentagon’s Generative AI Task Force, said Nov. 6 at an AI event in Washington. [...] Hetrick has become one of the military’s biggest — and busiest — evangelists for AI. The GenAI Task Force travels around the globe to sit down with troops on operations floors and in the field and find AI fixes for their most pressing problems. [...] Join us Dec. 7 at 1 pm for Federal News Network's Industry Exchange IT Modernization event. Top technology leaders will explore the latest IT modernization strategies and share actionable insights to help agencies optimize infrastructure, strengthen security and improve mission outcomes.\n\nThat process typically takes about 20 minutes, he said. The AI agent can get it done in 90 seconds — giving local and federal authorities more time to tackle the problem instead.",
+                "score": 0.2451532
+              },
+              {
+                "title": "How parents can help teens use AI safely & thoughtfully",
+                "url": "https://www.news4jax.com/tech/2026/11/09/how-parents-can-help-teens-use-ai-safely-thoughtfully",
+                "source": "news4jax.com",
+                "summary": "At WJXT, we are committed to informing and delighting our audience. In our commitment to covering our communities with innovation and excellence, we incorporate Artificial Intelligence (AI) technologies to enhance our news gathering, reporting, and presentation processes.Read our articleto see how we are using Artificial Intelligence.\n\n  \n\nImage 30: Graham Media Group LogoImage 31: Graham Digital Logo [...] Open the WJXT News4JAX Help Desk\n\n   News\n   Watch Live\n   Weather\n   Sports\n   Features\n   River City Live\n   SnapJAX\n   Newsletters\n   WJXT\n   CW17\n\nWEATHER ALERT\n\n2 rip current statements in effect for Duval, Coastal, Inland and Nassau, Coastal, Inland Regions\n\nShow Breaking News Bar\n\nClose\n\n#### Tech\n\n  \n\nJoy Purdy, News4JAX anchor\n\nPublished:November 9, 2026 at 1:39 PM\n\nTags:Chat GPT, AI, Artificial Intelligence, Tech, Parenting, UNF, Education\n\n  \n\nSign up for our Newsletters \n\nSign Up [...] Sign Up\n\n\n\nVisit our Facebook page (opens in a new tab)Visit our Instagram page (opens in a new tab)Visit our X page (opens in a new tab)Visit our RSS Feed page (opens in a new tab)\n\nAdvertise With Us\n\nIf you need help with the Public File, call(904) 393-9801",
+                "score": 0.21857801
+              },
+              {
+                "title": "Pennsylvania Enacts Artificial Intelligence Deceptive Advertising Act | Inside Global Tech",
+                "url": "https://www.insideglobaltech.com/2026/11/09/pennsylvania-enacts-artificial-intelligence-deceptive-advertising-act",
+                "source": "insideglobaltech.com",
+                "summary": "consumer reviews, AI-generated content, and subscription autorenewals. Laura regularly represents both challengers and advertisers before the NAD, achieving favorable outcomes in matters involving artificial intelligence, influencers, and claim substantiation. [...] dynamic regulatory environment, including in connection with digital and online advertising, social media, AI-powered and agentic services, connected devices, and robotics. [...] Jayne counsels clients across industries to launch and enhance products, services, and governance programs involving their collection and use of data and emerging technologies. Her experience spans U.S. comprehensive privacy, automated decisionmaking, AI governance, biometric privacy, surveillance and algorithmic pricing, and AI transparency, disclosure, and safety frameworks. She partners with clients to design products and governance programs that keep pace with the dynamic regulatory",
+                "score": 0.19650257
+              },
+              {
+                "title": "Australia to introduce mandatory reporting after OpenAI hack to combat artificial intelligence ‘going rogue’",
+                "url": "https://www.theguardian.com/technology/2026/nov/10/australia-manadatory-reporting-openai-medicare-hack",
+                "source": "theguardian.com",
+                "summary": "Government flags criminal law changes to ensure companies can't argue in future 'that someone didn't know the computer was loaded'",
+                "score": 0.19337612
+              },
+              {
+                "title": "How CrossnoKaye grounds physical AI with Amazon Bedrock AgentCore",
+                "url": "https://aws.amazon.com/blogs/machine-learning/how-crossnokaye-grounds-physical-ai-with-amazon-bedrock-agentcore",
+                "source": "aws.amazon.com",
+                "summary": "Industrial operations present AI challenges that don't show up in typical enterprise software. In most facilities, plant data and control logic are spread",
+                "score": 0.13018611
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://openai.com/blog/gpt-5",
+            "items": [
+              {
+                "title": "OpenAI",
+                "url": "https://openai.com/blog/gpt-5",
+                "source": "openai.com",
+                "summary": "OpenAI\n\n# 404\n\nSearch finds no result\n\nThe question still earns its keep\n\nAsk it a new way\n\nby [gpt-6-astra(opens in a new window)](https://chatgpt.com/?surface=work&model=gpt-6-astra-wm&openaicom-did=52cdc990-ae75-4748-bf07-215286d35858&openaicom_referred=true)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "technology",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "technology",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 10
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "technology",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Climate technology is already changing lives. Why isn’t it reaching more people? | UNEP - UN Environment Programme",
+                "url": "https://www.unep.org/en/news-and-stories/blog/climate-technology-already-changing-lives-why-isnt-it-reaching-more-people",
+                "source": "unep.org",
+                "summary": "Many developing countries still lack the technical expertise, institutional capacity and financial resources to identify and deploy technologies suited for the problems they want to tackle. On the other hand, technology cannot simply be transferred from one country to another and expected to work the same way. Instead, every solution must respond to local challenges, resources and priorities. [...] But technological advancement alone is not enough. For climate technology to grow and deliver, favorable policies and investment are absolutely key. Expanding these solutions requires infrastructure, training, institutional capacity and long-term maintenance. Without adequate financing, promising innovations risk remaining isolated projects instead of developing into widely available tools for climate resilience. [...] The Climate Technology Centre and Network is the implementation arm of the Technology Mechanism of the United Nations Framework Convention on Climate Change, hosted by the United Nations Environment Programme. It promotes the accelerated transfer of environmentally sound technologies for low-carbon and climate-resilient development at the request of developing countries, drawing on a global Network of over 1,000 member organizations across 165 countries.\n\nCategory\n\nBlog\n\nTopics\n\nClimate action",
+                "score": 0.22103986
+              },
+              {
+                "title": "Template for intergenerational technology program created by URI and academic partners – Rhody Today",
+                "url": "https://www.uri.edu/news/2026/11/template-for-intergenerational-technology-program-created-by-uri-and-academic-partners",
+                "source": "uri.edu",
+                "summary": "“The public response to the platform has been overwhelmingly positive,” said Workman. “Following the launch webinar, 100% of surveyed participants indicated they planned to leverage the IG TECH resources to design new programs or refine existing ones. Furthermore, our site analytics show that the IG TECH hub is a primary driver of overall web traffic: active visitors spend 57% more time on the IG TECH pages compared to the site-wide average, demonstrating deep user engagement with these [...] A young adult helps an older adult navigate a laptop during an intergenerational technology learning session. Together, they explore digital tools, sharing knowledge and building confidence through hands-on learning and meaningful connection. (Photo courtesy The Ohio State University) [...] “Our research prior to the development of IG TECH showed that young adults participating in these programs increased ageism sensitivity and had more positive attitudes toward older adults, particularly in regard to working with them,” said Leedahl. “Older adults showed increased technology usage and digital confidence and improved social well-being, such as decreased social isolation and loneliness.”\n\nCreating a template for others",
+                "score": 0.18181492
+              },
+              {
+                "title": "I watched a humanoid robot clean my apartment. It felt like a taste of the future. | MIT Technology Review",
+                "url": "https://www.technologyreview.com/2026/11/06/1148090/i-watched-a-humanoid-robot-clean-my-apartment-it-felt-like-a-taste-of-the-future",
+                "source": "technologyreview.com",
+                "summary": "With all the human support they need, the robots are closer to radio-controlled cars than Waymos. Many tasks, such as making the bed and folding laundry, require what’s called kinematic guidance: The human pilot performs the necessary motions, and sensors transmit those movements to the robot, which copies them. These kinematically guided tasks produce especially valuable training data. Tau’s AI models might not have solved laundry folding yet, but learning from the examples of robots that have [...] In the hour it was there, it did a creditable job of cleaning my kitchen (though it didn’t brave the stove) and even saved me my most dreaded cleaning task, the toilet. That was its most impressive performance: Three times the head fell off its toilet cleaning wand, and three times it managed to reattach it by poking around with the handle until it made contact at just the right angle. [...] the robots clean, they collect data that Tau will use to train up their more independent descendants. Every counter successfully wiped and T-shirt successfully folded will help the models that power the robots learn to do better on the next go-round.",
+                "score": 0.17477651
+              },
+              {
+                "title": "World Wide Technology Championship 2026 prize money: Full payout from $6 million purse - Golf Channel",
+                "url": "https://www.golfchannel.com/pga-tour/news/world-wide-technology-championship-2026-prize-money-full-payout-from-6-million-purse",
+                "source": "golfchannel.com",
+                "summary": "Twitter\n Email\n\nPenske Moving Day: James extends lead to four shots, eyes first PGA Tour win\n\nBen James extended his lead to four shots during the third round of the World Wide Technology Championship on Saturday and is chasing his first win on the PGA Tour in this Penske Moving Day.\n\nEl Cardonal at Diamante is set to challenge a 70-player field Sunday during the final round of the World Wide Technology Championship where a $6 million purse is at stake. [...] GN_Primary_Logo_RGB_Full_Color.png\n GP_Primary_Logo_RGB_Full_Color.png\n GNC_Secondary_Horiz_Logo_RGB_Full_Color.png\n\n Skip navigation\n\ngc_rgb_horizontal_logo_reverse_dark_bg.png\n\ngc_rgb_horizontal_logo_reverse_dark_bg.png\n\nFavorites\n\nSign up to follow your favorites on all your devices.\n\nSign up\n\n# World Wide Technology Championship 2026 prize money: Full payout from $6 million purse\n\n By\n Golf Channel Staff,\n\n By\n Golf Channel Staff\n\n  \n\nPublished November 8, 2026 09:37 AM\n\n Twitter\n Email [...] | 26 | $48,300 |\n| 27 | $46,500 |\n| 28 | $44,700 |\n| 29 | $42,900 |\n| 30 | $41,100 |\n| 31 | $39,300 |\n| 32 | $37,500 |\n| 33 | $35,700 |\n| 34 | $34,200 |\n| 35 | $32,700 |\n| 36 | $31,200 |\n| 37 | $29,700 |\n| 38 | $28,500 |\n| 39 | $27,300 |\n| 40 | $26,100 |\n| 41 | $24,900 |\n| 42 | $23,700 |\n| 43 | $22,500 |\n| 44 | $21,300 |\n| 45 | $20,100 |\n| 46 | $18,900 |\n| 47 | $17,700 |\n| 48 | $16,740 |\n| 49 | $15,900 |\n| 50 | $15,420 |\n| 51 | $15,060 |\n| 52 | $14,700 |\n| 53 | $14,460 |\n| 54 | $14,220 |",
+                "score": 0.17427003
+              },
+              {
+                "title": "Points and payouts: See what each player earned at World Wide Technology Championship - PGA Tour",
+                "url": "https://www.pgatour.com/article/news/betting-dfs/2026/11/08/points-and-payouts-see-what-each-player-brings-home-from-world-wide-technology-championship-los-cabos-mexico-fedexcup-fall",
+                "source": "pgatour.com",
+                "summary": "Golfbet News\n\nImage for article.\n\n2D AGO\n\n‘I'm not ready to be done’: Malnati tries to extend Tour career at World Wide Technology\n\nLatest\n\nImage for article.\n\n4D AGO\n\nJeremy Paul betting profile: World Wide Technology Championship\n\nBetting Profile\n\nOfficial\n\nWorld Wide Technology Championship\n\n1\n\nBlades Brown\n\nUSA\n\nB. Brown\n\nTot\n-23\nR4\n-9\n\n-23\n\n1\n\nUSA\n\nB. Brown\n\nTot\n-23\nR4\n-9\n\n2\n\nBen James\n\nUSA\n\nB. James\n\nTot\n-23\nR4\n-2\n\n-23\n\n2\n\nUSA\n\nB. James\n\nTot\n-23\nR4\n-2\n\n3\n\nMichael Kim\n\nUSA\n\nM. Kim [...] The PGA Tour has crowned its first winner who is younger than the FedExCup.\n\nThe first edition of the World Wide Technology Championship was among the first tournaments contributing to the inaugural FedExCup season in 2007. It was held in February that year. Three months later, Brown was born. [...] PGA TourLeaderboardWatch & ListenNewsFedExCupSchedulePlayersStatsFantasy & BettingSignature EventsAon Better DecisionsDP World Tour Eligibility RankingsHow It WorksTicketsShopPGA TourPGA Tour ChampionsKorn Ferry TourPGA Tour AmericasPGA Tour UniversityDP World TourLPGA TourTGL\n\nPGA Tour\n\nPGA Tour\n\n### World Wide Technology ChampionshipRight Arrow\n\nBlades Brown\n\nUSA\n\nB. Brown\n\nTot\n-23\nR4\n-9\n\n1\n\nUSA\n\nB. Brown\n\nTot\n-23\nR4\n-9\n\nBen James\n\nUSA\n\nB. James\n\nTot\n-23\nR4\n-2\n\n-23\n\n2\n\nUSA\n\nB. James",
+                "score": 0.17034262
+              },
+              {
+                "title": "2026 World Wide Technology Championship purse: Payout info, winner’s share | News | GOLF.com",
+                "url": "https://golf.com/news/2026-world-wide-technology-championship-purse",
+                "source": "golf.com",
+                "summary": "Getty Images\n\nOne of the PGA Tour’s up-and-coming stars has his first win in his grasp in Mexico.\n\nBen James, who earned his PGA Tour card by finishing first in the PGA Tour University standings, will enter Sunday at the World Wide Technology Championship with a four-shot lead over Ryan Gerard and a five-shot edge over Chris Kirk and Denny McCarthy. [...] The win would also give James a check for $1.08 million, a two-year exemption and a spot in the 2028 Championship Series when the PGA Tour goes to its two-tiered model. A lot is on the line for James on Sunday at El Cardonal at Diamante.\n\nHere’s the complete purse information for the 2026 World Wide Technology Championship:\n\nWIN: $1.08 million\n\n2: $654,000\n\n3: $414,000\n\n4: $294,000\n\n5: $246,000\n\n6: $217,500\n\n7: $202,500\n\n8: $187,500\n\n9: $175,500\n\n10: $163,500\n\n11: $151,500\n\n12: $139,500 [...] By:  James Colgan\n\nNews   LIV Golf's end brought harsh answers to the sport's most pressing question  \n\nLIV Golf's end brought harsh answers to the sport's most pressing question\n\nBy:  Josh Schrock\n\nNews   2026 World Wide Technology Championship Saturday tee times: Round 3 groupings  \n\n2026 World Wide Technology Championship Saturday tee times: Round 3 groupings\n\nBy:  Jessica Marksbury\n\nNews   'Not ready to be done': One pro's FedEx Cup Fall job battle is different than the others",
+                "score": 0.15792774
+              },
+              {
+                "title": "NASA Awards Moon Base Transportation, Technology, Science Projects - NASA",
+                "url": "https://www.nasa.gov/news-release/nasa-awards-moon-base-transportation-technology-science-projects",
+                "source": "nasa.gov",
+                "summary": "NASA intends to release a directed call under its Next Space Technologies for Exploration Partnerships, or NextSTEP-3 B, solicitation to help close architecture-driven, high-priority data gaps for Moon Base development. The effort will help NASA gather information it needs to plan future missions, reduce risk, and support technologies and infrastructure for sustained operations on the Moon’s South Pole. The work could include small spacecraft missions, payloads on future Moon Base flights, or [...] The PROMISE rover will carry a drill to extract regolith, or lunar dust, to characterize ice and other resources from approximately 3 feet (1 meter) below the surface, spectrometers for analyzing the chemical composition of surface material, temperature and radiation sensors, and visible-light cameras. It will demonstrate a next-generation, radiation-tolerant computing system, NASA’s High Performance Spaceflight Computing, and advanced autonomy sensors and algorithms. NASA is targeting late [...] ### Technology\n\n Technology Transfer & Spinoffs\n Space Travel\n Living in Space\n Lunar Surface Technology\n Manufacturing and Materials\n Robotics\n Science Instruments\n Computing\n\n### Learning Resources\n\n For Students\n For Educators\n For Colleges and Universities\n For Professionals\n Science for Everyone\n Requests for Exhibits, Artifacts, Speakers & Flyovers\n STEM Engagement at NASA\n\n### About NASA",
+                "score": 0.15361294
+              },
+              {
+                "title": "Blades Brown wins PGA Tour's World Wide Technology at 19 - ESPN",
+                "url": "https://www.espn.com/golf/story/_/id/50427722/blades-brown-wins-pga-tour-world-wide-technology-19",
+                "source": "espn.com",
+                "summary": "On the first extra hole, their approach shots were side-by-side, separated by about 3 feet, and both narrowly missed eagle chances. They returned to the 18th tee, and their drives were next to each other. Both came up just short of the green.\n\nJames nearly holed his pitch and saw it run out 8 feet. Brown, who had a similar pitch in regulation that he hit to 6 feet for a closing birdie, this time came up 3 feet short. James' birdie putt grazed the right edge, and Brown poured in the winner. [...] McCarthy's tee shot on the 17th was right of the 18th tee box; he put his next shot off a dirt path into a hazard, and he made double bogey. He shot 69.\n\nInformation from ESPN Research and The Associated Press was used in this report. [...] ## ESPN\n\n# Blades Brown, 19, outlasts Ben James, becomes youngest PGA Tour winner since '38\n\nCopy Link\n\nLOS CABOS, Mexico -- Blades Brown became the youngest PGA Tour winner in 88 years Sunday, when the 19-year-old rallied from a seven-shot deficit with a 9-under 63 and beat Ben James with a birdie on the second playoff hole in the World Wide Technology Championship.",
+                "score": 0.15179348
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top",
+            "limit": 10
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Nguyên hàm của $x^2$ là:\n\n$$\\int x^2 \\, dx = \\frac{x^3}{3} + C$$\n\nTrong đó $C$ là hằng số tích phân (có thể là bất kỳ số thực nào).\n\n**Giải thích:** Theo quy tắc tích phân lũy thừa $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$ (với $n \\neq -1$), ta có $n = 2$, nên $n+1 = 3$ và kết quả là $\\frac{x^3}{3} + C$.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý nghiên cứu (research assistant) có quyền truy cập vào các công cụ để thu thập thông tin từ nhiều nguồn khác nhau. Dưới đây là những gì tôi có thể làm:\n\n## 🔍 **Tìm kiếm & Thu thập thông tin**\n- **Web search (lookup)**: Tìm tin tức, bài viết, thông tin chung trên web\n- **X/Twitter**: \n  - `timeline` – Xem bài đăng gần nhất của **một tài khoản cụ thể**\n  - `social_search` – Tìm bài đăng theo **chủ đề/từ khóa** (xem mọi người đang nói gì)\n- **Academic papers**: Tìm và đọc paper trên arXiv (`papers`, `paper_text`)\n- **Đọc URL cụ thể**: `fetch` – Tóm tắt/nội dung bài viết từ link bạn đưa\n\n## 📝 **Xử lý & Trình bày**\n- `format` – Chuyển thông tin đã thu thập thành bản tóm tắt markdown (brief, sections, bullets, thread, daily_ai_vn)\n\n## 📤 **Hành động có tác động thực**\n- `send` – Gửi tin nhắn đến kênh Telegram (**chỉ sau khi bạn xác nhận rõ ràng**)\n\n## 📋 **Chính sách nội bộ**\n- `policy` – Tra cứu quy định công ty (trích dẫn nguồn, bảo mật dữ liệu, xuất bản đối ngoài, quy trình nghiên cứu AI, sử dụng công cụ)\n\n---\n\n## ⚠️ **Quy tắc tôi tuân thủ**\n1. **Không đoán mò**: Nếu bạn nhắc \"tài khoản này\", \"bài viết này\" mà không cho handle/URL → tôi sẽ hỏi lại.\n2. **Xác nhận trước khi gửi**: Mọi hành động `send` đều cần bạn gõ \"có/yes\" sau khi tôi hỏi xác nhận.\n3. **Dùng đúng công cụ**: Timeline cho 1 tài khoản, social_search cho chủ đề, lookup cho tin tức web, fetch cho 1 URL cụ thể.\n\n---\n\n**Bạn muốn tôi giúp gì hôm nay?** (Ví dụ: \"Tìm tin tức AI tuần này\", \"Xem tweet mới của Sam Altman\", \"Tóm tắt bài viết tại [URL]\", \"Tìm paper về RAG\", v.v.)",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn tóm tắt 5 tweet mới nhất của tài khoản nào? Hãy cho mình biết handle (ví dụ: elonmusk, sama, karpathy, v.v.)",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn tóm tắt 5 tweet mới nhất của tài khoản nào? Hãy cho mình biết handle (ví dụ: elonmusk, sama, karpathy, v.v.)",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn tóm tắt 5 tweet mới nhất của tài khoản nào? Hãy cho mình biết handle (ví dụ: elonmusk, sama, karpathy, v.v.)",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn vui lòng gửi link (URL) của bài viết cần tóm tắt?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn vui lòng gửi link (URL) của bài viết cần tóm tắt?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn vui lòng gửi link (URL) của bài viết cần tóm tắt?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn đăng nội dung gì lên Telegram? Hãy cung cấp văn bản cụ thể bạn muốn gửi.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "response_type: expected 'yes_no', got 'text'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn đăng nội dung gì lên Telegram? Hãy cung cấp văn bản cụ thể bạn muốn gửi.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn đăng nội dung gì lên Telegram? Hãy cung cấp văn bản cụ thể bạn muốn gửi.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 5
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "AI-assisted atomic models reveal how protective shells regulate aluminum nanoparticle oxidation",
+                "url": "https://phys.org/news/2026-11-ai-atomic-reveal-shells-aluminum.html",
+                "source": "phys.org",
+                "summary": "AI extracts hidden material rules from microscopic data to predict large-scale behavior\n\n##### AI extracts hidden material rules from microscopic data to predict large-scale behavior\n\nAI automates the creation of custom functional materials atom by atom\n\n##### AI automates the creation of custom functional materials atom by atom\n\nLarge AI models can speed catalyst discovery by predicting performance before synthesis [...] ##### Large AI models can speed catalyst discovery by predicting performance before synthesis\n\nNew AI approach accelerates targeted materials discovery and sets the stage for self-driving experiments\n\n##### New AI approach accelerates targeted materials discovery and sets the stage for self-driving experiments\n\nTurning materials data into AI-powered lab assistants\n\n##### Turning materials data into AI-powered lab assistants\n\n### Recommended for you [...] Building an accurate model of how atoms interact is a complicated process. Researchers must choose new calculations, test successive models and track the mechanisms behind each interaction. But a newly developed AI agent called MLP Copilot has made this process much easier by bridging computational tools and scientific evidence with human supervision.",
+                "score": 0.3396091
+              },
+              {
+                "title": "Recent Advances in AI Are Creating a ‘Paradigm Shift’ for Robotics | Research UC Berkeley",
+                "url": "https://vcresearch.berkeley.edu/news/recent-advances-ai-are-creating-paradigm-shift-robotics",
+                "source": "vcresearch.berkeley.edu",
+                "summary": "In recent months, artificial intelligence agents that can reason, plan and use external tools to accomplish multistep tasks have already reshaped computer coding, online shopping, dinner reservations and cyberattacks.\n\nRobotics might be next.\n\nKen Goldberg, a UC Berkeley roboticist and professor of engineering, said new models make it possible for teams of AI agents to develop robot-control programs, test them in simulated environments and revise the code when something doesn’t work. [...] Then, AI agents generate and connect these skills into a robot program. Using NVIDIA’s Isaac simulation libraries, the agents autonomously rehearse the program across task variations, identify where failures happen and refine the approach before deployment. [...] OpenAI’s recent release of its Astra model made the process even more promising, Goldberg said. His postdoctoral students Eric Kaiyuan Chen and Shuangyu Xie gave Astra access to their simulation interface and a short video of a real robot whose assignment was using a sponge to wipe ink off a metal bar. In less than an hour, the AI tool created and fine-tuned a physics simulation that accurately reproduced the video, including very realistic deformations of the sponge.",
+                "score": 0.29827207
+              },
+              {
+                "title": "Google AI policy forces decision for San Diego schools – NBC 7 San Diego",
+                "url": "https://www.nbcsandiego.com/news/local/googles-ai-ultimatum-forces-san-diego-schools-make-tough-choice/4099437",
+                "source": "nbcsandiego.com",
+                "summary": "As districts consider their options, students are already seeing artificial intelligence become a more common part of everyday learning.\n\n“I feel like I see a lot of people using AI now,” said Delilah Ortiz, a student at El Camino High School.\n\nSome students believe the focus should be on establishing guidelines for AI use rather than banning the technology entirely. [...] San Diego County school districts face a January deadline to decide whether to opt in to Google's artificial intelligence features or lose access to the company's search engine, forcing educators to weigh the benefits of AI against concerns about student access to the technology. [...] Google plans to disable a range of AI-powered features, including Gemini, Gemini Notebook and Search in January to give school districts more control over the technology students can access. However, districts that want to continue using Google Search will have to opt in to the AI features.\n\nStream San Diego News for free, 24/7, wherever you are with NBC 7.\n\nWatch button  WATCH HERE",
+                "score": 0.202917
+              },
+              {
+                "title": "Jensen Huang is living proof that AI’s rockstar CEOs are also a hidden risk | CNN Business",
+                "url": "https://www.cnn.com/2026/11/09/tech/nvidia-jensen-huang-ai-ceos-risks",
+                "source": "cnn.com",
+                "summary": "Huang has also served as the AI industry’s ambassador on the international stage. He recently met with leaders in European capitals, pitching them on the idea of sovereign AI, where every country needs to build and control its own AI systems.\n\nAnd Huang has presided over Nvidia’s effort to build out the AI ecosystem. In September, the company disclosed a staggering $99 billion worth of equity investments in this space, up from $2.2 billion two years ago. [...] President Donald Trump, left, and Open AI president Greg Brockman, right, listen as Nvidia CEO Jensen Huang speaks at the White House in Washington, DC, on September 29, 2026, after meeting with top executives of AI firms.\n\nWhen worries about cheaper open models from China sparked selling in global markets, Huang teamed up with Wall Street power players to cobble together a $500 billion plan aimed at keeping the flow of money pumping into AI-powering chips. [...] While Nvidia’s most recent annual financial report to regulators does not directly spell out how much the company’s fate is linked to Huang, the filing does note the company is “highly dependent” on the services of its executive team. It also acknowledges that “failure to ensure effective succession planning” could “hinder our strategic planning, execution and long-term success.”\n\n## AI’s everything man",
+                "score": 0.1975222
+              },
+              {
+                "title": "Dems point to CISA staffing, AI security and other cyber priorities - Federal News Network",
+                "url": "https://federalnewsnetwork.com/cybersecurity/2026/11/dems-point-to-cisa-staffing-ai-security-and-other-cyber-priorities",
+                "source": "federalnewsnetwork.com",
+                "summary": "“That was glaringly obvious during the Salt Typhoon, Colonial Pipeline, and Change Healthcare hacks that affected millions of Americans, and it is an even more urgent problem today as AI tools will accelerate the speed and scale with which bad actors can disrupt our lives and our national security,” Warner said in a statement. “That is why cyber will remain a priority for me as we enter the new Congress and it is why I believe it is critically important we provide our government and the private",
+                "score": 0.17677137
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Dưới đây là hàm Python tính Fibonacci bằng đệ quy (recursion):\n\n```python\ndef fibonacci(n):\n    \"\"\"\n    Tính số Fibonacci thứ n bằng đệ quy.\n    \n    Args:\n        n (int): Vị trí trong dãy Fibonacci (bắt đầu từ 0)\n        \n    Returns:\n        int: Số Fibonacci tại vị trí n\n    \"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        return fibonacci(n - 1) + fibonacci(n - 2)\n\n\n# Ví dụ sử dụng\nif __name__ == \"__main__\":\n    for i in range(10):\n        print(f\"F({i}) = {fibonacci(i)}\")\n```\n\n**Kết quả:**\n```\nF(0) = 0\nF(1) = 1\nF(2) = 1\nF(3) = 2\nF(4) = 3\nF(5) = 5\nF(6) = 8\nF(7) = 13\nF(8) = 21\nF(9) = 34\n```\n\n---\n\n⚠️ **Lưu ý về hiệu suất:**  \nCách này có độ phức tạp thời gian **O(2ⁿ)** do tính toán lặp lại nhiều lần. Với `n` lớn (trên 35-40), sẽ rất chậm.\n\n**Các cách tối ưu:**\n\n1. **Memoization (đệ quy + cache):**\n```python\nfrom functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fibonacci_memo(n):\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    return fibonacci_memo(n - 1) + fibonacci_memo(n - 2)\n```\n\n2. **Iterative (khuyên dùng cho n lớn):**\n```python\ndef fibonacci_iter(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n```\n\nCách iterative chạy **O(n)** thời gian và **O(1)** bộ nhớ, nhanh hơn rất nhiều.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "RateLimitError: Error code: 429 - Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "RateLimitError: Error code: 429 - Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "RateLimitError: Error code: 429 - Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "RateLimitError: Error code: 429 - Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "RateLimitError: Error code: 429 - Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    }
+  ]
+}
