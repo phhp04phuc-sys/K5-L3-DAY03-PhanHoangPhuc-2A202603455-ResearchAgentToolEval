@@ -163,3 +163,24 @@ tools:
         sort: {type: string, enum: [downloads, likes, lastModified], default: "downloads", description: "Tiêu chí sắp xếp"}
         max_results: {type: integer, default: 5, description: "Số lượng model trả về (1-10)"}
       required: [query]
+
+  # ---------------- Team new tools (Le Van Hoang) ----------------
+  - name: citation_format
+    description: "Tạo chuỗi trích dẫn chuẩn học thuật (APA, BibTeX hoặc Markdown) từ tiêu đề, URL, tác giả và năm xuất bản. Dùng khi người dùng yêu cầu tạo trích dẫn/citation hoặc tài liệu tham khảo cho bài báo/bài viết."
+    parameters:
+      type: object
+      properties:
+        title: {type: string, default: "", description: "Tiêu đề bài báo hoặc tài liệu"}
+        url: {type: string, default: "", description: "Đường link URL của bài viết/tài liệu"}
+        author: {type: string, default: "", description: "Tên tác giả hoặc tổ chức"}
+        year: {type: string, default: "", description: "Năm xuất bản"}
+        style: {type: string, enum: [markdown, apa, bibtex], default: "markdown", description: "Định dạng trích dẫn (markdown, apa, bibtex)"}
+      required: [title, url, style]
+
+  - name: url_check
+    description: "Kiểm tra cú pháp URL và phân loại độ tin cậy nguồn tin theo chuẩn công ty (tier_1 học thuật/chính thống, tier_2 báo chí, tier_3 mạng xã hội). Dùng khi người dùng yêu cầu kiểm tra/xác minh độ uy tín của link mà không cần cào toàn bộ nội dung (fetch)."
+    parameters:
+      type: object
+      properties:
+        url: {type: string, default: "", description: "Đường link URL cần kiểm tra và phân loại source tier"}
+      required: [url]
