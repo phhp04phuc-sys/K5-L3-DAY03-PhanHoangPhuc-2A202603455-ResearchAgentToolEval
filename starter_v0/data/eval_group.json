@@ -421,6 +421,83 @@
         "difficulty": "hard",
         "what_it_tests": "Lượt 2 đổi task từ derivative sang integral, giữ nguyên biểu thức."
       }
+    },
+    {
+      "id": "G10_trusted_sources_news",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm tin AI hôm nay nhưng chỉ lấy từ nguồn uy tín",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "trusted_only": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "source_credibility",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu 'nguồn uy tín' phải bật trusted_only=true, vẫn là topic=news."
+      }
+    },
+    {
+      "id": "G11_trusted_official_info",
+      "phase": "B",
+      "suite": "group",
+      "query": "Cho mình thông tin chính thống về mô hình mới của OpenAI",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "trusted_only": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "source_credibility",
+        "difficulty": "medium",
+        "what_it_tests": "'Chính thống' phải bật trusted_only=true thay vì tìm web thường."
+      }
+    },
+    {
+      "id": "GM08_trusted_after_followup",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tin tức AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy nguồn chính thống thôi nhé"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "trusted_only": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "source_credibility_followup",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 yêu cầu nguồn chính thống: gọi lại lookup với trusted_only=true, giữ topic=news."
+      }
     }
   ]
 }

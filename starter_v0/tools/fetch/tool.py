@@ -6,6 +6,7 @@ from typing import Any
 import requests
 
 from tools._shared import TIMEOUT, domain, err
+from tools.source_trust import annotate_items
 
 
 def read_url(url: str = "") -> dict[str, Any]:
@@ -22,12 +23,12 @@ def read_url(url: str = "") -> dict[str, Any]:
         response.raise_for_status()
         data = response.json().get("data", {})
         meta = data.get("metadata", {}) or {}
-        return {"tool": "read_url", "url": url, "items": [{
+        return {"tool": "read_url", "url": url, "items": annotate_items([{
             "title": meta.get("title") or url,
             "url": meta.get("sourceURL") or url,
             "source": domain(url),
             "summary": (data.get("markdown") or "")[:4000],
-        }]}
+        }])}
     except Exception as exc:
         return err("read_url", exc)
 

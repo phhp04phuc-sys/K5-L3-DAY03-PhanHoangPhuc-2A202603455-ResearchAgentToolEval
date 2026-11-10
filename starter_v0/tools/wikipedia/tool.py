@@ -7,6 +7,7 @@ from urllib.parse import quote
 import requests
 
 from tools._shared import TIMEOUT, err
+from tools.source_trust import annotate_items
 
 USER_AGENT = "AI20k-Day03-Research-Agent/1.0 (educational lab)"
 LANG_RE = re.compile(r"^[a-z]{2,3}(-[a-z]{2,8})?$")
@@ -53,8 +54,8 @@ def get_wikipedia_summary(query: str = "", lang: str = "en", max_chars: int = 12
         if len(extract) > limit:
             extract = extract[: limit - 3] + "..."
         url = f"https://{code}.wikipedia.org/wiki/{quote(title.replace(' ', '_'))}"
-        return {"tool": "get_wikipedia_summary", "query": text, "lang": code, "items": [{
+        return {"tool": "get_wikipedia_summary", "query": text, "lang": code, "items": annotate_items([{
             "title": title, "url": url, "source": f"{code}.wikipedia.org", "summary": extract,
-        }]}
+        }], force_tier="tier2")}
     except Exception as exc:
         return err("get_wikipedia_summary", exc)

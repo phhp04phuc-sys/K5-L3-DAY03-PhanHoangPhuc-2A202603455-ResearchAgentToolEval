@@ -5,6 +5,7 @@ from typing import Any
 import requests
 
 from tools._shared import TIMEOUT, err
+from tools.source_trust import annotate_items
 
 HN_ALGOLIA = "https://hn.algolia.com/api/v1"
 MAX_LIMIT = 20
@@ -56,6 +57,6 @@ def search_hacker_news(query: str = "", sort_by: str = "top", limit: int = 5) ->
         response.raise_for_status()
         hits = response.json().get("hits", [])
         items = [_story_item(hit) for hit in hits if hit.get("title") or hit.get("story_title")]
-        return {"tool": "search_hacker_news", "query": text, "sort_by": sort, "items": items[:n]}
+        return {"tool": "search_hacker_news", "query": text, "sort_by": sort, "items": annotate_items(items[:n], force_tier="tier3")}
     except Exception as exc:
         return err("search_hacker_news", exc)

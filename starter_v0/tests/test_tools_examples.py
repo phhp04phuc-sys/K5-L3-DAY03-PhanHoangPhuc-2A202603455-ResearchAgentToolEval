@@ -62,7 +62,10 @@ def test_lookup_sends_expected_request_and_maps_results(monkeypatch, fake_http) 
     assert calls[0]["json"]["time_range"] == "day"
     assert calls[0]["json"]["max_results"] == 3
     assert calls[0]["headers"]["Authorization"] == "Bearer test-key"
-    assert result["items"][0] == {
+    # lookup nay còn thêm source_tier/tier_note (xem tools/source_trust.py), nên so sánh phần được map từ API
+    mapped = {key: result["items"][0][key] for key in ("title", "url", "source", "summary", "score")}
+    assert result["items"][0]["source_tier"] == "tier1"
+    assert mapped == {
         "title": "GPT news", "url": "https://www.openai.com/blog/x",
         "source": "openai.com", "summary": "summary", "score": 0.9,
     }

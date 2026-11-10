@@ -76,10 +76,13 @@ Các chỉ số chi tiết:
 | v3 | 1.00 | 1.00 | 1.00 | 1.00 |
 | v4 | 1.00 | 1.00 | 1.00 | 1.00 |
 | v5 | 0.95 | 0.95 | 0.95 | 1.00 |
+| v6 | 0.95 | 0.95 | 0.95 | 1.00 |
 
 | v4 | `tools.yaml` + 2 tool mới | Thêm `hackernews` và `wikipedia` với mô tả rõ thì agent route đúng tool mới mà không làm hỏng 20 case base | 1.00 | 1.00 | `runs/v4_B_base_gemini_20261110T115949550316.json` |
 
 | v5 | `system_prompt.md` + `tools.yaml` + tool `math_solve` | Thêm tool toán và đưa giải tích vào phạm vi thì 3 case toán mới qua; điểm base chỉ mất R08 | 1.00 | **0.95** | `runs/v5_B_base_gemini_20261110T121605353594.json` |
+
+| v6 | `tools/source_trust.py`, `lookup(trusted_only)`, `system_prompt.md` | Gán nhãn tầng nguồn bằng code và cho agent bật `trusted_only` khi người dùng đòi nguồn chính thống | 0.95 | 0.95 | `runs/v6_B_base_gemini_20261110T122357621065.json` |
 
 Ghi chú độ tin cậy:
 - Chạy v0 hai lần trên Gemini cho kết quả giống hệt nhau (0.55, không case nào đổi kết quả).
@@ -109,7 +112,7 @@ Hai lỗi còn lại sau v1 và v2:
 
 ## B3. Team Eval Cases
 
-16 case trong `data/eval_group.json` (10 case ban đầu: 5 một lượt, 5 nhiều lượt; thêm 3 case cho hackernews/wikipedia và 3 case cho math_solve). Kết quả 10 case đầu chạy trên v3 (`runs/v3_B_group_gemini_20261110T111334673629.json`): 10/10. Chạy trên v2 (`runs/v2_B_group_gemini_20261110T111412860116.json`): 10/10.
+19 case trong `data/eval_group.json` (10 case ban đầu: 5 một lượt, 5 nhiều lượt; thêm 3 case cho hackernews/wikipedia 3 case cho math_solve và 3 case cho nguồn uy tín). Kết quả 10 case đầu chạy trên v3 (`runs/v3_B_group_gemini_20261110T111334673629.json`): 10/10. Chạy trên v2 (`runs/v2_B_group_gemini_20261110T111412860116.json`): 10/10.
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result (v3) |
 |---|---|---|---|
@@ -129,8 +132,11 @@ Hai lỗi còn lại sau v1 và v2:
 | G08_math_solve_equation | Giải phương trình phải gọi math_solve, task=solve | `math_solve(task=solve)` | PASS (v5) |
 | G09_math_integral | Nguyên hàm nay trong phạm vi, task=integral | `math_solve(task=integral)` | PASS (v5) |
 | GM07_math_derivative_then_integral | Lượt 2 đổi task derivative sang integral | `math_solve(task=integral)` | PASS (v5) |
+| G10_trusted_sources_news | 'nguồn uy tín' phải bật `trusted_only` | `lookup(topic=news, trusted_only=true)` | PASS (v6) |
+| G11_trusted_official_info | 'chính thống' phải bật `trusted_only` | `lookup(trusted_only=true)` | PASS (v6) |
+| GM08_trusted_after_followup | Lượt 2 đòi nguồn chính thống | `lookup(topic=news, trusted_only=true)` | PASS (v6) |
 
-Hạn chế: bộ case này viết sau khi nhóm đã biết lỗi của eval base nên khá dễ (cả v2 và v3 đều 10/10), chưa phân biệt được hai version. 6 case cuối kiểm tra route tới tool mới. hackernews/wikipedia chạy trên v4 (`runs/v4_B_group_gemini_20261110T120044119436.json`): 13/13; toán chạy trên v5 (`runs/v5_B_group_gemini_20261110T121659621633.json`): 16/16.
+Hạn chế: bộ case này viết sau khi nhóm đã biết lỗi của eval base nên khá dễ (cả v2 và v3 đều 10/10), chưa phân biệt được hai version. 6 case cuối kiểm tra route tới tool mới. hackernews/wikipedia chạy trên v4 (`runs/v4_B_group_gemini_20261110T120044119436.json`): 13/13; toán chạy trên v5 (`runs/v5_B_group_gemini_20261110T121659621633.json`): 16/16; nguồn uy tín chạy trên v6 (`runs/v6_B_group_gemini_20261110T122536150203.json`): 19/19.
 
 ## B4. Live Chat Evidence
 
@@ -152,7 +158,8 @@ Còn thiếu: lượt chat live của v3 mới có 1 lượt, chưa đủ 3 lư�
 | send (Telegram) | `tests/test_tools_todo.py::test_send_*`, run v3 case R12, G04, GM04 | `send` không gọi mạng khi `confirmed=false`; agent hỏi `yes_no` trước khi gửi (R12, G04, GM04 qua ở v3) | Chưa gửi tin thật lên Telegram (chưa có `TELEGRAM_BOT_TOKEN`), nên chưa có transcript gửi thật |
 | arXiv/company policy | `runs/v3_B_group_gemini_*.json` (GM05), `tests/test_tools_todo.py::test_policy_*` | `paper_text` đúng ID và `max_pages`; policy tách dòng "ra lệnh" vào `untrusted_text` | Policy là nội dung không tin cậy: chỉ dùng `facts`, bỏ qua `untrusted_text` |
 | UI | `app.py`, `.streamlit/config.toml` | UI Streamlit giao diện tối, chọn provider/model/version, hiện chi tiết từng tool, tự ghi transcript | Chưa có link public cho team khác dùng thử |
-| Tool unit tests (`tests/`) | `pytest` | Kết quả: **113 passed, 0 skipped** (gồm 21 test viết riêng cho 3 tool mới: 4 hackernews, 4 wikipedia, 13 math_solve gồm 6 ca chặn chèn mã như `__import__`, `open`, `Integer(5)` và lũy thừa `9^9^9`) | Test offline, mọi HTTP bị chặn và mock bằng `fake_http` |
+| Nguồn uy tín | `tools/source_trust.py`, `runs/v6_*`, `tests/test_tools_todo.py` | Mọi item tool trả về có `source_tier` (tier1/tier2/tier3/unverified) và `tier_note`; `lookup(trusted_only=true)` lọc qua `include_domains` của Tavily (đã thử thật: kết quả không còn trang không rõ nguồn) | Danh sách tên miền là heuristic, nhãn cho biết độ tin cậy của nguồn chứ không bảo đảm nội dung đúng; tên miền giả dạng (`evilopenai.com`) bị chặn |
+| Tool unit tests (`tests/`) | `pytest` | Kết quả: **131 passed, 0 skipped** (gồm 39 test viết riêng cho 3 tool mới và phân tầng nguồn: 4 hackernews, 4 wikipedia, 13 math_solve gồm 6 ca chặn chèn mã như `__import__`, `open`, `Integer(5)` và lũy thừa `9^9^9`) | Test offline, mọi HTTP bị chặn và mock bằng `fake_http` |
 
 Tool unit tests: nhóm điền toàn bộ stub cho tool có sẵn (clarify, format, send, lookup, fetch, timeline, social_search, policy). Chưa tìm bug nào trong tool có sẵn. Hai điểm cần kiểm thêm (chưa viết test): `timeline` và `social_search` dùng `int(limit or 5)` nên `limit=0` bị đổi thành 5; `send` dùng `parse_mode: Markdown` nên văn bản có ký tự đặc biệt có thể bị Telegram từ chối.
 

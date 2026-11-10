@@ -35,7 +35,7 @@ tools:
       required: [query]
 
   - name: lookup
-    description: "Search the web for current information, especially news. Use for news and general factual questions. Do NOT use it to read one specific URL (use fetch) or for tweets (use timeline or social_search)."
+    description: "Search the web for current information, especially news. Use for news and general factual questions. Every item comes with a source_tier (tier1 primary source, tier2 reputable news, tier3 social/forum, unverified) and a tier_note. Do NOT use it to read one specific URL (use fetch) or for tweets (use timeline or social_search)."
     parameters:
       type: object
       properties:
@@ -43,6 +43,7 @@ tools:
         topic: {type: string, enum: [general, news], default: "general", description: "news for tin tức / latest events / what happened recently; general for everything else"}
         timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "day = hôm nay / today; week = tuần này; month = tháng này; year = năm nay"}
         max_results: {type: integer, default: 5, description: "Number of results; default 5"}
+        trusted_only: {type: boolean, default: false, description: "Set true ONLY when the user asks for reliable, official, authoritative or 'uy tín / chính thống' sources: the search is then limited to a vetted list of primary and reputable-news domains. Leave false otherwise"}
       required: [query]
 
   - name: fetch

@@ -1,0 +1,1511 @@
+{
+  "run_id": "v6_B_group_gemini_20261110T122536150203",
+  "version": "v6",
+  "artifact_version": "v6+pb6dca3cbfdbb+t7b44ecf31e08",
+  "prompt_hash": "b6dca3cbfdbb7ea296318cc69c16fff147e1ee4f808037b3339d8f1a488dbd4e",
+  "tools_hash": "7b44ecf31e08bec0601c16e64d3dc494519835330542be327569735b8498e26c",
+  "phase": "B",
+  "suite": "group",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash",
+  "system_prompt": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T12:25:36",
+  "summary": {
+    "total_cases": 19,
+    "measured_cases": 19,
+    "provider_error_cases": 0,
+    "passed_cases": 19,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_timeline_name_to_handle",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tên người nổi tiếng phải đổi thành handle không có @ (billgates) và route tới timeline, không phải social_search."
+      },
+      "input": "Bill Gates vừa đăng gì trên X?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "billgates"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "BillGates",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "BillGates",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_social_top_viral",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "search_type_top",
+        "difficulty": "medium",
+        "what_it_tests": "Từ 'viral/phổ biến nhất' phải map sang search_type=Top; query là từ khóa ngắn 'Claude'."
+      },
+      "input": "Tìm các bài đăng viral nhất về Claude trên X",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Claude",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_lookup_month_news",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "timeframe_month",
+        "difficulty": "medium",
+        "what_it_tests": "'trong tháng này' phải map sang timeframe=month và topic=news."
+      },
+      "input": "Tin về robot hình người trong tháng này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "humanoid robot",
+              "timeframe": "month",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "humanoid robot",
+            "timeframe": "month",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "humanoid robot",
+            "topic": "news",
+            "timeframe": "month",
+            "trusted_only": false,
+            "items": [
+              {
+                "title": "Meet 'Codey' the humanoid robot that hopes to tackle loneliness epidemic - ABC7 San Francisco",
+                "url": "https://abc7news.com/post/meet-codey-humanoid-robot-hopes-tackle-loneliness-epidemic/19942030",
+                "source": "abc7news.com",
+                "summary": "-- A humanoid robot designed to build connections with people was showcased Thursday at a technology conference at Stanford University.\n\nThe robot, named Codey, was developed by Mind Children and is designed as a social robot rather than a labor robot. Company leaders say its focus is on communication, learning and relationship-building.\n\nMind Children CEO Chris Kudla said the company began developing the technology several years ago with the goal of making humanoid robots more accessible. [...] \"We started doing this about three years ago, and no one had really heard about humanoid robots at that point. Everything that we did was meant to make it more accessible, easy to approach,\" Kudla said.\n\nMORE: Meet Taku: Bay Area company's AI robot loads washers, folds towels and stocks shelves [...] The company envisions the robot being used in settings where personal interaction is important, including health care environments, elderly care facilities and schools.\n\nMind Children recently updated Codey with new capabilities, allowing the robot to play games such as hide-and-seek and Pictionary. Company leaders said those features could provide benefits in environments such as hospitals and care facilities.",
+                "score": 0.8616433,
+                "source_tier": "unverified",
+                "tier_note": "Chưa xác minh: nguồn không có trong danh sách tin cậy; cần cẩn trọng và nói rõ là chưa xác minh."
+              },
+              {
+                "title": "Agility Robotics' Nasdaq debut invites scrutiny of humanoid robot market - Ars Technica",
+                "url": "https://arstechnica.com/ai/2026/11/agility-robotics-nasdaq-debut-invites-scrutiny-of-humanoid-robot-market",
+                "source": "arstechnica.com",
+                "summary": "Humanoid robots remain unproven at scale and have not yet achieved widespread commercialization, compared with industrial robots that have decades of proven track records in warehouses and factories. That frank acknowledgment is among the risks outlined in a securities filing by Agility Robotics—the first dedicated developer of humanoid robots to become a publicly traded company in the United States. [...] Agility said it continues to devote “substantially all of its resources to research, development, and commercialization of its humanoid robot,” while continuing to expand the RoboFab manufacturing facility. On October 21, Agility also announced plans to build a new facility in Pittsburgh, Pennsylvania, for supporting Digit robot deployments and further developing the robot’s software and AI. [...] Agility is one of many startups attempting to commercialize humanoid robots. But the company has stood out from the competition through its lead in deploying and operating Digit humanoid robots with multiple customers, including the warehouses of logistics company GXO, the South Carolina factory of German automotive manufacturer Schaeffler, and the automotive production lines of Toyota Motor Manufacturing Canada. As Agility’s very first customer, GXO announced it would expand deployments of",
+                "score": 0.829285,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "I watched a humanoid robot clean my apartment. It felt like a taste of the future. | MIT Technology Review",
+                "url": "https://www.technologyreview.com/2026/11/06/1148090/i-watched-a-humanoid-robot-clean-my-apartment-it-felt-like-a-taste-of-the-future",
+                "source": "technologyreview.com",
+                "summary": "# I watched a humanoid robot clean my apartment. It felt like a taste of the future.\n\nThe startup Tau Robotics is sending humanoid robots to clean San Francisco homes. They still need lots of human guidance, but they’re learning. [...] Tau Robotics still has a long way to go: The amount of data needed to train robots to do the varied and complicated tasks of apartment cleaning is probably enormous, and the company has completed only a couple hundred cleanings so far. But it’s remarkable that there are now humanoid robots able to clean your toilets and mop your floors, even if they need quite a bit of human help to do so. The Jetsons no longer feels quite so far away.\n\n### Deep Dive\n\n### Artificial intelligence [...] With all the human support they need, the robots are closer to radio-controlled cars than Waymos. Many tasks, such as making the bed and folding laundry, require what’s called kinematic guidance: The human pilot performs the necessary motions, and sensors transmit those movements to the robot, which copies them. These kinematically guided tasks produce especially valuable training data. Tau’s AI models might not have solved laundry folding yet, but learning from the examples of robots that have",
+                "score": 0.8047902,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "New Humanoid Robot Offers Ordnance Disposal Option",
+                "url": "https://www.nationaldefensemagazine.org/articles/2026/11/4/new-humanoid-robot-offers-ordnance-disposal-option",
+                "source": "nationaldefensemagazine.org",
+                "summary": "Image 6: sharethis sharing buttonShare\n\nImage 7: linkedin sharing buttonShare\n\nImage 8Artist’s rendering of Roger\n\nMinerva Humanoids rendering\n\nARLINGTON, Virginia— California-based Minerva Humanoids recently debuted Roger 1.0, a semi-autonomous humanoid robot designed for explosive ordnance disposal and hazardous materials response. [...] Originally designed to support NATO operations, Roger is supervised by a trained operator at a safe distance through a virtual reality headset and haptic gloves, allowing the human to see through the robot’s eyes and feel what its hands touch, according to a company fact sheet.\n\nRoger is designed to remove humans out of dangerous environments, capable of executing missions involving bomb disposal; chemical, biological, radiological and nuclear threats; and emergency response and first aid. [...] “Our AI guarantees the low-level intelligence of the humanoid. … You understand where your joints and bones are, and the robot has a similar understanding,” he said. The neural network on the robot has an understanding of where it is and can see things around it.",
+                "score": 0.7680558,
+                "source_tier": "unverified",
+                "tier_note": "Chưa xác minh: nguồn không có trong danh sách tin cậy; cần cẩn trọng và nói rõ là chưa xác minh."
+              },
+              {
+                "title": "Agility is the first pure humanoid robot company on the stock market. Are you buying? | TechCrunch",
+                "url": "https://techcrunch.com/2026/11/05/agility-is-the-first-pure-humanoid-robot-company-on-the-stock-market-are-you-buying",
+                "source": "techcrunch.com",
+                "summary": "The good news is that Agility has $300 million in planned contracts from 30 customers for its new generation of robot, Digit 5. The new model can safely operate around humans, not just in an isolated work cell like its previous model (and indeed most humanoid robots). That deal was “one of the driving factors” behind the decision to take the company public, Johnson said, but could not yet reveal who the customers or say if they are investors. [...] “You don’t see a lot of dancing robots or backflipping robots from Agility,” CEO Peggy Johnson told TechCrunch ahead of the company’s market debut. “We stuck to our strategy, which [are] these manual, very repetitive jobs, that it’s hard to find humans to do.” [...] Agility predates the recent boom in physical AI investment. The company was spun out of Oregon State University in 2015 by a group of researchers who made headway in figuring out how to get a robot to walk safely on two legs. The company has focused on deploying a handful of its Digit robots in industrial settings with nine different customers, including Schaeffler, GXO, Toyota Motor Manufacturing Canada, and Mercado Libre. Digits are generally used to move heavy totes, including more than",
+                "score": 0.7304634,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_send_with_text_still_confirm",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_send",
+        "difficulty": "medium",
+        "what_it_tests": "Dù đã có nội dung, hành động gửi vẫn phải hỏi xác nhận yes_no trước, không gọi send ngay."
+      },
+      "input": "Gửi dòng này lên Telegram giúp mình: 'Bản tin AI sáng nay đã sẵn sàng'",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có chắc chắn muốn gửi nội dung sau lên kênh Telegram không?\n\n\"Bản tin AI sáng nay đã sẵn sàng\"",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có chắc chắn muốn gửi nội dung sau lên kênh Telegram không?\n\n\"Bản tin AI sáng nay đã sẵn sàng\"",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có chắc chắn muốn gửi nội dung sau lên kênh Telegram không?\n\n\"Bản tin AI sáng nay đã sẵn sàng\"",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_out_of_scope_poem",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu sáng tác ngoài phạm vi research agent: không gọi tool, từ chối lịch sự."
+      },
+      "input": "Viết cho mình một bài thơ về mùa thu",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi rất tiếc nhưng tôi không thể thực hiện các yêu cầu sáng tác văn học, thơ ca hay viết mã nguồn (code). Tôi là trợ lý nghiên cứu, hỗ trợ tìm kiếm tin tức, tra cứu tài liệu khoa học, thông tin tổng hợp và giải các bài toán. \n\nNếu bạn cần hỗ trợ tìm kiếm thông tin, tài liệu hay nghiên cứu về bất kỳ chủ đề nào, xin vui lòng cho tôi biết nhé!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "GM01_carry_handle_new_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "carry_handle_update_limit",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ handle sama từ lượt 1, cập nhật limit=7 ở lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "Giờ cho mình xem 7 cái"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 7
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 7
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 7
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_social_then_top",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "carry_query_set_top",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ query OpenAI, đổi search_type sang Top theo lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tweet về OpenAI"
+        },
+        {
+          "role": "user",
+          "content": "Lấy loại phổ biến nhất thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top",
+              "query": "OpenAI"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "search_type": "Top",
+            "query": "OpenAI"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM03_timeframe_switch",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "timeframe_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 sửa timeframe từ week sang day, vẫn là topic=news."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin tức AI trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang chỉ hôm nay thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "query": "AI",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "topic": "news",
+            "query": "AI",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "trusted_only": false,
+            "items": [
+              {
+                "title": "AI and your job: Threat or opportunity?",
+                "url": "https://www.fox10tv.com/2026/11/10/ai-your-job-threat-or-opportunity",
+                "source": "fox10tv.com",
+                "summary": "MOBILE, Ala. (WALA) - Artificial intelligence is becoming a bigger part of everyday life, raising questions about what the technology could mean for workers and their jobs.\n\nSome economists believe AI poses a particular threat to entry-level and repetitive work, including call center, data entry and junior copywriting jobs, according to The Wall Street Journal. Those tasks may be easier to automate. [...] But AI could also create opportunities. A Bloomberg article points to potential job growth in construction and manufacturing as companies build data centers and produce the chips that power the technology. Some higher-skilled office workers could also benefit if AI helps them become more productive. [...] The long-term impact on jobs remains unclear, but workers can take steps to prepare. Exploring AI chatbots, writing assistants and other tools may help people find ways to work more efficiently and develop skills that complement the technology.",
+                "score": 0.42348245,
+                "source_tier": "unverified",
+                "tier_note": "Chưa xác minh: nguồn không có trong danh sách tin cậy; cần cẩn trọng và nói rõ là chưa xác minh."
+              },
+              {
+                "title": "Google AI policy forces decision for San Diego schools – NBC 7 San Diego",
+                "url": "https://www.nbcsandiego.com/news/local/googles-ai-ultimatum-forces-san-diego-schools-make-tough-choice/4099437",
+                "source": "nbcsandiego.com",
+                "summary": "As districts consider their options, students are already seeing artificial intelligence become a more common part of everyday learning.\n\n“I feel like I see a lot of people using AI now,” said Delilah Ortiz, a student at El Camino High School.\n\nSome students believe the focus should be on establishing guidelines for AI use rather than banning the technology entirely. [...] San Diego County school districts face a January deadline to decide whether to opt in to Google's artificial intelligence features or lose access to the company's search engine, forcing educators to weigh the benefits of AI against concerns about student access to the technology. [...] Google plans to disable a range of AI-powered features, including Gemini, Gemini Notebook and Search in January to give school districts more control over the technology students can access. However, districts that want to continue using Google Search will have to opt in to the AI features.\n\nStream San Diego News for free, 24/7, wherever you are with NBC 7.\n\nWatch button  WATCH HERE",
+                "score": 0.202917,
+                "source_tier": "unverified",
+                "tier_note": "Chưa xác minh: nguồn không có trong danh sách tin cậy; cần cẩn trọng và nói rõ là chưa xác minh."
+              },
+              {
+                "title": "Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn",
+                "url": "https://time.com/article/2026/11/10/permitting-bill-data-centers",
+                "source": "time.com",
+                "summary": "Personalized Content\n\n## Business\n\nFollow this section to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nPersonalized Content\n\n## AI\n\nFollow this tag to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\n# Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn\n\nAndrew R. Chow\n\nPersonalized Content\n\nAndrew R. Chow\n\n## Andrew R. Chow [...] The bill’s advocates argue that its passage would serve as a rare bipartisan win and a victory for affordability. But critics, especially those on the left, are calling for Democrats to wait until the next Congress. “You just heard Americans demand much more of a say in a way that AI is shaping their lives,” says Michele Jawando, the CEO of Omidyar Network. “Whenever you try to ram something through in a lame duck Congress before you have a hundred new House members, that’s never a good look [...] WHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nCorrespondent\n\nNarrated by TIME AI.",
+                "score": 0.19392508,
+                "source_tier": "unverified",
+                "tier_note": "Chưa xác minh: nguồn không có trong danh sách tin cậy; cần cẩn trọng và nói rõ là chưa xác minh."
+              },
+              {
+                "title": "Military-made AI tool helped thwart World Cup bomb threat - Federal News Network",
+                "url": "https://federalnewsnetwork.com/artificial-intelligence/2026/11/military-made-ai-tool-helped-thwart-world-cup-bomb-threat",
+                "source": "federalnewsnetwork.com",
+                "summary": "The 2026 World Cup brought more than six million spectators from around the world to more than 100 matches in 16 host cities in the U.S., Canada and Mexico over the course of two months, prompting a massive interagency effort to secure those sites using technologies like AI and drones. Two people were charged in connection with another bomb threat against FIFA during a World Cup match at MetLife Stadium in New Jersey. [...] A military-made artificial intelligence tool helped law enforcement thwart a bomb threat at the FIFA World Cup in California this summer.\n\nThe previously undisclosed incident occurred June 18, when Switzerland faced Bosnia and Herzegovina at SoFi Stadium outside Los Angeles, Army Capt. Ryan Hetrick, who leads the Pentagon’s Generative AI Task Force, said Nov. 6 at an AI event in Washington. [...] Hetrick has become one of the military’s biggest — and busiest — evangelists for AI. The GenAI Task Force travels around the globe to sit down with troops on operations floors and in the field and find AI fixes for their most pressing problems.",
+                "score": 0.19305643,
+                "source_tier": "unverified",
+                "tier_note": "Chưa xác minh: nguồn không có trong danh sách tin cậy; cần cẩn trọng và nói rõ là chưa xác minh."
+              },
+              {
+                "title": "Australia to mandate AI breach reporting, create regulator after OpenAI breach | Reuters",
+                "url": "https://www.reuters.com/world/australia-tightens-ai-oversight-rules-after-openai-agent-breached-government-2026-11-10",
+                "source": "reuters.com",
+                "summary": "However, both companies told Australian parliament last ​month that they would welcome ​laws requiring them to ⁠report data breaches carried out by their AI agents, acknowledging the decision to notify was currently at their discretion.\n\nAlbanese said his centre-left ​Labor government would set up an AI regulator to oversee security ​controls throughout ⁠the development and deployment of AI systems, identify serious risks and conduct independent evaluations of AI models. [...] \"The AI safety regulator will be able to enforce significant penalties for AI companies ⁠doing the ​wrong thing,\" he said.\n\nThe mandatory AI safety and ​security protections will form part of the government's proposed AI legislation, Albanese said, which it plans to introduce in ​Parliament next year.\n\nReporting by Renju Jose in Sydney; Editing by Christian Schmollinger and Saad Sayeed\n\nOur Standards: The Thomson Reuters Trust Principles. [...] OpenAI has said it learned of the breach only in August ​and that the incident was unintentional. Its review found no evidence that patient records were accessed by ‌the ⁠agent.\n\nThe breach has added to friction between Australia and US technology companies, after Canberra refused ChatGPT maker OpenAI and rival Anthropic exemptions from copyright laws for model training, instead requiring them to negotiate licensing agreements with Australian rights holders.",
+                "score": 0.18111867,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM04_confirm_after_content",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_before_send",
+        "difficulty": "hard",
+        "what_it_tests": "Sau khi người dùng đưa nội dung, agent vẫn phải xác nhận yes_no thay vì gọi send."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Nội dung là: Chào buổi sáng cả nhà"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có chắc chắn muốn gửi nội dung sau lên kênh Telegram không?\n\n\"Chào buổi sáng cả nhà\"",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có chắc chắn muốn gửi nội dung sau lên kênh Telegram không?\n\n\"Chào buổi sáng cả nhà\"",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có chắc chắn muốn gửi nội dung sau lên kênh Telegram không?\n\n\"Chào buổi sáng cả nhà\"",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_search_paper_then_read",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "switch_tool_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi ý: bỏ tìm kiếm (papers), chuyển sang đọc paper_text với ID và max_pages=2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm paper arXiv về RAG"
+        },
+        {
+          "role": "user",
+          "content": "À thôi, đọc luôn paper 1706.03762 giúp mình, lấy 2 trang đầu"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "1706.03762",
+              "max_pages": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "max_pages": 2,
+              "arxiv_url": "1706.03762"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "paper_text",
+          "args": {
+            "max_pages": 2,
+            "arxiv_url": "1706.03762"
+          },
+          "result": {
+            "tool": "get_arxiv_paper_text",
+            "arxiv_id": "1706.03762",
+            "url": "https://arxiv.org/abs/1706.03762",
+            "pdf_url": "https://arxiv.org/pdf/1706.03762.pdf",
+            "pdf_path": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/arxiv_papers/1706.03762.pdf",
+            "txt_path": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/arxiv_papers/1706.03762.txt",
+            "page_count": 15,
+            "pages_read": 2,
+            "chars_returned": 7118,
+            "items": [
+              {
+                "title": "arXiv paper 1706.03762",
+                "url": "https://arxiv.org/abs/1706.03762",
+                "source": "arxiv.org",
+                "summary": "Provided proper attribution is provided, Google hereby grants permission to\nreproduce the tables and figures in this paper solely for use in journalistic or\nscholarly works.\nAttention Is All You Need\nAshish Vaswani∗\nGoogle Brain\navaswani@google.com\nNoam Shazeer∗\nGoogle Brain\nnoam@google.com\nNiki Parmar∗\nGoogle Research\nnikip@google.com\nJakob Uszkoreit∗\nGoogle Research\nusz@google.com\nLlion Jones∗\nGoogle Research\nllion@google.com\nAidan N. Gomez∗ †\nUniversity of Toronto\naidan@cs.toronto.edu\nŁukasz Kaiser∗\nGoogle Brain\nlukaszkaiser@google.com\nIllia Polosukhin∗ ‡\nillia.polosukhin@gmail.com\nAbstract\nThe dominant sequence transduction models are based on complex recurrent or\nconvolutional neural networks that include an encoder and a decoder. The best\nperforming models also connect the encoder and decoder through an attention\nmechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring significantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.8 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature. We show that the Transformer generalizes well to\nother tasks by applying it successfully to English constituency parsing both with\nlarge and limited training data.\n∗Equal contribution. Listing order is random. Jakob proposed replacing RNNs with self-attention and started\nthe effort to evaluate this idea. Ashish, with Illia, designed and implemented the first Transformer models and\nhas been crucially involved in every aspect of this work. Noam proposed scaled dot-product attention, multi-head\nattention and the parameter-free position representation and became the other person involved in nearly every\ndetail. Niki designed, implemented, tuned and evaluated countless model variants in our original codebase and\ntensor2tensor. Llion also experimented with novel model variants, was responsible for our initial codebase, and\nefficient inference and visualizations. Lukasz and Aidan spent countless long days designing various parts of and\nimplementing tensor2tensor, replacing our earlier codebase, greatly improving results and massively accelerating\nour research.\n†Work performed while at Google Brain.\n‡Work performed while at Google Research.\n31st Conference on Neural Information Processing Systems (NIPS 2017), Long Beach, CA, USA.\narXiv:1706.03762v7  [cs.CL]  2 Aug 2023\n\n1 Introduction\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks\nin particular, have been firmly established as state of the art approaches in sequence modeling and\ntransduction problems such as language modeling and machine translation [ 35, 2, 5]. Numerous\nefforts have since continued to push the boundaries of recurrent language models and encoder-decoder\narchitectures [38, 24, 15].\nRecurrent models typically factor computation along the symbol positions of the input and output\nsequences. Aligning the positions to steps in computation time, they generate a sequence of hidden\nstates ht, as a function of the previous hidden state ht−1 and the input for position t. This inherently\nsequential nature precludes parallelization within training examples, which becomes critical at longer\nsequence lengths, as memory constraints limit batching across examples. Recent work has achieved\nsignificant improvements in computational efficiency through factorization tricks [21] and conditional\ncomputation [32], while also improving model performance in case of the latter. The fundamental\nconstraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 19]. In all but a few cases [27], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for significantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[16], ByteNet [18] and ConvS2S [9], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difficult to learn dependencies between distant positions [ 12]. In the Transformer this is\nreduced to a constant number of operations, albeit at the cost of reduced effective resolution due\nto averaging attention-weighted positions, an effect we counteract with Multi-Head Attention as\ndescribed in section 3.2.\nSelf-attention, sometimes called intra-attention is an attention mechanism relating different positions\nof a single sequence in order to compute a representation of the sequence. Self-attention has been\nused successfully in a variety of tasks including reading comprehension, abstractive summarization,\ntextual entailment and learning task-independent sentence representations [4, 27, 28, 22].\nEnd-to-end memory networks are based on a recurrent attention mechanism instead of sequence-\naligned recurrence and have been shown to perform well on simple-language question answering and\nlanguage modeling tasks [34].\nTo the best of our knowledge, however, the Transformer is the first transduction model relying\nentirely on self-attention to compute representations of its input and output without using sequence-\naligned RNNs or convolution. In the following sections, we will describe the Transformer, motivate\nself-attention and discuss its advantages over models such as [17, 18] and [9].\n3 Model Architecture\nMost competitive neural sequence transduction models have an encoder-decoder structure [5, 2, 35].\nHere, the encoder maps an input sequence of symbol representations (x1, ..., xn) to a sequence\nof continuous representations z = (z1, ..., zn). Given z, the decoder then generates an output\nsequence (y1, ..., ym) of symbols one element at a time. At each step the model is auto-regressive\n[10], consuming the previously generated symbols as additional input when generating the next.\n2"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_hackernews_front_page",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "route_new_tool",
+        "difficulty": "medium",
+        "what_it_tests": "Nhắc tới Hacker News phải route tới tool mới hackernews, không dùng lookup hay social_search."
+      },
+      "input": "Hôm nay Hacker News có gì hot?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hackernews",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hackernews",
+            "args": {
+              "query": "",
+              "sort_by": "top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hackernews",
+          "args": {
+            "query": "",
+            "sort_by": "top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_hacker_news",
+            "query": "",
+            "sort_by": "top",
+            "items": [
+              {
+                "title": "Foldable Flight: The Best Paper Airplanes",
+                "url": "https://www.foldableflight.com",
+                "source": "news.ycombinator.com",
+                "summary": "917 điểm, 144 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50424581",
+                "date": "2026-11-09T12:19:22Z",
+                "source_tier": "tier3",
+                "tier_note": "Tầng 3: mạng xã hội/diễn đàn; chỉ là tín hiệu, chưa xác nhận. Không trình bày như sự thật đã kiểm chứng."
+              },
+              {
+                "title": "USPS now offers official ZIP Code boundary polygons",
+                "url": "https://postalpro.usps.com/zcb",
+                "source": "news.ycombinator.com",
+                "summary": "564 điểm, 280 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50431058",
+                "date": "2026-11-09T19:58:59Z",
+                "source_tier": "tier3",
+                "tier_note": "Tầng 3: mạng xã hội/diễn đàn; chỉ là tín hiệu, chưa xác nhận. Không trình bày như sự thật đã kiểm chứng."
+              },
+              {
+                "title": "Payments Canada announces launch of Canada's Real-Time Rail (RTR) payment system",
+                "url": "https://www.payments.ca/canada-launches-real-time-rail-bringing-247-payment-infrastructure-national-economy",
+                "source": "news.ycombinator.com",
+                "summary": "496 điểm, 275 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50427362",
+                "date": "2026-11-09T16:00:45Z",
+                "source_tier": "tier3",
+                "tier_note": "Tầng 3: mạng xã hội/diễn đàn; chỉ là tín hiệu, chưa xác nhận. Không trình bày như sự thật đã kiểm chứng."
+              },
+              {
+                "title": "Google Gemini routes personal Drive files and emails to human annotators",
+                "url": "https://github.com/thisisme6598/gemini_files/",
+                "source": "news.ycombinator.com",
+                "summary": "496 điểm, 115 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50429426",
+                "date": "2026-11-09T18:24:38Z",
+                "source_tier": "tier3",
+                "tier_note": "Tầng 3: mạng xã hội/diễn đàn; chỉ là tín hiệu, chưa xác nhận. Không trình bày như sự thật đã kiểm chứng."
+              },
+              {
+                "title": "Claude Fable 5.2 and Mythos 5.2",
+                "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+                "source": "news.ycombinator.com",
+                "summary": "368 điểm, 707 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50429068",
+                "date": "2026-11-09T18:01:10Z",
+                "source_tier": "tier3",
+                "tier_note": "Tầng 3: mạng xã hội/diễn đàn; chỉ là tín hiệu, chưa xác nhận. Không trình bày như sự thật đã kiểm chứng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_wikipedia_vi_definition",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "route_new_tool_arg",
+        "difficulty": "medium",
+        "what_it_tests": "Câu hỏi định nghĩa bằng tiếng Việt phải route tới wikipedia với lang=vi, không dùng lookup."
+      },
+      "input": "Alan Turing là ai?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "lang": "vi"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "query": "Alan Turing",
+              "lang": "vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wikipedia",
+          "args": {
+            "query": "Alan Turing",
+            "lang": "vi"
+          },
+          "result": {
+            "tool": "get_wikipedia_summary",
+            "query": "Alan Turing",
+            "lang": "vi",
+            "items": [
+              {
+                "title": "Alan Turing",
+                "url": "https://vi.wikipedia.org/wiki/Alan_Turing",
+                "source": "vi.wikipedia.org",
+                "summary": "Alan Mathison Turing OBE FRS (23 tháng 6 năm 1912 – 7 tháng 6 năm 1954) là một nhà toán học, logic học và mật mã học người Anh, được xem là một trong những nhà tiên phong của ngành khoa học máy tính và A.I (Trí tuệ nhân tạo). Phép thử Turing (Turing test) là một trong những cống hiến lớn nhất của ông trong ngành trí tuệ nhân tạo: thử thách này đặt ra câu hỏi rằng máy móc có khi nào đạt được ý thức và có thể suy nghĩ được hay không. Ông đã hình thức hóa khái niệm thuật toán và tính toán với máy Turing, đồng thời đưa ra phiên bản của \"Turing\", mà ngày nay được đông đảo công chúng chấp nhận, về luận đề Church-Turing, một luận đề nói rằng tất cả những gì tính được bằng thuật toán đều có thể tính được bằng máy Turing.\nTrong Chiến tranh thế giới thứ hai, Turing đã từng làm việc tại Bletchley Park, trung tâm giải mật mã của Anh, và một thời là người chỉ huy của HUT 8, một bộ phận của Anh có trách nhiệm giải mật mã của hải quân Đức. Giáo sư Turing đã cùng các cộng sự của tại HUT 8 đã phát triển một số kỹ thuật nhằm tăng tốc độ phá mã của quân phát xít Đức, trong đó bao gồm việc cải tiến máy bombe (máy này do các chuyên gia giải mã người Ba Lan sáng chế trước Thế chiến 2), một cỗ máy cơ-...",
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM06_hn_then_wikipedia",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "switch_to_new_tool",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi ý từ hackernews sang wikipedia; chỉ gọi wikipedia."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm trên Hacker News về Rust"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, giải thích Rust là gì theo Wikipedia"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "query": "Rust (ngôn ngữ lập trình)",
+              "lang": "vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wikipedia",
+          "args": {
+            "query": "Rust (ngôn ngữ lập trình)",
+            "lang": "vi"
+          },
+          "result": {
+            "tool": "get_wikipedia_summary",
+            "query": "Rust (ngôn ngữ lập trình)",
+            "lang": "vi",
+            "items": [
+              {
+                "title": "Rust (ngôn ngữ lập trình)",
+                "url": "https://vi.wikipedia.org/wiki/Rust_%28ng%C3%B4n_ng%E1%BB%AF_l%E1%BA%ADp_tr%C3%ACnh%29",
+                "source": "vi.wikipedia.org",
+                "summary": "Rust là một ngôn ngữ lập trình đa năng chú trọng vào hiệu năng, an toàn kiểu, tính đồng thời và an toàn bộ nhớ. Rust hỗ trợ nhiều hệ hình lập trình. Ngôn ngữ này chịu ảnh hưởng từ các ý tưởng của lập trình hàm, bao gồm tính bất biến, hàm thứ bậc cao, kiểu dữ liệu đại số và khớp mẫu (pattern matching). Rust cũng cung cấp struct, enum, trait và phương thức như những lựa chọn thay thế cho lập trình hướng đối tượng truyền thống, mà không dựa vào lớp hay kế thừa. Rust bảo đảm an toàn bộ nhớ (tức là mọi tham chiếu đều trỏ tới vùng nhớ hợp lệ) mà không cần một bộ thu gom rác thông thường; thay vào đó, các lỗi an toàn bộ nhớ và tranh chấp dữ liệu (data race) được ngăn chặn bởi \"bộ kiểm tra mượn\" (borrow checker), thành phần theo dõi vòng đời đối tượng của các tham chiếu ngay tại thời điểm biên dịch.\nNhà phát triển phần mềm Graydon Hoare tạo ra Rust vào năm 2006 khi đang làm việc tại Mozilla; Mozilla chính thức tài trợ cho dự án từ năm 2009. Phiên bản ổn định đầu tiên, Rust 1.0, được phát hành vào tháng 5 năm 2015. Từ tháng 2 năm 2021, dự án được bảo trợ bởi Quỹ Rust (Rust Foundation). Rust được nhiều dự án phần mềm sử dụng, đặc biệt trong lĩnh vực dịch vụ web và phần mềm hệ thống. Ngôn ...",
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_math_solve_equation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "route_math",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu giải phương trình phải gọi math_solve với task=solve, không tự tính."
+      },
+      "input": "Giải giúp mình phương trình 2x + 6 = 0",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "solve"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "variable": "x",
+              "task": "solve",
+              "expression": "2x+6=0"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "math_solve",
+          "args": {
+            "variable": "x",
+            "task": "solve",
+            "expression": "2x+6=0"
+          },
+          "result": {
+            "tool": "solve_math",
+            "task": "solve",
+            "input": "2x+6=0",
+            "variable": "x",
+            "solutions": [
+              "-3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_math_integral",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "route_math_calculus",
+        "difficulty": "medium",
+        "what_it_tests": "Giải tích nay nằm trong phạm vi: nguyên hàm phải gọi math_solve với task=integral (khác R08 base, vốn mong đợi từ chối)."
+      },
+      "input": "Tìm nguyên hàm của x^2",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "integral"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "integral",
+              "expression": "x^2",
+              "variable": "x"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "math_solve",
+          "args": {
+            "task": "integral",
+            "expression": "x^2",
+            "variable": "x"
+          },
+          "result": {
+            "tool": "solve_math",
+            "task": "integral",
+            "input": "x^2",
+            "variable": "x",
+            "result": "x^3/3",
+            "note": "Nguyên hàm (tích phân bất định): cộng thêm hằng số C"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM07_math_derivative_then_integral",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "carry_math_context",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi task từ derivative sang integral, giữ nguyên biểu thức."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tính đạo hàm của x^3"
+        },
+        {
+          "role": "user",
+          "content": "Còn nguyên hàm của nó thì sao?"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "integral"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "expression": "x^3",
+              "variable": "x",
+              "task": "integral"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "math_solve",
+          "args": {
+            "expression": "x^3",
+            "variable": "x",
+            "task": "integral"
+          },
+          "result": {
+            "tool": "solve_math",
+            "task": "integral",
+            "input": "x^3",
+            "variable": "x",
+            "result": "x^4/4",
+            "note": "Nguyên hàm (tích phân bất định): cộng thêm hằng số C"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_trusted_sources_news",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "source_credibility",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu 'nguồn uy tín' phải bật trusted_only=true, vẫn là topic=news."
+      },
+      "input": "Tìm tin AI hôm nay nhưng chỉ lấy từ nguồn uy tín",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "trusted_only": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "day",
+              "query": "AI",
+              "trusted_only": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "topic": "news",
+            "timeframe": "day",
+            "query": "AI",
+            "trusted_only": true
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "trusted_only": true,
+            "items": [
+              {
+                "title": "Applied AI Engineer, Large Enterprise",
+                "url": "https://openai.com/careers/applied-ai-engineer-large-enterprise-munich-germany",
+                "source": "openai.com",
+                "summary": "OpenAI is an AI research and deployment company dedicated to ensuring that general-purpose artificial intelligence benefits all of humanity. We push the boundaries of the capabilities of AI systems and seek to safely deploy them to the world through our products. AI is an extremely powerful tool that must be created with safety and human needs at its core, and to achieve our mission, we must encompass and value the many different perspectives, voices, and experiences that form the full spectrum [...] At OpenAI, we believe artificial intelligence has the potential to help people solve immense global challenges, and we want the upside of AI to be widely shared. Join us in shaping the future of technology.\n\nApply now(opens in a new window)\n\nResearch\n   Research Index\n   Research Overview\n   Economic Research\n\nLatest Advancements\n   GPT-6.1 Sol\n   GPT-6 Astra\n   GPT-5.6\n   GPT-5.5 [...] About the Role\n\nAs an Applied AI Engineer you will partner directly with leading organizations to design, build, and deploy AI systems that deliver measurable business outcomes. You will combine deep technical judgment, hands-on engineering, and customer leadership to take ambitious ideas from use-case selection and architecture through prototyping, evaluation, production launch, and scale.",
+                "score": 0.54891527,
+                "source_tier": "tier1",
+                "tier_note": "Tầng 1: nguồn gốc (blog chính thức, paper, tài liệu, cơ quan nhà nước/giáo dục)."
+              },
+              {
+                "title": "I Let Pangram Loose on My Gmail Inbox. Here’s How Much AI It Found | WIRED",
+                "url": "https://www.wired.com/story/i-let-pangram-loose-on-my-gmail-inbox-heres-how-much-ai-it-found",
+                "source": "wired.com",
+                "summary": "# I Let Pangram Loose on My Gmail Inbox. Here’s How Much AI It Found\n\nAI-generated content is everywhere now: From restaurant menus and student essays to full-length movies and social media posts, AI is churning out huge amounts of text, images, audio, and video. In some digital spaces, it's overwhelming human-made content.",
+                "score": 0.5362522,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "Australia to mandate AI breach reporting, create regulator after OpenAI breach | Reuters",
+                "url": "https://www.reuters.com/world/australia-tightens-ai-oversight-rules-after-openai-agent-breached-government-2026-11-10",
+                "source": "reuters.com",
+                "summary": "However, both companies told Australian parliament last ​month that they would welcome ​laws requiring them to ⁠report data breaches carried out by their AI agents, acknowledging the decision to notify was currently at their discretion.\n\nAlbanese said his centre-left ​Labor government would set up an AI regulator to oversee security ​controls throughout ⁠the development and deployment of AI systems, identify serious risks and conduct independent evaluations of AI models. [...] \"The AI safety regulator will be able to enforce significant penalties for AI companies ⁠doing the ​wrong thing,\" he said.\n\nThe mandatory AI safety and ​security protections will form part of the government's proposed AI legislation, Albanese said, which it plans to introduce in ​Parliament next year.\n\nReporting by Renju Jose in Sydney; Editing by Christian Schmollinger and Saad Sayeed\n\nOur Standards: The Thomson Reuters Trust Principles. [...] Albanese said his government had accepted all recommendations of the ​review.\n\n\"(The recommendations) include mandatory AI company reporting when it comes to misaligned behaviour or cyber ​incidents, and consideration of reforming criminal law in cases of serious misconduct,\" Albanese told reporters.\n\n\"The law needs to get ahead of, and in some cases, make sure that it catches up with what is ​a very fast-changing world.\"",
+                "score": 0.509772,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "Trump’s 60 Minutes interview touched on AI safety, threat to arrest an AI exec | The Verge",
+                "url": "https://www.theverge.com/ai-artificial-intelligence/1029802/trump-60-minutes-ai",
+                "source": "theverge.com",
+                "summary": "Asked about AI executives’ warnings about their models’ safety on 60 Minutes, Trump said, “I think that the risk is not nearly as real as it– as they talk, and I think the risk can be managed, and it’s managed.” He claimed the DOJ is managing that risk, and said “AI” rather than “SI” or “super intelligence,” saying, “We had a situation where somebody was reported to us to be doing something bad with AI. We called them very strongly and said, ‘Get ready to go to jail. Please give your wife a kiss [...] 60 Minutes’s Ross Douthat went on to ask if Trump would work with Democrats on AI safety, and Trump said he “absolutely would,” adding, “I don’t mind guardrails, but I don’t want to put us in a deep second position. We’re leading number one. And China has no guardrails, by the way. [...] They have the guardrails that whatever President Xi says goes. With me, it’s pretty strong, but it’s not quite that strong.”\n\n## Most Popular [...] ## Most Popular\n\n Here’s the full text of Jensen Huang’s memo to Nvidia\n Nvidia is investigating Jensen Huang’s relationship with an alleged Chinese spy\n There’s no slowing down media’s pivot-to-video 2.0\n Apple’s M5 MacBook Air is down to its lowest price since July\n Why a new report on Anthropic automating AI development is alarming researchers",
+                "score": 0.49523562,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "Authors Can Defend Against AI Allegations With ‘Paper Trail’ Tools. Is It Enough? | WIRED",
+                "url": "https://www.wired.com/story/authors-can-defend-against-ai-allegations-with-paper-trail-tools",
+                "source": "wired.com",
+                "summary": "This past March, the publishing industry found out: Following widespread speculation on social media that a horror novel titled Shy Girl was largely AI-generated, and a Times article about those claims, Hachette Book Group canceled an upcoming US publication run for the novel and discontinued it in the UK, where it had already been released. According to Pangram, a robust but by no means infallible AI detection tool, some 78 percent of the text was AI-generated. [...] Some argue that trying to institutionalize vetting systems for human authorship is simply impractical—and may soon be a moot point anyway. Jane Friedman, an author and publishing business expert, recently argued in her industry newsletter The Bottom Line, that the era of AI scandals is likely to be short-lived, given the improvements of Pangram and similar detectors. Moreover, she wrote, authors have now seen what may happen if they attempt to pass off AI-generated writing as their own. [...] “If what you're selling are your words and your voice and your imagination, your creativity, using AI doesn't make sense,” Rasenberger says, noting that authors’ pride in their own work means AI slop is far less common in publishing than one might think. “I've talked to editors, particularly editors of literary nonfiction and fiction,” Rasenberger says, “and some of them will say, ‘I never see AI-generated submissions, I'd know it if I did.’”",
+                "score": 0.475377,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G11_trusted_official_info",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "source_credibility",
+        "difficulty": "medium",
+        "what_it_tests": "'Chính thống' phải bật trusted_only=true thay vì tìm web thường."
+      },
+      "input": "Cho mình thông tin chính thống về mô hình mới của OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "trusted_only": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month",
+              "query": "OpenAI",
+              "trusted_only": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "topic": "news",
+            "timeframe": "month",
+            "query": "OpenAI",
+            "trusted_only": true
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "OpenAI",
+            "topic": "news",
+            "timeframe": "month",
+            "trusted_only": true,
+            "items": [
+              {
+                "title": "OpenAI valued at $1.25 trillion, as rival Anthropic nears its IPO | The Verge",
+                "url": "https://www.theverge.com/ai-artificial-intelligence/1029380/openai-1-25-trillion-investment-valuation",
+                "source": "theverge.com",
+                "summary": "OpenAI is now valued at $1.25 trillion in a new round of funding that has raised another $11 billion, according to Bloomberg. That would make it one of the world’s most valuable companies, not long after raising $122 billion from investors in March at a valuation of $852 billion. [...] Echoing FT and Wall Street Journal reports from last week, Bloomberg says OpenAI is still pursuing additional investments that could increase the amount to $20 billion, and that it had initially hoped to raise as much as $30 billion at a higher valuation of $1.4 trillion. That was before tech stocks dropped, and the results of the midterms showed how much public opinion has turned against AI companies and data center projects. [...] # OpenAI valued at $1.25 trillion, as rival Anthropic nears its IPO\n\nCEO Sam Altman said recently that OpenAI is prioritizing safety instead of going ‘guns blazing’ toward an IPO.﻿\n\nCEO Sam Altman said recently that OpenAI is prioritizing safety instead of going ‘guns blazing’ toward an IPO.﻿",
+                "score": 0.73459625,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "OpenAI gets $11 billion funding at $1.25 trillion valuation, source says | Reuters",
+                "url": "https://www.reuters.com/business/openai-secures-11-billion-funding-125-trillion-valuation-bloomberg-news-reports-2026-11-06",
+                "source": "reuters.com",
+                "summary": "Nov 6 (Reuters) - OpenAI has closed ‌on new funding of $11 billion, the initial part of a round ​that values the company ​at $1.25 trillion, a source familiar with ⁠the matter said on Friday.\n\nThe $11 ​billion raised so far represents ​only a portion of OpenAI's original target of up to $30 billion, while ​the company's valuation has ​come down from the $1.5 trillion level it ‌had ⁠initially sought, two investors said. [...] The Reuters Daily Briefing newsletter provides all the news you need to start your day. Sign up here.\n\nAdvertisement · Scroll to continue\n\nSoftBank and MGX participated in the funding, the investors said.\n\nBloomberg News reported ​on the ​funding ⁠earlier on Friday.\n\nSentiment toward AI companies has ​cooled in the last ​month, ⁠with some investors valuing rival Anthropic's planned IPO at about $1.5 ⁠trillion, ​below earlier expectations ​of roughly $2 trillion.",
+                "score": 0.7147281,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "OpenAI as a subprocessor in Microsoft Online Services | Microsoft Learn",
+                "url": "https://learn.microsoft.com/en-us/copilot/implement/openai-subprocessor",
+                "source": "learn.microsoft.com",
+                "summary": "Microsoft is expanding options for how OpenAI models can be delivered within Microsoft Online Services. In addition to OpenAI models that Microsoft operates (Azure OpenAI), Microsoft now provides OpenAI operated models through OpenAI as a subprocessor. This option gives your organization the foundation for more model flexibility, including quicker access to new AI model innovations, while maintaining enterprise-grade commitments and safeguards. [...] OpenAI was added to the Microsoft Online Services Subprocessors List on June 23, 2026. OpenAI as a subprocessor is available for use as of July 9, 2026. As a subprocessor, OpenAI operates with Microsoft oversight through contractual safeguards and appropriate technical and organizational measures. The Microsoft Product Terms and Microsoft Data Protection Addendum (DPA) apply to use of OpenAI models through Microsoft's enterprise Online Services, except as otherwise disclosed in the Exclusions [...] Microsoft incorporates OpenAI's Responses API into certain Copilot experiences. OpenAI offers Zero Data Retention for the Responses API used by Microsoft, subject to the limitations and feature-specific data handling practices for Responses API described in OpenAI's Data controls in the OpenAI platform documentation.",
+                "score": 0.6884899,
+                "source_tier": "tier1",
+                "tier_note": "Tầng 1: nguồn gốc (blog chính thức, paper, tài liệu, cơ quan nhà nước/giáo dục)."
+              },
+              {
+                "title": "OpenAI employees warned about operational security lapses for years, sources say | Reuters",
+                "url": "https://www.reuters.com/business/openai-employees-warned-about-operational-security-lapses-years-sources-say-2026-11-03",
+                "source": "reuters.com",
+                "summary": "OpenAI and Anthropic have tried to ​maintain a more open research culture to both ⁠attract employees and foster creativity that can lead to breakthroughs. The AI field is rooted in academia, where machine-learning scientists have openly discussed their research.\n\nSome OpenAI employees are increasingly worried about this approach as AI grows more capable, according to the five people. [...] When asked about employees' concerns and their view that management did not act on these issues, OpenAI spokesperson Elana Widmann ​said that OpenAI is one of the most targeted organizations in the world. As a result, the company invests heavily in its security program to protect against attacks from insiders, cybercriminals and nation-states, she said. [...] The Reuters Daily Briefing newsletter provides all the news you need to start your day. Sign up here.\n\nThese workers argued that OpenAI's controls were so lax ‌that outsiders, including foreign governments, could obtain sensitive information about the AI lab's technology with relative ease, the people said. For example, anybody at OpenAI who could access its code could see the technical details underlying many company projects.",
+                "score": 0.6213807,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "OpenAI says ChatGPT is catching up to Google in search | The Verge",
+                "url": "https://www.theverge.com/ai-artificial-intelligence/1025482/openai-says-chatgpt-is-catching-up-to-google-in-search",
+                "source": "theverge.com",
+                "summary": "call it something else: for OpenAI, it’s “Intelligent UI,” or creating a visual and interactive interface within a chatbot response. “That’s where the future of this technology goes. You’re talking to a canvas,” Fry said. [...] Much like Google, OpenAI sees a potential path to profitability through ads, particularly as it approaches an IPO potentially slated for early next year. OpenAI has defended its ads in the past, and Fry told reporters they hadn’t produced a lasting backlash. “Ads have not negatively impacted the product or the usage of the product,” he said, adding that “most people do not seem to mind ads in the product.”",
+                "score": 0.55449516,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM08_trusted_after_followup",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "source_credibility_followup",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 yêu cầu nguồn chính thống: gọi lại lookup với trusted_only=true, giữ topic=news."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin tức AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy nguồn chính thống thôi nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "trusted_only": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "trusted_only": true,
+              "timeframe": "day",
+              "topic": "news",
+              "query": "AI"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "trusted_only": true,
+            "timeframe": "day",
+            "topic": "news",
+            "query": "AI"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "trusted_only": true,
+            "items": [
+              {
+                "title": "Applied AI Engineer, Large Enterprise",
+                "url": "https://openai.com/careers/applied-ai-engineer-large-enterprise-munich-germany",
+                "source": "openai.com",
+                "summary": "OpenAI is an AI research and deployment company dedicated to ensuring that general-purpose artificial intelligence benefits all of humanity. We push the boundaries of the capabilities of AI systems and seek to safely deploy them to the world through our products. AI is an extremely powerful tool that must be created with safety and human needs at its core, and to achieve our mission, we must encompass and value the many different perspectives, voices, and experiences that form the full spectrum [...] At OpenAI, we believe artificial intelligence has the potential to help people solve immense global challenges, and we want the upside of AI to be widely shared. Join us in shaping the future of technology.\n\nApply now(opens in a new window)\n\nResearch\n   Research Index\n   Research Overview\n   Economic Research\n\nLatest Advancements\n   GPT-6.1 Sol\n   GPT-6 Astra\n   GPT-5.6\n   GPT-5.5 [...] About the Role\n\nAs an Applied AI Engineer you will partner directly with leading organizations to design, build, and deploy AI systems that deliver measurable business outcomes. You will combine deep technical judgment, hands-on engineering, and customer leadership to take ambitious ideas from use-case selection and architecture through prototyping, evaluation, production launch, and scale.",
+                "score": 0.54891527,
+                "source_tier": "tier1",
+                "tier_note": "Tầng 1: nguồn gốc (blog chính thức, paper, tài liệu, cơ quan nhà nước/giáo dục)."
+              },
+              {
+                "title": "I Let Pangram Loose on My Gmail Inbox. Here’s How Much AI It Found | WIRED",
+                "url": "https://www.wired.com/story/i-let-pangram-loose-on-my-gmail-inbox-heres-how-much-ai-it-found",
+                "source": "wired.com",
+                "summary": "# I Let Pangram Loose on My Gmail Inbox. Here’s How Much AI It Found\n\nAI-generated content is everywhere now: From restaurant menus and student essays to full-length movies and social media posts, AI is churning out huge amounts of text, images, audio, and video. In some digital spaces, it's overwhelming human-made content.",
+                "score": 0.5362522,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "Australia to mandate AI breach reporting, create regulator after OpenAI breach | Reuters",
+                "url": "https://www.reuters.com/world/australia-tightens-ai-oversight-rules-after-openai-agent-breached-government-2026-11-10",
+                "source": "reuters.com",
+                "summary": "However, both companies told Australian parliament last ​month that they would welcome ​laws requiring them to ⁠report data breaches carried out by their AI agents, acknowledging the decision to notify was currently at their discretion.\n\nAlbanese said his centre-left ​Labor government would set up an AI regulator to oversee security ​controls throughout ⁠the development and deployment of AI systems, identify serious risks and conduct independent evaluations of AI models. [...] \"The AI safety regulator will be able to enforce significant penalties for AI companies ⁠doing the ​wrong thing,\" he said.\n\nThe mandatory AI safety and ​security protections will form part of the government's proposed AI legislation, Albanese said, which it plans to introduce in ​Parliament next year.\n\nReporting by Renju Jose in Sydney; Editing by Christian Schmollinger and Saad Sayeed\n\nOur Standards: The Thomson Reuters Trust Principles. [...] Albanese said his government had accepted all recommendations of the ​review.\n\n\"(The recommendations) include mandatory AI company reporting when it comes to misaligned behaviour or cyber ​incidents, and consideration of reforming criminal law in cases of serious misconduct,\" Albanese told reporters.\n\n\"The law needs to get ahead of, and in some cases, make sure that it catches up with what is ​a very fast-changing world.\"",
+                "score": 0.509772,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "Trump’s 60 Minutes interview touched on AI safety, threat to arrest an AI exec | The Verge",
+                "url": "https://www.theverge.com/ai-artificial-intelligence/1029802/trump-60-minutes-ai",
+                "source": "theverge.com",
+                "summary": "Asked about AI executives’ warnings about their models’ safety on 60 Minutes, Trump said, “I think that the risk is not nearly as real as it– as they talk, and I think the risk can be managed, and it’s managed.” He claimed the DOJ is managing that risk, and said “AI” rather than “SI” or “super intelligence,” saying, “We had a situation where somebody was reported to us to be doing something bad with AI. We called them very strongly and said, ‘Get ready to go to jail. Please give your wife a kiss [...] 60 Minutes’s Ross Douthat went on to ask if Trump would work with Democrats on AI safety, and Trump said he “absolutely would,” adding, “I don’t mind guardrails, but I don’t want to put us in a deep second position. We’re leading number one. And China has no guardrails, by the way. [...] They have the guardrails that whatever President Xi says goes. With me, it’s pretty strong, but it’s not quite that strong.”\n\n## Most Popular [...] ## Most Popular\n\n Here’s the full text of Jensen Huang’s memo to Nvidia\n Nvidia is investigating Jensen Huang’s relationship with an alleged Chinese spy\n There’s no slowing down media’s pivot-to-video 2.0\n Apple’s M5 MacBook Air is down to its lowest price since July\n Why a new report on Anthropic automating AI development is alarming researchers",
+                "score": 0.49523562,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              },
+              {
+                "title": "Authors Can Defend Against AI Allegations With ‘Paper Trail’ Tools. Is It Enough? | WIRED",
+                "url": "https://www.wired.com/story/authors-can-defend-against-ai-allegations-with-paper-trail-tools",
+                "source": "wired.com",
+                "summary": "This past March, the publishing industry found out: Following widespread speculation on social media that a horror novel titled Shy Girl was largely AI-generated, and a Times article about those claims, Hachette Book Group canceled an upcoming US publication run for the novel and discontinued it in the UK, where it had already been released. According to Pangram, a robust but by no means infallible AI detection tool, some 78 percent of the text was AI-generated. [...] Some argue that trying to institutionalize vetting systems for human authorship is simply impractical—and may soon be a moot point anyway. Jane Friedman, an author and publishing business expert, recently argued in her industry newsletter The Bottom Line, that the era of AI scandals is likely to be short-lived, given the improvements of Pangram and similar detectors. Moreover, she wrote, authors have now seen what may happen if they attempt to pass off AI-generated writing as their own. [...] “If what you're selling are your words and your voice and your imagination, your creativity, using AI doesn't make sense,” Rasenberger says, noting that authors’ pride in their own work means AI slop is far less common in publishing than one might think. “I've talked to editors, particularly editors of literary nonfiction and fiction,” Rasenberger says, “and some of them will say, ‘I never see AI-generated submissions, I'd know it if I did.’”",
+                "score": 0.475377,
+                "source_tier": "tier2",
+                "tier_note": "Tầng 2: báo chí uy tín; nên đối chiếu nguồn gốc khi là số liệu quan trọng."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

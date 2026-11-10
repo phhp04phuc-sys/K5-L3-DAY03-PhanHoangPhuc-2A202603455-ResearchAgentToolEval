@@ -9,6 +9,7 @@ from typing import Any
 import requests
 
 from tools._shared import TIMEOUT, err
+from tools.source_trust import annotate_items
 
 
 ARXIV_API_URL = "https://export.arxiv.org/api/query"
@@ -39,6 +40,13 @@ def _arxiv_get(url: str, *, params: dict[str, Any] | None = None) -> requests.Re
         time.sleep(3 * (attempt + 1))
     assert last_response is not None
     return last_response
+
+
+def _annotate_arxiv(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    annotate_items(entries)
+    for entry in entries:
+        entry["tier_note"] = "Tầng 1: bài báo gốc trên arXiv. arXiv không tự động phản biện (peer review): nêu rõ đây là ý của tác giả."
+    return entries
 
 
 def _arxiv_search_query(query: str) -> str:
@@ -104,7 +112,7 @@ def arxiv_search(query: str = "", max_results: int = 5, sort_by: str = "relevanc
             "query": query,
             "api_query": params["search_query"],
             "total_results": int(total_node.text) if total_node is not None and total_node.text else None,
-            "items": entries,
+            "items": _annotate_arxiv(entries),
             "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process.",
         }
     except Exception as exc:

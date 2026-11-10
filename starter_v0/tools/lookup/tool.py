@@ -6,9 +6,10 @@ from typing import Any
 import requests
 
 from tools._shared import TIMEOUT, domain, err
+from tools.source_trust import TRUSTED_DOMAINS, annotate_items
 
 
-def web_search(query: str = "", topic: str = "general", timeframe: str | None = "week", max_results: int = 5) -> dict[str, Any]:
+def web_search(query: str = "", topic: str = "general", timeframe: str | None = "week", max_results: int = 5, trusted_only: bool = False) -> dict[str, Any]:
     try:
         key = os.getenv("TAVILY_API_KEY")
         if not key:
@@ -16,6 +17,8 @@ def web_search(query: str = "", topic: str = "general", timeframe: str | None = 
         body: dict[str, Any] = {"query": query, "topic": topic, "max_results": int(max_results or 5), "search_depth": "basic"}
         if timeframe:
             body["time_range"] = timeframe
+        if trusted_only is True:
+            body["include_domains"] = TRUSTED_DOMAINS
         response = requests.post(
             "https://api.tavily.com/search",
             json=body,
@@ -31,7 +34,7 @@ def web_search(query: str = "", topic: str = "general", timeframe: str | None = 
             "summary": item.get("content"),
             "score": item.get("score"),
         } for item in data.get("results", [])]
-        return {"tool": "web_search", "query": query, "topic": topic, "timeframe": timeframe, "items": items}
+        return {"tool": "web_search", "query": query, "topic": topic, "timeframe": timeframe, "trusted_only": trusted_only is True, "items": annotate_items(items)}
     except Exception as exc:
         return err("web_search", exc)
 

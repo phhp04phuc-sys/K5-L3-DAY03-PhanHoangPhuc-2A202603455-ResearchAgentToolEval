@@ -358,3 +358,87 @@ def test_math_empty_division_by_zero_and_bad_equation_return_error_dict() -> Non
 def test_math_bad_task_and_bad_variable_fall_back_to_defaults() -> None:
     assert math_tool(expression="2+2", task="teleport")["result"] == "4"
     assert math_tool(expression="x^2", task="derivative", variable="xyz")["variable"] == "x"
+
+
+# ---------------- Phân tầng nguồn uy tín (tools/source_trust.py) ----------------
+
+from tools.source_trust import TRUSTED_DOMAINS, annotate_items, source_tier  # noqa: E402
+
+
+@pytest.mark.parametrize("url,tier", [
+    ("https://www.openai.com/blog/x", "tier1"),
+    ("https://arxiv.org/abs/1706.03762", "tier1"),
+    ("https://moh.gov.vn/tin-tuc", "tier1"),
+    ("https://hust.edu.vn/", "tier1"),
+    ("https://www.reuters.com/world/a", "tier2"),
+    ("https://vnexpress.net/b", "tier2"),
+    ("https://x.com/sama/status/1", "tier3"),
+    ("https://news.ycombinator.com/item?id=1", "tier3"),
+    ("https://random-blog.xyz/post", "unverified"),
+])
+def test_source_tier_classifies_primary_news_social_and_unknown(url: str, tier: str) -> None:
+    assert source_tier(url) == tier
+
+
+@pytest.mark.parametrize("url", [
+    "https://evilopenai.com/blog",
+    "https://openai.com.evil.io/blog",
+    "https://fake.gov.evil.com/",
+    "https://reuters.com.phish.net/",
+])
+def test_source_tier_rejects_lookalike_domains(url: str) -> None:
+    assert source_tier(url) == "unverified"
+
+
+def test_source_tier_handles_empty_and_garbage_urls() -> None:
+    assert source_tier("") == "unverified"
+    assert source_tier("not a url") == "unverified"
+    assert source_tier(None) == "unverified"  # type: ignore[arg-type]
+
+
+def test_annotate_items_adds_tier_and_note_and_force_tier_overrides() -> None:
+    items = annotate_items([{"url": "https://reuters.com/a"}])
+    assert items[0]["source_tier"] == "tier2"
+    assert "uy tín" in items[0]["tier_note"]
+    forced = annotate_items([{"url": "https://reuters.com/a"}], force_tier="tier3")
+    assert forced[0]["source_tier"] == "tier3"
+    assert "chưa xác nhận" in forced[0]["tier_note"]
+
+
+def test_lookup_labels_each_item_with_its_source_tier(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("TAVILY_API_KEY", "test-key")
+    fake_http(FakeResponse({"results": [
+        {"title": "Official", "url": "https://openai.com/index/x", "content": "a", "score": 0.9},
+        {"title": "Forum", "url": "https://www.reddit.com/r/x", "content": "b", "score": 0.5},
+        {"title": "Unknown", "url": "https://unknown-site.xyz/p", "content": "c", "score": 0.4},
+    ]}))
+
+    result = lookup_tool(query="OpenAI")
+
+    assert [item["source_tier"] for item in result["items"]] == ["tier1", "tier3", "unverified"]
+
+
+def test_lookup_trusted_only_sends_include_domains_only_when_true(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("TAVILY_API_KEY", "test-key")
+    calls = fake_http(FakeResponse({"results": []}))
+
+    lookup_tool(query="x", trusted_only=True)
+    lookup_tool(query="x")
+    lookup_tool(query="x", trusted_only="true")   # chuỗi từ model không được coi là True
+
+    assert calls[0]["json"]["include_domains"] == TRUSTED_DOMAINS
+    assert "reuters.com" in calls[0]["json"]["include_domains"]
+    assert "include_domains" not in calls[1]["json"]
+    assert "include_domains" not in calls[2]["json"]
+
+
+def test_social_and_community_tools_are_always_tier3_and_wikipedia_tier2(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    fake_http(FakeResponse({"timeline": [{"tweet_id": "1", "screen_name": "sama", "text": "hi"}]}))
+    assert timeline_tool(screenname="sama")["items"][0]["source_tier"] == "tier3"
+
+    fake_http(FakeResponse(HN_HITS))
+    assert {i["source_tier"] for i in hackernews_tool()["items"]} == {"tier3"}
+
+    fake_http(FakeResponse(WIKI_PAGE))
+    assert wikipedia_tool(query="Rust")["items"][0]["source_tier"] == "tier2"
