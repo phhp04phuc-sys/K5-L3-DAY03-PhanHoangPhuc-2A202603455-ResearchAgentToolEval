@@ -11,7 +11,7 @@
 | STT | Họ và tên | MSSV | GitHub | Vai trò |
 |---|---|---|---|---|
 | 1 | Phan Hoàng Phúc | 2A202603455 | [phhp04phuc-sys](https://github.com/phhp04phuc-sys) | Prompt, tool declaration, eval v0–v6, UI, 3 tool mới, báo cáo nhóm |
-| 2 | Lưu Đăng Tuấn (xác nhận lại) | (điền MSSV) | [kegacua](https://github.com/kegacua) | `tests/test_tool_tuan.py` (liên quan `papers`, `paper_text`) |
+| 2 | Lưu Đăng Tuấn | 2A202603454 | [kegacua](https://github.com/kegacua) | `tests/test_tool_tuan.py` (liên quan `papers`, `paper_text`) |
 | 3 | Nguyễn Tiến Cường | 2A202603425 | [cuong-sadboi](https://github.com/cuong-sadboi) | Tool `sentiment`, `extract_keywords` và test |
 | 4 | Thanh Lập (xác nhận lại họ tên) | 2A202603414 | [lythanhlap](https://github.com/lythanhlap) | Tool `github_search`, `hf_models` và test |
 | 5 | Lê Văn Hoàng (xác nhận lại) | 2A202603357 | [hoanglv2k9](https://github.com/hoanglv2k9) | Tool `citation_format`, `url_check` và test |
@@ -38,7 +38,7 @@ Chỉ ghi việc có commit thật.
 Mỗi thành viên tự điền hoặc sửa phần của mình (1 đến 3 dòng, dựa trên commit và log thật). Báo cáo cá nhân đầy đủ nằm ở `report/team/MSSV_HoTen.md`.
 
 - **Phan Hoàng Phúc:** viết lại prompt và tool declaration qua v1–v6, chạy eval và ghi `version_log.csv`; làm UI Streamlit (Chat, Eval, Transcript); thêm 3 tool (`hackernews`, `wikipedia`, `math_solve`) và phân tầng nguồn; điền test cho tool có sẵn; viết báo cáo nhóm.
-- **Lưu Đăng Tuấn:** (tự điền)
+- **Lưu Đăng Tuấn:** thêm 3 tool `papers`, `paper_text`kèm 6 test
 - **Nguyễn Tiến Cường:** thêm tool `sentiment`, `extract_keywords` kèm 6 test (commit `e4523f6` và PR #1).
 - **Thanh Lập:** thêm tool `github_search`, `hf_models` kèm 6 test (commit `42cd73c`, PR #1).
 - **Lê Văn Hoàng:** thêm tool `citation_format`, `url_check` kèm 6 test (commit `158ad11`).
