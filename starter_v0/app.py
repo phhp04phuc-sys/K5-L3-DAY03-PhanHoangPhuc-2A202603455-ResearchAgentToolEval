@@ -22,6 +22,7 @@ from chat import (
 )
 from providers import make_provider
 from tools import load_tool_declarations, to_openai_tools
+from ui_pages import render_eval, render_transcripts
 from versioning import artifact_version_dict, build_artifact_version
 
 DEFAULT_MODEL = ""  # để trống = dùng model mặc định của provider (gemini-3.5-flash)
@@ -96,6 +97,7 @@ st.markdown(CLAUDE_CSS, unsafe_allow_html=True)
 
 # ---------------- Sidebar: cấu hình ----------------
 with st.sidebar:
+    page = st.radio("Trang", ["Chat", "Eval", "Transcript"], horizontal=True, label_visibility="collapsed")
     st.header("Cấu hình")
     provider_name = st.selectbox("Provider", ["openrouter", "openai", "anthropic", "gemini", "ollama"], index=3)
     model = st.text_input("Model (để trống = mặc định)", DEFAULT_MODEL)
@@ -123,6 +125,14 @@ with st.sidebar:
     st.subheader(f"Tool ({len(declarations)})")
     for item in declarations:
         st.caption(f"**{item['name']}**: {item.get('description', '')[:90]}")
+
+# ---------------- Trang xem bằng chứng: không chạy phần chat bên dưới ----------------
+if page == "Eval":
+    render_eval()
+    st.stop()
+if page == "Transcript":
+    render_transcripts()
+    st.stop()
 
 # ---------------- State ----------------
 st.session_state.setdefault("history", [])  # lịch sử gửi cho model
