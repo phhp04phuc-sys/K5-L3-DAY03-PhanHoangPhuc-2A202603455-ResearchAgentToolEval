@@ -1,28 +1,34 @@
-# Day 03 Lab v2 Report — Research Agent
+# Báo cáo nhóm — Day 03 Research Agent Tool Eval
 
-> File này gồm 2 phần, deadline khác nhau:
-> - **PHẦN A — Giới thiệu agent**: ngắn gọn 1 trang để team khác hiểu nhanh agent có tool gì, làm được gì, thử bằng câu hỏi nào. **Xong trước 16:30** để làm tài liệu phụ trợ khi demo.
-> - **PHẦN B — Chi tiết / Bằng chứng**: bảng đầy đủ (v0–v3, failure, eval, chat) dựa trên log thật. **Hoàn thiện sau buổi debate để nộp bài.**
+> Báo cáo gồm 2 phần: **Phần A (mục 2)** giới thiệu agent; **Phần B (mục 4 đến 7)** chi tiết và bằng chứng từ log thật. Mọi bảng trỏ tới file có trong repo (run JSON, transcript, commit). Cách chấm: [RUBRIC.md](../../RUBRIC.md).
 
-## Team
+## 1. Thông tin nhóm
 
-- Team: Nhomnhom (lớp L3A)
-- Members: Phan Hoàng Phúc (2A202603455), kegacua, cuong-sadboi, lythanhlap, hoanglv2k9 (họ tên và MSSV các bạn: xem `TEAM.md`)
-- Provider/model: Google Gemini, `gemini-3.5-flash` (cùng một model cho cả 4 version để so điểm công bằng)
+- Tên nhóm: Nhomnhom (lớp L3A)
+- Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
+- Provider/model dùng cho v0–v3: Google Gemini, `gemini-3.5-flash` (cùng một model cho cả 4 version để so điểm công bằng). Một số thành viên chạy thử trên OpenRouter (`openai/gpt-4o-mini`), các run đó nằm riêng trong `runs/` và `transcripts/` và không dùng để so với bảng B1.
 
----
+## 2. Mục tiêu và cách tiếp cận — PHẦN A: Giới thiệu agent
 
-# PHẦN A — Giới thiệu agent
-
-## A1. Agent này làm được gì
+### A1. Agent này làm được gì
 
 Research agent: nhận yêu cầu bằng tiếng Việt, chọn đúng tool, gọi tool thật rồi trả lời theo kết quả. Agent tìm tin tức trên web, đọc tweet theo tài khoản hoặc theo từ khóa, đọc nội dung một URL, tìm và đọc paper arXiv, tra chính sách nội bộ, và gửi bản tin lên Telegram **chỉ sau khi người dùng xác nhận**. Khi thiếu thông tin (không nói tài khoản nào, URL nào) agent hỏi lại thay vì đoán. Câu hỏi ngoài phạm vi research thì từ chối.
+
+**Cách chạy UI:**
+
+```bash
+cd starter_v0
+pip install -r requirements.txt   # đã thêm streamlit và sympy
+streamlit run app.py
+```
+
+UI Streamlit giao diện tối có 3 trang: Chat, Eval (chỉ số từng version từ `runs/` và `version_log.csv`) và Transcript.
 
 **Link dùng thử (deploy):**
 
 > URL: (chưa có — chạy `streamlit run app.py` rồi `cloudflared tunnel --url http://localhost:8501`, dán link vào đây)
 
-## A2. Tool agent có
+### A2. Tool agent có
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
@@ -39,8 +45,14 @@ Research agent: nhận yêu cầu bằng tiếng Việt, chọn đúng tool, g�
 | hackernews | tin công nghệ, lập trình, startup từ Hacker News (trang nhất, mới nhất hoặc tìm theo từ khóa); không cần key | **có** |
 | wikipedia | tóm tắt phần mở đầu một trang Wikipedia (vi hoặc en) để lấy định nghĩa, bối cảnh; không cần key | **có** |
 | math_solve | giải toán bằng sympy chạy cục bộ: tính, rút gọn, phân tích, giải phương trình, đạo hàm, nguyên hàm; đầu vào được lọc chặt chống chạy mã lạ | **có** |
+| sentiment | phân tích cảm xúc (tích cực, tiêu cực, trung lập) của một đoạn văn bản | **có** |
+| extract_keywords | trích từ khóa, hashtag, đếm từ và ước tính thời gian đọc | **có** |
+| github_search | tìm repo trên GitHub theo từ khóa | **có** |
+| hf_models | tìm model AI/ML trên Hugging Face Hub theo từ khóa | **có** |
+| citation_format | tạo trích dẫn APA, BibTeX hoặc Markdown từ tiêu đề, URL, tác giả, năm | **có** |
+| url_check | kiểm tra cú pháp URL và phân loại độ tin cậy nguồn (tier) | **có** |
 
-## A3. Câu hỏi mẫu để thử
+### A3. Câu hỏi mẫu để thử
 
 1. `Tin tức AI hôm nay có gì nổi bật?` (dùng `lookup`, topic news, timeframe day)
 2. `Tweet mới nhất của Sam Altman là gì?` (dùng `timeline`, handle `sama`)
@@ -51,11 +63,16 @@ Research agent: nhận yêu cầu bằng tiếng Việt, chọn đúng tool, g�
 7. `Alan Turing là ai?` (tool mới `wikipedia`, `lang=vi`)
 8. `Giải giúp mình phương trình x^2 - 5x + 6 = 0` (tool mới `math_solve`)
 
----
+## 3. Giải pháp
 
-# PHẦN B — Chi tiết / Bằng chứng
+- `system_prompt.md`: bỏ chỉ dẫn xấu của starter ("đoán", "gửi ngay"); thêm các rule: không đoán khi thiếu thông tin, xác nhận yes/no trước khi gửi hoặc đăng, gọi nhiều tool khi cần, từ chối ngoài phạm vi, dùng `math_solve` cho toán, gắn nhãn nguồn theo tier (v1, v3, v5, v6).
+- `tools.yaml`: viết lại mô tả từng tool (khi nào dùng, khi nào không) và quy ước tham số (`query` là từ khóa ngắn, handle không có `@`, `timeframe`, `search_type`, `response_type`) (v2); khai báo thêm tool mới và tham số `trusted_only` của `lookup`.
+- Tool mới (9 tool, đều có `TOOL.md`, đăng ký trong `tools/__init__.py` và `tools.yaml`): `hackernews`, `wikipedia`, `math_solve` (Phúc); `sentiment`, `extract_keywords` (Cường); `github_search`, `hf_models` (Lập); `citation_format`, `url_check` (Hoàng). Mỗi tool có test riêng trong `tests/`.
+- `tools/source_trust.py`: gán `source_tier` và `tier_note` cho mọi item tool trả về, `lookup(trusted_only=true)` lọc nguồn qua Tavily `include_domains`.
 
-## B1. Version Evidence
+## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
+
+### B1. Version Evidence
 
 Mọi số liệu dưới đây lấy từ `artifacts/version_log.csv` và `runs/*.json`. Eval base: 20 case (14 một lượt, 6 nhiều lượt), model `gemini-3.5-flash`, `temperature=0`.
 
@@ -65,6 +82,9 @@ Mọi số liệu dưới đây lấy từ `artifacts/version_log.csv` và `runs
 | v1 | `system_prompt.md` | Starter bảo agent đoán và gửi ngay; bỏ chỉ dẫn xấu và thêm rule hỏi lại, xác nhận thì các case thiếu thông tin, ngoài phạm vi, ranh giới gửi sẽ qua | 0.55 | 0.75 | `runs/v1_B_base_gemini_20261110T110803143950.json` |
 | v2 | `tools.yaml` | Mô tả tool mơ hồ làm `query` dài và chọn sai tham số; viết rõ khi nào dùng, khi nào không, và quy ước tham số thì lỗi `wrong_arg_value` giảm | 0.75 | 0.90 | `runs/v2_B_base_gemini_20261110T111045753944.json` |
 | v3 | `system_prompt.md` | R12 còn lỗi vì agent hỏi nội dung (text) thay vì xác nhận; thêm rule policy "đăng/gửi chưa xác nhận thì hỏi yes_no" sẽ sửa | 0.90 | 1.00 | `runs/v3_B_base_gemini_20261110T111239861829.json` |
+| v4 | `tools.yaml` + 2 tool mới | Thêm `hackernews` và `wikipedia` với mô tả rõ thì agent route đúng tool mới mà không làm hỏng 20 case base | 1.00 | 1.00 | `runs/v4_B_base_gemini_20261110T115949550316.json` |
+| v5 | `system_prompt.md` + `tools.yaml` + tool `math_solve` | Thêm tool toán và đưa giải tích vào phạm vi thì 3 case toán mới qua; điểm base chỉ mất R08 | 1.00 | **0.95** | `runs/v5_B_base_gemini_20261110T121605353594.json` |
+| v6 | `tools/source_trust.py`, `lookup(trusted_only)`, `system_prompt.md` | Gán nhãn tầng nguồn bằng code và cho agent bật `trusted_only` khi người dùng đòi nguồn chính thống | 0.95 | 0.95 | `runs/v6_B_base_gemini_20261110T122357621065.json` |
 
 Các chỉ số chi tiết:
 
@@ -78,19 +98,13 @@ Các chỉ số chi tiết:
 | v5 | 0.95 | 0.95 | 0.95 | 1.00 |
 | v6 | 0.95 | 0.95 | 0.95 | 1.00 |
 
-| v4 | `tools.yaml` + 2 tool mới | Thêm `hackernews` và `wikipedia` với mô tả rõ thì agent route đúng tool mới mà không làm hỏng 20 case base | 1.00 | 1.00 | `runs/v4_B_base_gemini_20261110T115949550316.json` |
-
-| v5 | `system_prompt.md` + `tools.yaml` + tool `math_solve` | Thêm tool toán và đưa giải tích vào phạm vi thì 3 case toán mới qua; điểm base chỉ mất R08 | 1.00 | **0.95** | `runs/v5_B_base_gemini_20261110T121605353594.json` |
-
-| v6 | `tools/source_trust.py`, `lookup(trusted_only)`, `system_prompt.md` | Gán nhãn tầng nguồn bằng code và cho agent bật `trusted_only` khi người dùng đòi nguồn chính thống | 0.95 | 0.95 | `runs/v6_B_base_gemini_20261110T122357621065.json` |
-
 Ghi chú độ tin cậy:
 - Chạy v0 hai lần trên Gemini cho kết quả giống hệt nhau (0.55, không case nào đổi kết quả).
 - **v5 giảm từ 1.00 xuống 0.95 là chủ ý, không phải hồi quy:** case base R08 ("nguyên hàm của x^2") mong đợi agent từ chối, nhưng nhóm quyết định hỗ trợ giải toán gồm cả giải tích, nên agent gọi `math_solve` và R08 lệch với đáp án mẫu. Bài cấm sửa case base nên nhóm giữ nguyên và ghi nhận ở đây. 19 case còn lại vẫn qua, kể cả R14 (từ chối viết code).
 - Mỗi version chỉ chạy một lần, mỗi bước chênh một đến vài case trên 20 case. Điểm v3 = 1.00 là đạt benchmark base; rule thêm ở v3 lấy từ chính sách `external-publishing-policy.md` và gần với case R12.
 - Trước khi chuyển sang Gemini, nhóm chạy v0 (0.80) và v1 (0.85) trên model miễn phí `nvidia/nemotron-3-ultra-550b-a55b:free` (OpenRouter). v2 trên model này bị hết hạn mức ngày (5 case lỗi 429) nên không đo đủ. Các dòng này giữ trong `version_log.csv` với tên `v0-nemotron`, `v1-nemotron`, không so với bảng trên vì khác model.
 
-## B2. Failure Analysis
+### B2. Failure Analysis
 
 Lỗi thật của v0 (từ `results[*].result.failures`, model Gemini). Cột "Fix" ghi version đã sửa.
 
@@ -110,7 +124,7 @@ Hai lỗi còn lại sau v1 và v2:
 - **R01_user_tweets_routing** (v1): agent hỏi `clarify` dù câu "Tweet mới nhất của Sam Altman" đã đủ thông tin. Rule "không đoán" ở v1 có thể làm agent hỏi lại quá tay. Hết lỗi ở v2, cùng lúc `timeline` được thêm mô tả "dùng khi người dùng nêu tên một người" và ví dụ Sam Altman -> sama (nhóm chưa tách riêng để chứng minh đây là nguyên nhân).
 - **R06_timeframe_arg** (v2): agent gọi `lookup` hai lần (tiếng Việt và tiếng Anh). Hết lỗi ở v3 nhưng chưa có thay đổi nào nhắm riêng vào lỗi này, nên có thể do dao động giữa các lần chạy.
 
-## B3. Team Eval Cases
+### B3. Team Eval Cases
 
 19 case trong `data/eval_group.json` (10 case ban đầu: 5 một lượt, 5 nhiều lượt; thêm 3 case cho hackernews/wikipedia 3 case cho math_solve và 3 case cho nguồn uy tín). Kết quả 10 case đầu chạy trên v3 (`runs/v3_B_group_gemini_20261110T111334673629.json`): 10/10. Chạy trên v2 (`runs/v2_B_group_gemini_20261110T111412860116.json`): 10/10.
 
@@ -138,20 +152,32 @@ Hai lỗi còn lại sau v1 và v2:
 
 Hạn chế: bộ case này viết sau khi nhóm đã biết lỗi của eval base nên khá dễ (cả v2 và v3 đều 10/10), chưa phân biệt được hai version. 6 case cuối kiểm tra route tới tool mới. hackernews/wikipedia chạy trên v4 (`runs/v4_B_group_gemini_20261110T120044119436.json`): 13/13; toán chạy trên v5 (`runs/v5_B_group_gemini_20261110T121659621633.json`): 16/16; nguồn uy tín chạy trên v6 (`runs/v6_B_group_gemini_20261110T122536150203.json`): 19/19.
 
-## B4. Live Chat Evidence
+### B4. Live Chat Evidence
 
-Transcript từ UI Streamlit (`app.py`), lưu trong `transcripts/`:
+Transcript lưu trong `starter_v0/transcripts/`. Các lượt chạy v3 trên Gemini qua UI Streamlit và các lượt của thành viên chạy trên OpenRouter (`openai/gpt-4o-mini`) với cùng prompt/tools v3.
 
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
 |---|---|---|---|---|
-| 1 | "Bạn là gì và làm được những gì?" | không | v0 (nemotron), `transcripts/v0_openrouter_ui_20261110T100839452496.transcript.json` | answered |
-| 2 | "donald trump năm nay bao nhiêu tuổi, bao lâu nữa hết nhiệm kỳ" | `lookup`, `lookup` | v0 (nemotron), `transcripts/v0_openrouter_ui_20261110T101033475766.transcript.json` | answered |
-| 3 | "donald trump bao nhiêu tuổi" (lượt tiếp) | không | cùng transcript trên | provider_error: `Missing API key env var: OPENAI_API_KEY` (lúc đó provider trên UI bị đổi sang openai khi chưa có key; lỗi cấu hình, không phải lỗi agent) |
-| 4 | "Bạn là gì và làm được những gì?" | không | v3 (Gemini), `transcripts/v3_gemini_ui_20261110T111610513442.transcript.json` | answered |
+| 1 | "Bạn là gì và làm được những gì?" | không | v3 Gemini, `transcripts/v3_gemini_ui_20261110T111610513442.transcript.json` | answered |
+| 2 | "Tin tức AI hôm nay có gì nổi bật?" | `lookup(query=AI, topic=news, timeframe=day)` | v3 OpenRouter, `transcripts/v3_openrouter_20261110T160111279043.transcript.json` | answered (tool trả lỗi xác thực nên agent báo không truy cập được nguồn tin) |
+| 3 | "Đọc giúp mình paper arXiv 1706.03762, lấy text 2 trang đầu." | `paper_text(arxiv_url=1706.03762, max_pages=2)` | cùng transcript trên | answered |
+| 4 | "Theo policy công ty, đăng bản tin lên Telegram có cần xác nhận không?" | `policy(policy_area=external_publishing)` | v3 OpenRouter, `transcripts/v3_openrouter_20261110T113644603717.transcript.json` | answered |
+| 5 | "Phân tích cảm xúc đoạn này giúp mình: ..." | `sentiment` | cùng transcript trên | answered |
+| 6 | "Đăng bản tin này lên Telegram giúp mình" | `clarify(response_type=yes_no)`, không gọi `send` | cùng transcript trên | waiting_for_user (hỏi xác nhận trước khi gửi) |
 
-Còn thiếu: lượt chat live của v3 mới có 1 lượt, chưa đủ 3 lượt theo yêu cầu (nên thêm: một yêu cầu bình thường, một yêu cầu thiếu thông tin rồi bổ sung, một yêu cầu "đăng lên Telegram" để thấy agent hỏi xác nhận). Chạy `streamlit run app.py` hoặc `python chat.py --provider gemini --version v3` rồi thêm transcript vào đây.
+Còn thiếu: chưa có transcript luồng "thiếu thông tin rồi bổ sung" ở v3, và chưa có lượt gửi Telegram thật (`send` với `confirmed=true`, `status: sent`) vì chưa có `TELEGRAM_BOT_TOKEN`. Transcript `v3_gemini_ui_20261110T112837474709.transcript.json` (15 lượt) gồm nhiều câu hỏi ngoài phạm vi để thử giới hạn của agent, không dùng làm bằng chứng chính.
 
-## B5. Bonus Evidence
+### B5a. Required Evidence — Tool mới, unit test, UI
+
+| Item | Evidence File | What Worked | Risk / Guardrail |
+|---|---|---|---|
+| Tool mới (`tools/<tên>/`) | `tools/hackernews/`, `tools/wikipedia/`, `tools/math_solver/`, `tools/sentiment/`, `tools/extract_keywords/`, `tools/github_search/`, `tools/hf_models/`, `tools/citation_format/`, `tools/url_check/` | 9 tool, đăng ký trong `tools/__init__.py` và `tools.yaml`, `tests/test_tool_contract.py` xanh | Tool trả error dict thay vì raise; `math_solve` lọc chặt đầu vào |
+| Unit test tool mới (≥ 3 test/tool) | `pytest` output: 179 passed, 0 skipped | Xem B5 | Test offline |
+| UI (lệnh chạy + link dùng thử) | `app.py`, `ui_pages.py`, `.streamlit/config.toml`, mục A1 | UI chạy bằng `streamlit run app.py` | Chưa có link public |
+
+Eval case route tới tool mới (hackernews, wikipedia, math_solve) nằm trong `data/eval_group.json` (xem B3). Các tool của Cường, Lập, Hoàng chưa có case eval riêng trong bộ nhóm nên nhóm không dùng chúng để nhận bonus "hơn 3 tool mới".
+
+### B5. Bonus Evidence
 
 | Bonus | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
@@ -159,11 +185,27 @@ Còn thiếu: lượt chat live của v3 mới có 1 lượt, chưa đủ 3 lư�
 | arXiv/company policy | `runs/v3_B_group_gemini_*.json` (GM05), `tests/test_tools_todo.py::test_policy_*` | `paper_text` đúng ID và `max_pages`; policy tách dòng "ra lệnh" vào `untrusted_text` | Policy là nội dung không tin cậy: chỉ dùng `facts`, bỏ qua `untrusted_text` |
 | UI | `app.py`, `.streamlit/config.toml` | UI Streamlit giao diện tối, chọn provider/model/version, hiện chi tiết từng tool, tự ghi transcript | Chưa có link public cho team khác dùng thử |
 | Nguồn uy tín | `tools/source_trust.py`, `runs/v6_*`, `tests/test_tools_todo.py` | Mọi item tool trả về có `source_tier` (tier1/tier2/tier3/unverified) và `tier_note`; `lookup(trusted_only=true)` lọc qua `include_domains` của Tavily (đã thử thật: kết quả không còn trang không rõ nguồn) | Danh sách tên miền là heuristic, nhãn cho biết độ tin cậy của nguồn chứ không bảo đảm nội dung đúng; tên miền giả dạng (`evilopenai.com`) bị chặn |
-| Tool unit tests (`tests/`) | `pytest` | Kết quả: **131 passed, 0 skipped** (gồm 39 test viết riêng cho 3 tool mới và phân tầng nguồn: 4 hackernews, 4 wikipedia, 13 math_solve gồm 6 ca chặn chèn mã như `__import__`, `open`, `Integer(5)` và lũy thừa `9^9^9`) | Test offline, mọi HTTP bị chặn và mock bằng `fake_http` |
+| Tool unit tests (`tests/`) | `pytest` | Kết quả: **179 passed, 0 skipped** (gồm test cho 3 tool của Phúc và phân tầng nguồn, và mỗi file `tests/test_tools_cuong.py`, `test_tools_lap.py`, `test_tools_hoang.py` có 6 test cho 2 tool: happy path, input xấu từ model, nhánh lỗi) | Test offline, mọi HTTP bị chặn và mock bằng `fake_http` |
 
 Tool unit tests: nhóm điền toàn bộ stub cho tool có sẵn (clarify, format, send, lookup, fetch, timeline, social_search, policy). Chưa tìm bug nào trong tool có sẵn. Hai điểm cần kiểm thêm (chưa viết test): `timeline` và `social_search` dùng `int(limit or 5)` nên `limit=0` bị đổi thành 5; `send` dùng `parse_mode: Markdown` nên văn bản có ký tự đặc biệt có thể bị Telegram từ chối.
 
-## B6. Reflection
+### B7. Small Local Model Challenge (bonus)
+
+Nhóm chưa làm thử thách này.
+
+## 5. Khó khăn và cách xử lý
+
+- Twitter API trả lỗi rate limit và gói RapidAPI cần trả phí nên chưa lấy được `RAPIDAPI_KEY`, nên `timeline` và `social_search` chưa gọi được API Twitter thật (eval chỉ đo việc chọn tool và tham số, không cần dữ liệu trả về).
+- Model miễn phí `nvidia/nemotron-3-ultra-550b-a55b:free` trên OpenRouter hết hạn mức ngày (HTTP 429) nên run v2 trên model đó không đo đủ; nhóm chuyển sang Gemini và chạy lại v0–v3 để so điểm công bằng (xem ghi chú ở B1).
+- Một lượt chat trong `transcripts/v0_openrouter_ui_20261110T101033475766.transcript.json` bị `provider_error` do UI bị đổi sang provider `openai` khi chưa có `OPENAI_API_KEY` (lỗi cấu hình, không phải lỗi agent).
+- Case base R08 lệch với đáp án mẫu sau khi nhóm thêm `math_solve` (chủ ý, giải thích ở B1).
+- Bộ nhóm làm trên nhiều nhánh; khi gộp, nhóm phát hiện nhánh `main` cũ import hai hàm không tồn tại (`search_papers`, `get_paper_text`) và bỏ chúng, giữ `papers`/`paper_text` có sẵn.
+
+## 6. Tổng hợp đóng góp
+
+Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEAM.md) và các báo cáo cá nhân `report/team/MSSV_HoTen.md`.
+
+## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
 Phần trả lời dưới đây dựa trên số liệu thật ở trên; nhóm tự bổ sung nhận định riêng.
 
@@ -172,6 +214,7 @@ Phần trả lời dưới đây dựa trên số liệu thật ở trên; nhóm
 - **Which failure needed manual review instead of automatic grading?** R12: agent hỏi xác nhận nhưng sai kiểu (`text`) thì vẫn là hành vi hợp lý với người dùng, chỉ eval chặt mới coi là lỗi. Cần đọc `actual_text` và câu hỏi của `clarify` để quyết định. Tương tự R06 (gọi `lookup` hai lần) là hành vi thừa nhưng không sai nội dung.
 - **What would you improve next?** (nhóm tự điền)
 
-## B7. Small Local Model Challenge (bonus)
+## 8. Tài liệu tham khảo
 
-Nhóm chưa làm thử thách này.
+- [Đề bài Day 03](https://github.com/VinUni-AI20k/Day03-Prompt-Engineering-Tool-Calling-Labs-student) và `company_policy/` trong repo.
+- Hacker News Algolia API, Wikipedia REST API, Tavily, arXiv API, sympy (tài liệu chính thức của từng dịch vụ).

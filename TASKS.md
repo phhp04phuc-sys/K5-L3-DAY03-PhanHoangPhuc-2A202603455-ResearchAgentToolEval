@@ -11,7 +11,7 @@ Hạn nộp lên LMS: **23:59 hôm nay**. Commit và gộp càng sớm càng t�
 Lý do cần thêm tool: slide ghi điểm thưởng khi có **UI và hơn 3 tool mới**. Nhóm đang có 3 tool mới (`hackernews`, `wikipedia`, `math_solve`), nên chỉ cần thêm.
 
 ## Hiện trạng trên `main` (đã xong, đừng làm lại)
-- Agent chạy với Gemini, UI `app.py`, log `runs/`, `REPORT.md`, `TEAM.md`.
+- Agent chạy với Gemini, UI `app.py`, log `runs/`, `report/team/group_report.md`, `TEAM.md`.
 - `pytest`: 131 qua, 0 skip. Eval nhóm: 19 case, đều qua. Eval base: 19/20.
 - Case base **R08** lỗi là **chủ ý** (agent giờ giải được tích phân). Đừng sửa.
 
@@ -109,14 +109,14 @@ git push
 Không biết xử lý thì nhắn Phúc, đừng xóa code của người khác.
 
 ## Việc thêm nhỏ (tự thống nhất ai làm)
-- **Link dùng thử:** chạy UI rồi mở link công khai, ghi vào `starter_v0/artifacts/REPORT.md` mục A1.
+- **Link dùng thử:** chạy UI rồi mở link công khai, ghi vào `report/team/group_report.md` mục A1.
   ```bash
   cd starter_v0 && source .venv/bin/activate && streamlit run app.py          # http://localhost:8501
   cloudflared tunnel --url http://localhost:8501                              # cửa sổ khác; brew install cloudflared nếu chưa có
   ```
   Link chỉ sống khi lệnh còn chạy.
-- **Chat live:** hỏi UI 3 lượt (một yêu cầu bình thường, một yêu cầu thiếu thông tin rồi bổ sung, một yêu cầu "đăng lên Telegram"). Transcript tự lưu trong `starter_v0/transcripts/`; commit chúng và ghi vào mục B4 của `REPORT.md`.
-- **`REPORT.md` mục B6:** dòng "What would you improve next?" do nhóm **tự viết bằng ý của mình**.
+- **Chat live:** hỏi UI 3 lượt (một yêu cầu bình thường, một yêu cầu thiếu thông tin rồi bổ sung, một yêu cầu "đăng lên Telegram"). Transcript tự lưu trong `starter_v0/transcripts/`; commit chúng và ghi vào mục B4 của `report/team/group_report.md`.
+- **`report/team/group_report.md` mục 7 (B6):** dòng "What would you improve next?" do nhóm **tự viết bằng ý của mình**.
 - **`TEAM.md`:** mỗi người điền họ tên thật, MSSV và 1 đến 3 dòng "Đóng góp cá nhân" (chỉ ghi việc đã làm thật).
 
 ## Lưu ý quan trọng
