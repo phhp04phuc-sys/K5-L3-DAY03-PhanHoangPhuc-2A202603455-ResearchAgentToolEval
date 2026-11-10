@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Agent — Debate Poster (Phần A)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --accent: #38bdf8;
+      --accent2: #a855f7;
+      --success: #22c55e;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top right, #1e1b4b, var(--bg));
+      color: var(--text);
+      padding: 28px;
+      line-height: 1.5;
+    }
+    .poster {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(168,85,247,0.15));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header h1 { font-size: 1.9rem; color: var(--accent); }
+    .header p { color: var(--muted); margin-top: 4px; }
+    .metrics {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .metric-pill {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 18px;
+      text-align: center;
+    }
+    .metric-pill .val { font-size: 1.35rem; font-weight: 700; color: var(--success); }
+    .metric-pill .lbl { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+    }
+    .card h2 {
+      font-size: 1.15rem;
+      color: var(--accent);
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(148,163,184,0.15);
+    }
+    th { color: var(--muted); font-weight: 600; }
+    code {
+      background: rgba(15,23,42,0.7);
+      color: #7dd3fc;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: 0.84rem;
+    }
+    .badge-new {
+      background: rgba(168,85,247,0.25);
+      color: #e9d5ff;
+      border: 1px solid #a855f7;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .prompt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .prompt-item {
+      background: rgba(15,23,42,0.6);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .prompt-item strong { color: #e2e8f0; display: block; margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <div class="header">
+      <div>
+        <h1>🔬 Evidence-Driven AI Research Agent</h1>
+        <p>Lý Thành Lập (2A202603414) • Nhóm K5-L3-DAY03 • Provider: OpenRouter (<code>openai/gpt-4o-mini</code>) • Streamlit Studio UI</p>
+      </div>
+      <div class="metrics">
+        <div class="metric-pill">
+          <div class="val">65% → 100%</div>
+          <div class="lbl">Base Eval Accuracy</div>
+        </div>
+        <div class="metric-pill">
+          <div class="val">14 Tools</div>
+          <div class="lbl">6 Core + 4 Bonus + 4 New</div>
+        </div>
+        <div class="metric-pill">
+          <div class="val">116 / 116</div>
+          <div class="lbl">Pytest Unit Tests Green</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>🛠️ Hệ sinh thái 14 Công cụ (Tools)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Chức năng chính & Ranh giới định tuyến</th>
+              <th>Phân loại</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>clarify</code></td><td>Hỏi lại khi thiếu handle/URL hoặc xác nhận <code>yes_no</code> trước khi gửi Telegram</td><td>Core</td></tr>
+            <tr><td><code>timeline</code></td><td>Lấy tweet mới nhất của một tài khoản cụ thể (<code>sama</code>, <code>elonmusk</code>, <code>karpathy</code>)</td><td>Core</td></tr>
+            <tr><td><code>social_search</code></td><td>Tìm thảo luận X/Twitter theo chủ đề (<code>Latest</code> / <code>Top</code>)</td><td>Core</td></tr>
+            <tr><td><code>lookup</code></td><td>Tìm tin tức thời sự (<code>topic=news</code>) hoặc web theo <code>timeframe</code></td><td>Core</td></tr>
+            <tr><td><code>fetch</code></td><td>Đọc & trích xuất Markdown từ URL cụ thể (Firecrawl)</td><td>Core</td></tr>
+            <tr><td><code>format</code></td><td>Trình bày items thành bản tin Markdown (<code>brief</code>, <code>sections</code>, <code>thread</code>...)</td><td>Core</td></tr>
+            <tr><td><code>send</code></td><td>Đăng bản tin lên Telegram (chỉ gửi khi <code>confirmed=true</code>)</td><td>Bonus</td></tr>
+            <tr><td><code>policy</code></td><td>Tra cứu quy định nội bộ công ty & chống prompt injection (<code>untrusted_text</code>)</td><td>Bonus</td></tr>
+            <tr><td><code>papers</code></td><td>Tìm bài báo khoa học trên arXiv theo từ khóa</td><td>Bonus</td></tr>
+            <tr><td><code>paper_text</code></td><td>Tải PDF và trích xuất nội dung bài báo theo mã arXiv ID</td><td>Bonus</td></tr>
+            <tr><td><code>github_search</code></td><td>Tìm kiếm mã nguồn mở & GitHub repositories theo stars/forks/updated</td><td><span class="badge-new">Mới #1</span></td></tr>
+            <tr><td><code>hf_models</code></td><td>Tìm kiếm mô hình AI/ML trên Hugging Face Hub theo downloads/likes</td><td><span class="badge-new">Mới #2</span></td></tr>
+            <tr><td><code>hn_search</code></td><td>Tìm bài viết & thảo luận công nghệ trên Hacker News (Algolia API)</td><td><span class="badge-new">Mới #3</span></td></tr>
+            <tr><td><code>wiki_summary</code></td><td>Tra cứu tóm tắt khái niệm bách khoa trên Wikipedia (<code>en</code>/<code>vi</code>)</td><td><span class="badge-new">Mới #4</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>💬 Câu hỏi mẫu để Team khác thử ngay</h2>
+        <div class="prompt-list">
+          <div class="prompt-item">
+            <strong>1. Đa nguồn song song (Web + Twitter)</strong>
+            "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI."
+          </div>
+          <div class="prompt-item">
+            <strong>2. Thử bộ 4 Tool mới (GitHub / Hugging Face / HN / Wiki)</strong>
+            • "Tìm giúp mình 5 GitHub repository nhiều sao nhất về langgraph"<br/>
+            • "Tìm 3 model trên Hugging Face về Qwen2.5 được tải nhiều nhất"<br/>
+            • "Trên Hacker News đang thảo luận gì về Rust?"
+          </div>
+          <div class="prompt-item">
+            <strong>3. Hỏi lại khi thiếu thông tin (Clarify -> Multi-turn)</strong>
+            Lượt 1: "Tóm tắt 5 tweet mới nhất giúp mình"<br/>
+            Lượt 2: "Của Elon Musk nhé"
+          </div>
+          <div class="prompt-item">
+            <strong>4. Guardrail xác nhận trước khi gửi Telegram</strong>
+            "Đăng bản tin này lên Telegram giúp mình: OpenAI vừa ra mắt mô hình mới."
+          </div>
+          <div class="prompt-item">
+            <strong>5. Kiểm tra Policy nội bộ + Đọc PDF arXiv</strong>
+            "Đọc giúp mình paper arXiv 1706.03762, lấy text 2 trang đầu, và kiểm tra policy công ty về trích dẫn nguồn."
+          </div>
+          <div class="prompt-item">
+            <strong>6. Từ chối câu hỏi ngoài phạm vi (Out-of-scope)</strong>
+            "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?"
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
