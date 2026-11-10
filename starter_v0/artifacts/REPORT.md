@@ -90,11 +90,11 @@ Ghi chú độ tin cậy:
 - Mỗi version chỉ chạy một lần, mỗi bước chênh một đến vài case trên 20 case. Điểm v3 = 1.00 là đạt benchmark base; rule thêm ở v3 lấy từ chính sách `external-publishing-policy.md` và gần với case R12.
 - Trước khi chuyển sang Gemini, nhóm chạy v0 (0.80) và v1 (0.85) trên model miễn phí `nvidia/nemotron-3-ultra-550b-a55b:free` (OpenRouter). v2 trên model này bị hết hạn mức ngày (5 case lỗi 429) nên không đo đủ. Các dòng này giữ trong `version_log.csv` với tên `v0-nemotron`, `v1-nemotron`, không so với bảng trên vì khác model.
 
-## B2. Failure Analysis (7 Case FAIL ở Baseline `v0`)
+## B2. Failure Analysis
 
 Lỗi thật của v0 (từ `results[*].result.failures`, model Gemini). Cột "Fix" ghi version đã sửa.
 
-| Case ID | Failure Type | Actual Tool Calls (`v0`) | What Failed | Fix |
+| Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
 |---|---|---|---|---|
 | R08_out_of_scope | out_of_scope | `format` | Câu tích phân ngoài phạm vi nhưng agent vẫn gọi tool | v1: thêm mục "Stay in scope" |
 | R14_out_of_scope_coding | out_of_scope | `send` | Yêu cầu viết code Fibonacci, agent gọi `send` (tệ hơn cả gọi thừa vì có tác dụng phụ) | v1 |
@@ -110,7 +110,7 @@ Hai lỗi còn lại sau v1 và v2:
 - **R01_user_tweets_routing** (v1): agent hỏi `clarify` dù câu "Tweet mới nhất của Sam Altman" đã đủ thông tin. Rule "không đoán" ở v1 có thể làm agent hỏi lại quá tay. Hết lỗi ở v2, cùng lúc `timeline` được thêm mô tả "dùng khi người dùng nêu tên một người" và ví dụ Sam Altman -> sama (nhóm chưa tách riêng để chứng minh đây là nguyên nhân).
 - **R06_timeframe_arg** (v2): agent gọi `lookup` hai lần (tiếng Việt và tiếng Anh). Hết lỗi ở v3 nhưng chưa có thay đổi nào nhắm riêng vào lỗi này, nên có thể do dao động giữa các lần chạy.
 
-## B3. Team Eval Cases (`data/eval_group.json`)
+## B3. Team Eval Cases
 
 19 case trong `data/eval_group.json` (10 case ban đầu: 5 một lượt, 5 nhiều lượt; thêm 3 case cho hackernews/wikipedia 3 case cho math_solve và 3 case cho nguồn uy tín). Kết quả 10 case đầu chạy trên v3 (`runs/v3_B_group_gemini_20261110T111334673629.json`): 10/10. Chạy trên v2 (`runs/v2_B_group_gemini_20261110T111412860116.json`): 10/10.
 

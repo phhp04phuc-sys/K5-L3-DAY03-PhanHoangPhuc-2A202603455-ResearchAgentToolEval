@@ -7,8 +7,7 @@ Quy tắc:
 """
 from __future__ import annotations
 
-from conftest import FakeResponse
-from tools import TOOL_FUNCTIONS
+import pytest
 
 from conftest import FakeResponse
 from tools import TOOL_FUNCTIONS

@@ -24,8 +24,8 @@ def _twitter_get(path: str, params: dict[str, Any]) -> dict[str, Any]:
     return response.json()
 
 
-def _tweet_item(raw: dict[str, Any], default_handle: str = "") -> dict[str, Any]:
-    handle = raw.get("screen_name") or (raw.get("author") or {}).get("screen_name") or default_handle or ""
+def _tweet_item(raw: dict[str, Any]) -> dict[str, Any]:
+    handle = raw.get("screen_name") or (raw.get("author") or {}).get("screen_name") or ""
     tweet_id = raw.get("tweet_id") or raw.get("id") or ""
     text = (raw.get("text") or "").strip()
     return {
@@ -38,7 +38,7 @@ def _tweet_item(raw: dict[str, Any], default_handle: str = "") -> dict[str, Any]
     }
 
 
-def _tweets_from(data: dict[str, Any], limit: int, default_handle: str = "") -> list[dict[str, Any]]:
+def _tweets_from(data: dict[str, Any], limit: int) -> list[dict[str, Any]]:
     raw_items = data.get("timeline") or data.get("tweets") or []
     items = [_tweet_item(item) for item in raw_items if item.get("tweet_id") or item.get("id")]
     return annotate_items(items[: int(limit or 5)], force_tier="tier3")
@@ -46,9 +46,8 @@ def _tweets_from(data: dict[str, Any], limit: int, default_handle: str = "") -> 
 
 def get_user_tweets(screenname: str = "", limit: int = 5) -> dict[str, Any]:
     try:
-        clean_handle = (screenname or "").strip().lstrip("@")
-        data = _twitter_get("/timeline.php", {"screenname": clean_handle})
-        return {"tool": "get_user_tweets", "screenname": clean_handle, "items": _tweets_from(data, limit, default_handle=clean_handle)}
+        data = _twitter_get("/timeline.php", {"screenname": screenname})
+        return {"tool": "get_user_tweets", "screenname": screenname, "items": _tweets_from(data, limit)}
     except Exception as exc:
         return err("get_user_tweets", exc)
 
