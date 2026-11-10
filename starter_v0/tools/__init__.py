@@ -20,6 +20,12 @@ from .lookup.tool import web_search
 from .hackernews.tool import search_hacker_news
 from .wikipedia.tool import get_wikipedia_summary
 from .math_solver.tool import solve_math
+from .sentiment.tool import analyze_sentiment
+from .extract_keywords.tool import extract_keywords
+from .github_search.tool import search_github_repos
+from .hf_models.tool import search_hf_models
+from .citation_format.tool import format_citation
+from .url_check.tool import validate_research_url
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -41,6 +47,12 @@ TOOL_FUNCTIONS = {
     "hackernews": search_hacker_news,
     "wikipedia": get_wikipedia_summary,
     "math_solve": solve_math,
+    "sentiment": analyze_sentiment,
+    "extract_keywords": extract_keywords,
+    "github_search": search_github_repos,
+    "hf_models": search_hf_models,
+    "citation_format": format_citation,
+    "url_check": validate_research_url,
 }
 
 
@@ -57,4 +69,3 @@ def to_openai_tools(declarations: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "parameters": item.get("parameters", {"type": "object", "properties": {}}),
         },
     } for item in declarations]
-
