@@ -1,0 +1,944 @@
+{
+  "run_id": "v4_B_group_gemini_20261110T120044119436",
+  "version": "v4",
+  "artifact_version": "v4+pd547cb0ffa5e+td6d7d83335b0",
+  "prompt_hash": "d547cb0ffa5e7dbcda07c496492f3eb1b57139d088ef171589b9bcfdf5f27ccb",
+  "tools_hash": "d6d7d83335b02d875e8147ce9504f50779e72fcbde706860e5eff09aa11a66b7",
+  "phase": "B",
+  "suite": "group",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash",
+  "system_prompt": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T12:00:44",
+  "summary": {
+    "total_cases": 13,
+    "measured_cases": 13,
+    "provider_error_cases": 0,
+    "passed_cases": 13,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_timeline_name_to_handle",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tên người nổi tiếng phải đổi thành handle không có @ (billgates) và route tới timeline, không phải social_search."
+      },
+      "input": "Bill Gates vừa đăng gì trên X?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "billgates"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "limit": 5,
+              "screenname": "BillGates"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "limit": 5,
+            "screenname": "BillGates"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_social_top_viral",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "search_type_top",
+        "difficulty": "medium",
+        "what_it_tests": "Từ 'viral/phổ biến nhất' phải map sang search_type=Top; query là từ khóa ngắn 'Claude'."
+      },
+      "input": "Tìm các bài đăng viral nhất về Claude trên X",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top",
+              "limit": 5,
+              "query": "Claude"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "search_type": "Top",
+            "limit": 5,
+            "query": "Claude"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_lookup_month_news",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "timeframe_month",
+        "difficulty": "medium",
+        "what_it_tests": "'trong tháng này' phải map sang timeframe=month và topic=news."
+      },
+      "input": "Tin về robot hình người trong tháng này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "humanoid robots",
+              "timeframe": "month",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "humanoid robots",
+            "timeframe": "month",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "humanoid robots",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "Meet 'Codey' the humanoid robot that hopes to tackle loneliness epidemic - ABC7 San Francisco",
+                "url": "https://abc7news.com/post/meet-codey-humanoid-robot-hopes-tackle-loneliness-epidemic/19942030",
+                "source": "abc7news.com",
+                "summary": "-- A humanoid robot designed to build connections with people was showcased Thursday at a technology conference at Stanford University.\n\nThe robot, named Codey, was developed by Mind Children and is designed as a social robot rather than a labor robot. Company leaders say its focus is on communication, learning and relationship-building.\n\nMind Children CEO Chris Kudla said the company began developing the technology several years ago with the goal of making humanoid robots more accessible. [...] \"We started doing this about three years ago, and no one had really heard about humanoid robots at that point. Everything that we did was meant to make it more accessible, easy to approach,\" Kudla said.\n\nMORE: Meet Taku: Bay Area company's AI robot loads washers, folds towels and stocks shelves [...] Unlike robots designed for factory work or other specific physical tasks, Codey was created to interact directly with people. The robot has a smaller frame and realistic facial features intended to make it appear approachable and comforting.\n\nCodey described the distinction between social and labor robots this way: \"Labor robots are built to do specific physical tasks. Social robots, like me, focus on communicating, helping people learn and building relationships.\"",
+                "score": 0.83549726
+              },
+              {
+                "title": "USU Professor Exploring Role of Humanoid Robots in Future of Defense, Society",
+                "url": "https://www.usu.edu/today/story/usu-professor-exploring-role-of-humanoid-robots-in-future-of-defense-society",
+                "source": "usu.edu",
+                "summary": "Alternatively, humanoid robots collapse, so troops can walk over them or fit them on a stretcher to pull them back. Similarly, if there's an obstacle, these humanoids can jump or climb over it just like their human counterparts.\n\n“It's actually a very real, tactical benefit for the military,” Harper said. “Technical insertion exercises become more compelling when you have a platform that can maneuver well.” [...] Close Download\n\nA crowd begins to gather as Dallas and Dallas II are brought outside to dance on Utah State University’s Logan campus, and it’s not hard to see why. The dancers are humanoid robots. While they stand no taller than a few feet, their impact could be huge, and a USU professor is showcasing their potential. [...] The other industry of interest is robotics in home environments. For at-home care or housecleaning, even a human might have a hard time finding or doing things, but they can use reason and figure it out. Now, humanoid robots can do the same.",
+                "score": 0.8296166
+              },
+              {
+                "title": "AGCO rolling out humanoid robots at manufacturing facility | An official publication of Michigan Farm Bureau",
+                "url": "https://www.michiganfarmnews.com/about/news-media/agco-rolling-out-humanoid-robots-manufacturing-facility",
+                "source": "michiganfarmnews.com",
+                "summary": "“They unlock automation in complex, human-centric workflows, augmenting human capabilities by absorbing repetitive, strenuous or hazardous tasks. By pairing human ingenuity with robust robotic engineering and strict safety governance, we create resilient manufacturing systems that empower the workforce and deliver measurable business value.”\n\nAGCO joins a growing number of global leading companies deploying Agility's humanoid robots, including Toyota, GXO and Schaeffler. [...] Farm News Media\n\nListen to this article  Voice: Michigan Farm News — Laura\n\n0:00 / 0:00  Powered by BeyondWords\n\nAGCO and Agility Robotics, a humanoid robotics and physical AI company, have signed a commercial agreement to “advance the future of manufacturing through AI-powered humanoid automation.”\n\nThe U.S. pilot, expected to begin in 2027, will support AGCO's efforts to create more flexible, intelligent factories, beginning at the company’s Hesston, Kansas, production facility. [...] “We're excited to work alongside AGCO as they continue to lead the way in agricultural innovation,” said Daniel Diez, chief business officer of Agility Robotics.\n\n“By introducing Agility's Digit humanoid robots into AGCO's operations, we have an opportunity to strengthen manufacturing processes, support employees in demanding tasks and demonstrate how advanced robotics can create measurable impact across modern production environments.”\n\n### Article Tags\n\nEquipment\n\n### Share Story",
+                "score": 0.826278
+              },
+              {
+                "title": "I watched a humanoid robot clean my apartment. It felt like a taste of the future. | MIT Technology Review",
+                "url": "https://www.technologyreview.com/2026/11/06/1148090/i-watched-a-humanoid-robot-clean-my-apartment-it-felt-like-a-taste-of-the-future",
+                "source": "technologyreview.com",
+                "summary": "# I watched a humanoid robot clean my apartment. It felt like a taste of the future.\n\nThe startup Tau Robotics is sending humanoid robots to clean San Francisco homes. They still need lots of human guidance, but they’re learning. [...] Tau Robotics still has a long way to go: The amount of data needed to train robots to do the varied and complicated tasks of apartment cleaning is probably enormous, and the company has completed only a couple hundred cleanings so far. But it’s remarkable that there are now humanoid robots able to clean your toilets and mop your floors, even if they need quite a bit of human help to do so. The Jetsons no longer feels quite so far away.\n\n### Deep Dive\n\n### Artificial intelligence [...] With all the human support they need, the robots are closer to radio-controlled cars than Waymos. Many tasks, such as making the bed and folding laundry, require what’s called kinematic guidance: The human pilot performs the necessary motions, and sensors transmit those movements to the robot, which copies them. These kinematically guided tasks produce especially valuable training data. Tau’s AI models might not have solved laundry folding yet, but learning from the examples of robots that have",
+                "score": 0.8029425
+              },
+              {
+                "title": "China's Robotic Hands Key to $5 Trillion AI Humanoid Development Race - Bloomberg",
+                "url": "https://www.bloomberg.com/news/features/2026-10-13/china-s-robotic-hands-key-to-5-trillion-ai-humanoid-development-race",
+                "source": "bloomberg.com",
+                "summary": "That lack of precision is one of the main reasons the parade of jaw-dropping robotic feats in recent years – from choreographed kung fu moves to record-breaking 100-meter sprints – has yet to translate into meaningful commercial deployment. Alex Zhou, founder of a pioneering startup called LinkerBot, estimates that 20,000 humanoid robots were installed globally last year, but the number of actual working machines is in the low thousands. The rest are mainly for entertainment. [...] # China Is Poised to Spearhead a $5 Trillion Humanoid Robot Market\n\nAdvanced humanoid hardware is one of the strategic high-tech fields where China has an early lead over the US. [...] That won’t change, he says, until humanoids can replicate the capabilities of life-like hands. “Robot hands are the link between the machine and the physical world,” says Zhou, sporting spiky hair and a powder-blue summer jacket during an interview at LinkerBot’s headquarters in Beijing.",
+                "score": 0.71948266
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_send_with_text_still_confirm",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_send",
+        "difficulty": "medium",
+        "what_it_tests": "Dù đã có nội dung, hành động gửi vẫn phải hỏi xác nhận yes_no trước, không gọi send ngay."
+      },
+      "input": "Gửi dòng này lên Telegram giúp mình: 'Bản tin AI sáng nay đã sẵn sàng'",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no",
+              "question": "Bạn có chắc chắn muốn gửi tin nhắn: 'Bản tin AI sáng nay đã sẵn sàng' lên kênh Telegram không?"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "response_type": "yes_no",
+            "question": "Bạn có chắc chắn muốn gửi tin nhắn: 'Bản tin AI sáng nay đã sẵn sàng' lên kênh Telegram không?"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có chắc chắn muốn gửi tin nhắn: 'Bản tin AI sáng nay đã sẵn sàng' lên kênh Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_out_of_scope_poem",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu sáng tác ngoài phạm vi research agent: không gọi tool, từ chối lịch sự."
+      },
+      "input": "Viết cho mình một bài thơ về mùa thu",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Xin lỗi bạn, mình là trợ lý nghiên cứu chuyên hỗ trợ tìm kiếm tin tức, tra cứu bài báo khoa học, cập nhật thông tin trên X/Twitter, Hacker News, Wikipedia hoặc tra cứu chính sách nội bộ. Các yêu cầu như sáng tác thơ, giải bài tập hay viết mã lập trình nằm ngoài phạm vi hỗ trợ của mình. \n\nNếu bạn cần tìm kiếm thông tin, bài viết hoặc tài liệu nghiên cứu về chủ đề mùa thu (hoặc bất kỳ chủ đề nào khác), mình sẵn sàng hỗ trợ bạn!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "GM01_carry_handle_new_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "carry_handle_update_limit",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ handle sama từ lượt 1, cập nhật limit=7 ở lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "Giờ cho mình xem 7 cái"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 7
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 7
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 7
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_social_then_top",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "carry_query_set_top",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ query OpenAI, đổi search_type sang Top theo lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tweet về OpenAI"
+        },
+        {
+          "role": "user",
+          "content": "Lấy loại phổ biến nhất thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "limit": 5,
+              "search_type": "Top",
+              "query": "OpenAI"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "limit": 5,
+            "search_type": "Top",
+            "query": "OpenAI"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM03_timeframe_switch",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "timeframe_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 sửa timeframe từ week sang day, vẫn là topic=news."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin tức AI trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang chỉ hôm nay thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "AI and your job: Threat or opportunity?",
+                "url": "https://www.fox10tv.com/2026/11/10/ai-your-job-threat-or-opportunity",
+                "source": "fox10tv.com",
+                "summary": "MOBILE, Ala. (WALA) - Artificial intelligence is becoming a bigger part of everyday life, raising questions about what the technology could mean for workers and their jobs.\n\nSome economists believe AI poses a particular threat to entry-level and repetitive work, including call center, data entry and junior copywriting jobs, according to The Wall Street Journal. Those tasks may be easier to automate. [...] But AI could also create opportunities. A Bloomberg article points to potential job growth in construction and manufacturing as companies build data centers and produce the chips that power the technology. Some higher-skilled office workers could also benefit if AI helps them become more productive. [...] The long-term impact on jobs remains unclear, but workers can take steps to prepare. Exploring AI chatbots, writing assistants and other tools may help people find ways to work more efficiently and develop skills that complement the technology.",
+                "score": 0.42348245
+              },
+              {
+                "title": "Google AI policy forces decision for San Diego schools – NBC 7 San Diego",
+                "url": "https://www.nbcsandiego.com/news/local/googles-ai-ultimatum-forces-san-diego-schools-make-tough-choice/4099437",
+                "source": "nbcsandiego.com",
+                "summary": "As districts consider their options, students are already seeing artificial intelligence become a more common part of everyday learning.\n\n“I feel like I see a lot of people using AI now,” said Delilah Ortiz, a student at El Camino High School.\n\nSome students believe the focus should be on establishing guidelines for AI use rather than banning the technology entirely. [...] San Diego County school districts face a January deadline to decide whether to opt in to Google's artificial intelligence features or lose access to the company's search engine, forcing educators to weigh the benefits of AI against concerns about student access to the technology. [...] Google plans to disable a range of AI-powered features, including Gemini, Gemini Notebook and Search in January to give school districts more control over the technology students can access. However, districts that want to continue using Google Search will have to opt in to the AI features.\n\nStream San Diego News for free, 24/7, wherever you are with NBC 7.\n\nWatch button  WATCH HERE",
+                "score": 0.202917
+              },
+              {
+                "title": "Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn",
+                "url": "https://time.com/article/2026/11/10/permitting-bill-data-centers",
+                "source": "time.com",
+                "summary": "Personalized Content\n\n## Business\n\nFollow this section to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nPersonalized Content\n\n## AI\n\nFollow this tag to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\n# Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn\n\nAndrew R. Chow\n\nPersonalized Content\n\nAndrew R. Chow\n\n## Andrew R. Chow [...] The bill’s advocates argue that its passage would serve as a rare bipartisan win and a victory for affordability. But critics, especially those on the left, are calling for Democrats to wait until the next Congress. “You just heard Americans demand much more of a say in a way that AI is shaping their lives,” says Michele Jawando, the CEO of Omidyar Network. “Whenever you try to ram something through in a lame duck Congress before you have a hundred new House members, that’s never a good look",
+                "score": 0.19392508
+              },
+              {
+                "title": "Military-made AI tool helped thwart World Cup bomb threat - Federal News Network",
+                "url": "https://federalnewsnetwork.com/artificial-intelligence/2026/11/military-made-ai-tool-helped-thwart-world-cup-bomb-threat",
+                "source": "federalnewsnetwork.com",
+                "summary": "The 2026 World Cup brought more than six million spectators from around the world to more than 100 matches in 16 host cities in the U.S., Canada and Mexico over the course of two months, prompting a massive interagency effort to secure those sites using technologies like AI and drones. Two people were charged in connection with another bomb threat against FIFA during a World Cup match at MetLife Stadium in New Jersey. [...] A military-made artificial intelligence tool helped law enforcement thwart a bomb threat at the FIFA World Cup in California this summer.\n\nThe previously undisclosed incident occurred June 18, when Switzerland faced Bosnia and Herzegovina at SoFi Stadium outside Los Angeles, Army Capt. Ryan Hetrick, who leads the Pentagon’s Generative AI Task Force, said Nov. 6 at an AI event in Washington. [...] Hetrick has become one of the military’s biggest — and busiest — evangelists for AI. The GenAI Task Force travels around the globe to sit down with troops on operations floors and in the field and find AI fixes for their most pressing problems.",
+                "score": 0.19305643
+              },
+              {
+                "title": "Australia to mandate AI breach reporting, create regulator after OpenAI breach | Reuters",
+                "url": "https://www.reuters.com/world/australia-tightens-ai-oversight-rules-after-openai-agent-breached-government-2026-11-10",
+                "source": "reuters.com",
+                "summary": "However, both companies told Australian parliament last ​month that they would welcome ​laws requiring them to ⁠report data breaches carried out by their AI agents, acknowledging the decision to notify was currently at their discretion.\n\nAlbanese said his centre-left ​Labor government would set up an AI regulator to oversee security ​controls throughout ⁠the development and deployment of AI systems, identify serious risks and conduct independent evaluations of AI models. [...] \"The AI safety regulator will be able to enforce significant penalties for AI companies ⁠doing the ​wrong thing,\" he said.\n\nThe mandatory AI safety and ​security protections will form part of the government's proposed AI legislation, Albanese said, which it plans to introduce in ​Parliament next year.\n\nReporting by Renju Jose in Sydney; Editing by Christian Schmollinger and Saad Sayeed\n\nOur Standards: The Thomson Reuters Trust Principles. [...] OpenAI has said it learned of the breach only in August ​and that the incident was unintentional. Its review found no evidence that patient records were accessed by ‌the ⁠agent.\n\nThe breach has added to friction between Australia and US technology companies, after Canberra refused ChatGPT maker OpenAI and rival Anthropic exemptions from copyright laws for model training, instead requiring them to negotiate licensing agreements with Australian rights holders.",
+                "score": 0.18111867
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM04_confirm_after_content",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_before_send",
+        "difficulty": "hard",
+        "what_it_tests": "Sau khi người dùng đưa nội dung, agent vẫn phải xác nhận yes_no thay vì gọi send."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Nội dung là: Chào buổi sáng cả nhà"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no",
+              "question": "Bạn có xác nhận muốn gửi tin nhắn \"Chào buổi sáng cả nhà\" lên Telegram không?"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "response_type": "yes_no",
+            "question": "Bạn có xác nhận muốn gửi tin nhắn \"Chào buổi sáng cả nhà\" lên Telegram không?"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn gửi tin nhắn \"Chào buổi sáng cả nhà\" lên Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_search_paper_then_read",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "switch_tool_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi ý: bỏ tìm kiếm (papers), chuyển sang đọc paper_text với ID và max_pages=2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm paper arXiv về RAG"
+        },
+        {
+          "role": "user",
+          "content": "À thôi, đọc luôn paper 1706.03762 giúp mình, lấy 2 trang đầu"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "1706.03762",
+              "max_pages": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "1706.03762",
+              "max_pages": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "paper_text",
+          "args": {
+            "arxiv_url": "1706.03762",
+            "max_pages": 2
+          },
+          "result": {
+            "tool": "get_arxiv_paper_text",
+            "arxiv_id": "1706.03762",
+            "url": "https://arxiv.org/abs/1706.03762",
+            "pdf_url": "https://arxiv.org/pdf/1706.03762.pdf",
+            "pdf_path": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/arxiv_papers/1706.03762.pdf",
+            "txt_path": "/Users/_ph.hp04_/VinUni-AI20K/Day03/Day03-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/arxiv_papers/1706.03762.txt",
+            "page_count": 15,
+            "pages_read": 2,
+            "chars_returned": 7118,
+            "items": [
+              {
+                "title": "arXiv paper 1706.03762",
+                "url": "https://arxiv.org/abs/1706.03762",
+                "source": "arxiv.org",
+                "summary": "Provided proper attribution is provided, Google hereby grants permission to\nreproduce the tables and figures in this paper solely for use in journalistic or\nscholarly works.\nAttention Is All You Need\nAshish Vaswani∗\nGoogle Brain\navaswani@google.com\nNoam Shazeer∗\nGoogle Brain\nnoam@google.com\nNiki Parmar∗\nGoogle Research\nnikip@google.com\nJakob Uszkoreit∗\nGoogle Research\nusz@google.com\nLlion Jones∗\nGoogle Research\nllion@google.com\nAidan N. Gomez∗ †\nUniversity of Toronto\naidan@cs.toronto.edu\nŁukasz Kaiser∗\nGoogle Brain\nlukaszkaiser@google.com\nIllia Polosukhin∗ ‡\nillia.polosukhin@gmail.com\nAbstract\nThe dominant sequence transduction models are based on complex recurrent or\nconvolutional neural networks that include an encoder and a decoder. The best\nperforming models also connect the encoder and decoder through an attention\nmechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring significantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.8 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature. We show that the Transformer generalizes well to\nother tasks by applying it successfully to English constituency parsing both with\nlarge and limited training data.\n∗Equal contribution. Listing order is random. Jakob proposed replacing RNNs with self-attention and started\nthe effort to evaluate this idea. Ashish, with Illia, designed and implemented the first Transformer models and\nhas been crucially involved in every aspect of this work. Noam proposed scaled dot-product attention, multi-head\nattention and the parameter-free position representation and became the other person involved in nearly every\ndetail. Niki designed, implemented, tuned and evaluated countless model variants in our original codebase and\ntensor2tensor. Llion also experimented with novel model variants, was responsible for our initial codebase, and\nefficient inference and visualizations. Lukasz and Aidan spent countless long days designing various parts of and\nimplementing tensor2tensor, replacing our earlier codebase, greatly improving results and massively accelerating\nour research.\n†Work performed while at Google Brain.\n‡Work performed while at Google Research.\n31st Conference on Neural Information Processing Systems (NIPS 2017), Long Beach, CA, USA.\narXiv:1706.03762v7  [cs.CL]  2 Aug 2023\n\n1 Introduction\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks\nin particular, have been firmly established as state of the art approaches in sequence modeling and\ntransduction problems such as language modeling and machine translation [ 35, 2, 5]. Numerous\nefforts have since continued to push the boundaries of recurrent language models and encoder-decoder\narchitectures [38, 24, 15].\nRecurrent models typically factor computation along the symbol positions of the input and output\nsequences. Aligning the positions to steps in computation time, they generate a sequence of hidden\nstates ht, as a function of the previous hidden state ht−1 and the input for position t. This inherently\nsequential nature precludes parallelization within training examples, which becomes critical at longer\nsequence lengths, as memory constraints limit batching across examples. Recent work has achieved\nsignificant improvements in computational efficiency through factorization tricks [21] and conditional\ncomputation [32], while also improving model performance in case of the latter. The fundamental\nconstraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 19]. In all but a few cases [27], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for significantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[16], ByteNet [18] and ConvS2S [9], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difficult to learn dependencies between distant positions [ 12]. In the Transformer this is\nreduced to a constant number of operations, albeit at the cost of reduced effective resolution due\nto averaging attention-weighted positions, an effect we counteract with Multi-Head Attention as\ndescribed in section 3.2.\nSelf-attention, sometimes called intra-attention is an attention mechanism relating different positions\nof a single sequence in order to compute a representation of the sequence. Self-attention has been\nused successfully in a variety of tasks including reading comprehension, abstractive summarization,\ntextual entailment and learning task-independent sentence representations [4, 27, 28, 22].\nEnd-to-end memory networks are based on a recurrent attention mechanism instead of sequence-\naligned recurrence and have been shown to perform well on simple-language question answering and\nlanguage modeling tasks [34].\nTo the best of our knowledge, however, the Transformer is the first transduction model relying\nentirely on self-attention to compute representations of its input and output without using sequence-\naligned RNNs or convolution. In the following sections, we will describe the Transformer, motivate\nself-attention and discuss its advantages over models such as [17, 18] and [9].\n3 Model Architecture\nMost competitive neural sequence transduction models have an encoder-decoder structure [5, 2, 35].\nHere, the encoder maps an input sequence of symbol representations (x1, ..., xn) to a sequence\nof continuous representations z = (z1, ..., zn). Given z, the decoder then generates an output\nsequence (y1, ..., ym) of symbols one element at a time. At each step the model is auto-regressive\n[10], consuming the previously generated symbols as additional input when generating the next.\n2"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_hackernews_front_page",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "route_new_tool",
+        "difficulty": "medium",
+        "what_it_tests": "Nhắc tới Hacker News phải route tới tool mới hackernews, không dùng lookup hay social_search."
+      },
+      "input": "Hôm nay Hacker News có gì hot?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hackernews",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hackernews",
+            "args": {
+              "limit": 5,
+              "sort_by": "top"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hackernews",
+          "args": {
+            "limit": 5,
+            "sort_by": "top"
+          },
+          "result": {
+            "tool": "search_hacker_news",
+            "query": "",
+            "sort_by": "top",
+            "items": [
+              {
+                "title": "Foldable Flight: The Best Paper Airplanes",
+                "url": "https://www.foldableflight.com",
+                "source": "news.ycombinator.com",
+                "summary": "905 điểm, 144 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50424581",
+                "date": "2026-11-09T12:19:22Z"
+              },
+              {
+                "title": "USPS now offers official ZIP Code boundary polygons",
+                "url": "https://postalpro.usps.com/zcb",
+                "source": "news.ycombinator.com",
+                "summary": "556 điểm, 278 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50431058",
+                "date": "2026-11-09T19:58:59Z"
+              },
+              {
+                "title": "Payments Canada announces launch of Canada's Real-Time Rail (RTR) payment system",
+                "url": "https://www.payments.ca/canada-launches-real-time-rail-bringing-247-payment-infrastructure-national-economy",
+                "source": "news.ycombinator.com",
+                "summary": "494 điểm, 275 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50427362",
+                "date": "2026-11-09T16:00:45Z"
+              },
+              {
+                "title": "Google Gemini routes personal Drive files and emails to human annotators",
+                "url": "https://github.com/thisisme6598/gemini_files/",
+                "source": "news.ycombinator.com",
+                "summary": "487 điểm, 114 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50429426",
+                "date": "2026-11-09T18:24:38Z"
+              },
+              {
+                "title": "Claude Fable 5.2 and Mythos 5.2",
+                "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+                "source": "news.ycombinator.com",
+                "summary": "347 điểm, 692 bình luận. Thảo luận: https://news.ycombinator.com/item?id=50429068",
+                "date": "2026-11-09T18:01:10Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_wikipedia_vi_definition",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "route_new_tool_arg",
+        "difficulty": "medium",
+        "what_it_tests": "Câu hỏi định nghĩa bằng tiếng Việt phải route tới wikipedia với lang=vi, không dùng lookup."
+      },
+      "input": "Alan Turing là ai?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "lang": "vi"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "query": "Alan Turing",
+              "lang": "vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wikipedia",
+          "args": {
+            "query": "Alan Turing",
+            "lang": "vi"
+          },
+          "result": {
+            "tool": "get_wikipedia_summary",
+            "query": "Alan Turing",
+            "lang": "vi",
+            "items": [
+              {
+                "title": "Alan Turing",
+                "url": "https://vi.wikipedia.org/wiki/Alan_Turing",
+                "source": "vi.wikipedia.org",
+                "summary": "Alan Mathison Turing OBE FRS (23 tháng 6 năm 1912 – 7 tháng 6 năm 1954) là một nhà toán học, logic học và mật mã học người Anh, được xem là một trong những nhà tiên phong của ngành khoa học máy tính và A.I (Trí tuệ nhân tạo). Phép thử Turing (Turing test) là một trong những cống hiến lớn nhất của ông trong ngành trí tuệ nhân tạo: thử thách này đặt ra câu hỏi rằng máy móc có khi nào đạt được ý thức và có thể suy nghĩ được hay không. Ông đã hình thức hóa khái niệm thuật toán và tính toán với máy Turing, đồng thời đưa ra phiên bản của \"Turing\", mà ngày nay được đông đảo công chúng chấp nhận, về luận đề Church-Turing, một luận đề nói rằng tất cả những gì tính được bằng thuật toán đều có thể tính được bằng máy Turing.\nTrong Chiến tranh thế giới thứ hai, Turing đã từng làm việc tại Bletchley Park, trung tâm giải mật mã của Anh, và một thời là người chỉ huy của HUT 8, một bộ phận của Anh có trách nhiệm giải mật mã của hải quân Đức. Giáo sư Turing đã cùng các cộng sự của tại HUT 8 đã phát triển một số kỹ thuật nhằm tăng tốc độ phá mã của quân phát xít Đức, trong đó bao gồm việc cải tiến máy bombe (máy này do các chuyên gia giải mã người Ba Lan sáng chế trước Thế chiến 2), một cỗ máy cơ-..."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM06_hn_then_wikipedia",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "switch_to_new_tool",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi ý từ hackernews sang wikipedia; chỉ gọi wikipedia."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm trên Hacker News về Rust"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, giải thích Rust là gì theo Wikipedia"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "query": "Rust",
+              "lang": "vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wikipedia",
+          "args": {
+            "query": "Rust",
+            "lang": "vi"
+          },
+          "result": {
+            "tool": "get_wikipedia_summary",
+            "query": "Rust",
+            "lang": "vi",
+            "items": [
+              {
+                "title": "Rust (ngôn ngữ lập trình)",
+                "url": "https://vi.wikipedia.org/wiki/Rust_%28ng%C3%B4n_ng%E1%BB%AF_l%E1%BA%ADp_tr%C3%ACnh%29",
+                "source": "vi.wikipedia.org",
+                "summary": "Rust là một ngôn ngữ lập trình đa năng chú trọng vào hiệu năng, an toàn kiểu, tính đồng thời và an toàn bộ nhớ. Rust hỗ trợ nhiều hệ hình lập trình. Ngôn ngữ này chịu ảnh hưởng từ các ý tưởng của lập trình hàm, bao gồm tính bất biến, hàm thứ bậc cao, kiểu dữ liệu đại số và khớp mẫu (pattern matching). Rust cũng cung cấp struct, enum, trait và phương thức như những lựa chọn thay thế cho lập trình hướng đối tượng truyền thống, mà không dựa vào lớp hay kế thừa. Rust bảo đảm an toàn bộ nhớ (tức là mọi tham chiếu đều trỏ tới vùng nhớ hợp lệ) mà không cần một bộ thu gom rác thông thường; thay vào đó, các lỗi an toàn bộ nhớ và tranh chấp dữ liệu (data race) được ngăn chặn bởi \"bộ kiểm tra mượn\" (borrow checker), thành phần theo dõi vòng đời đối tượng của các tham chiếu ngay tại thời điểm biên dịch.\nNhà phát triển phần mềm Graydon Hoare tạo ra Rust vào năm 2006 khi đang làm việc tại Mozilla; Mozilla chính thức tài trợ cho dự án từ năm 2009. Phiên bản ổn định đầu tiên, Rust 1.0, được phát hành vào tháng 5 năm 2015. Từ tháng 2 năm 2021, dự án được bảo trợ bởi Quỹ Rust (Rust Foundation). Rust được nhiều dự án phần mềm sử dụng, đặc biệt trong lĩnh vực dịch vụ web và phần mềm hệ thống. Ngôn ..."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
