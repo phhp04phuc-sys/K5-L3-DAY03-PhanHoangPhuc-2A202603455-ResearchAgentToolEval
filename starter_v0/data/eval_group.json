@@ -275,6 +275,77 @@
         "difficulty": "hard",
         "what_it_tests": "Lượt 2 đổi ý: bỏ tìm kiếm (papers), chuyển sang đọc paper_text với ID và max_pages=2."
       }
+    },
+    {
+      "id": "G06_hackernews_front_page",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hôm nay Hacker News có gì hot?",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hackernews",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "route_new_tool",
+        "difficulty": "medium",
+        "what_it_tests": "Nhắc tới Hacker News phải route tới tool mới hackernews, không dùng lookup hay social_search."
+      }
+    },
+    {
+      "id": "G07_wikipedia_vi_definition",
+      "phase": "B",
+      "suite": "group",
+      "query": "Alan Turing là ai?",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {
+              "lang": "vi"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "route_new_tool_arg",
+        "difficulty": "medium",
+        "what_it_tests": "Câu hỏi định nghĩa bằng tiếng Việt phải route tới wikipedia với lang=vi, không dùng lookup."
+      }
+    },
+    {
+      "id": "GM06_hn_then_wikipedia",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm trên Hacker News về Rust"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, giải thích Rust là gì theo Wikipedia"
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wikipedia",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "switch_to_new_tool",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi ý từ hackernews sang wikipedia; chỉ gọi wikipedia."
+      }
     }
   ]
 }

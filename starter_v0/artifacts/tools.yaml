@@ -113,3 +113,24 @@ tools:
         max_pages: {type: integer, default: 5, description: "Maximum pages to extract; use the number the user asks for"}
         max_chars: {type: integer, default: 8000, description: "Maximum characters returned"}
       required: [arxiv_url]
+
+  # ---------------- Tools mới của nhóm ----------------
+  - name: hackernews
+    description: "Get tech, programming and startup stories from Hacker News (HN). Use when the user mentions Hacker News or HN, or wants to know what the developer community is discussing. With no query it returns the front-page stories (sort_by=top) or the newest stories (sort_by=latest); with a query it searches stories by keyword. Do NOT use it for general news (use lookup) or for tweets (use timeline or social_search)."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Optional short keyword such as 'Rust' or 'LLM'. Leave empty to get the front page or the newest stories"}
+        sort_by: {type: string, enum: [top, latest], default: "top", description: "top = front page / most relevant; latest = newest first"}
+        limit: {type: integer, default: 5, description: "Number of stories, 1 to 20; default 5. Use the number the user asks for"}
+      required: []
+
+  - name: wikipedia
+    description: "Get a short encyclopedia summary (the intro of the best-matching Wikipedia page) about a concept, person, organization or technology. Use for definitions and background (for example 'Rust là gì', 'who is Alan Turing'). Do NOT use it for recent news (use lookup) or to read a URL the user gave (use fetch)."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "The topic or page title to look up, short, such as 'Rust (programming language)' or 'Alan Turing'"}
+        lang: {type: string, default: "en", description: "Wikipedia language code: 'vi' when the user writes Vietnamese and wants a Vietnamese page, otherwise 'en'"}
+        max_chars: {type: integer, default: 1200, description: "Maximum characters of the summary, 100 to 5000"}
+      required: [query]

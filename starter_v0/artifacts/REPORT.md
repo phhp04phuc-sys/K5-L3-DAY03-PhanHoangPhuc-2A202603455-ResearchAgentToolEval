@@ -36,7 +36,8 @@ Research agent: nhận yêu cầu bằng tiếng Việt, chọn đúng tool, g�
 | policy | tra chính sách công ty (trích nguồn, quyền riêng tư, đăng bài ngoài, quy trình research) | không |
 | papers | tìm paper trên arXiv | không |
 | paper_text | tải một paper arXiv và trích text | không |
-| (tool mới của nhóm) | (điền khi có) | có |
+| hackernews | tin công nghệ, lập trình, startup từ Hacker News (trang nhất, mới nhất hoặc tìm theo từ khóa); không cần key | **có** |
+| wikipedia | tóm tắt phần mở đầu một trang Wikipedia (vi hoặc en) để lấy định nghĩa, bối cảnh; không cần key | **có** |
 
 ## A3. Câu hỏi mẫu để thử
 
@@ -45,6 +46,8 @@ Research agent: nhận yêu cầu bằng tiếng Việt, chọn đúng tool, g�
 3. `Tóm tắt 5 tweet mới nhất giúp mình` (agent phải hỏi lại là của ai, không đoán)
 4. `Đăng bản tin này lên Telegram giúp mình` (agent hỏi xác nhận yes/no trước, không gửi ngay)
 5. `Đọc giúp mình paper arXiv 1706.03762, lấy 2 trang đầu` (dùng `paper_text`)
+6. `Hôm nay Hacker News có gì hot?` (tool mới `hackernews`)
+7. `Alan Turing là ai?` (tool mới `wikipedia`, `lang=vi`)
 
 ---
 
@@ -69,6 +72,9 @@ Các chỉ số chi tiết:
 | v1 | 0.75 | 0.90 | 0.75 | 0.83 |
 | v2 | 0.90 | 0.95 | 0.90 | 1.00 |
 | v3 | 1.00 | 1.00 | 1.00 | 1.00 |
+| v4 | 1.00 | 1.00 | 1.00 | 1.00 |
+
+| v4 | `tools.yaml` + 2 tool mới | Thêm `hackernews` và `wikipedia` với mô tả rõ thì agent route đúng tool mới mà không làm hỏng 20 case base | 1.00 | 1.00 | `runs/v4_B_base_gemini_20261110T115949550316.json` |
 
 Ghi chú độ tin cậy:
 - Chạy v0 hai lần trên Gemini cho kết quả giống hệt nhau (0.55, không case nào đổi kết quả).
@@ -97,7 +103,7 @@ Hai lỗi còn lại sau v1 và v2:
 
 ## B3. Team Eval Cases
 
-10 case trong `data/eval_group.json` (5 một lượt, 5 nhiều lượt). Kết quả chạy trên v3 (`runs/v3_B_group_gemini_20261110T111334673629.json`): 10/10. Chạy trên v2 (`runs/v2_B_group_gemini_20261110T111412860116.json`): 10/10.
+13 case trong `data/eval_group.json` (10 case ban đầu: 5 một lượt, 5 nhiều lượt; thêm 3 case cho tool mới). Kết quả 10 case đầu chạy trên v3 (`runs/v3_B_group_gemini_20261110T111334673629.json`): 10/10. Chạy trên v2 (`runs/v2_B_group_gemini_20261110T111412860116.json`): 10/10.
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result (v3) |
 |---|---|---|---|
@@ -111,8 +117,11 @@ Hai lỗi còn lại sau v1 và v2:
 | GM03_timeframe_switch | Sửa timeframe week thành day | `lookup(topic=news, timeframe=day)` | PASS |
 | GM04_confirm_after_content | Sau khi có nội dung vẫn xác nhận yes_no | `clarify(response_type=yes_no)` | PASS |
 | GM05_search_paper_then_read | Đổi ý: bỏ tìm paper, đọc luôn theo ID | `paper_text(arxiv_url=1706.03762, max_pages=2)` | PASS |
+| G06_hackernews_front_page | Nhắc Hacker News phải route tới tool mới | `hackernews` | PASS (v4) |
+| G07_wikipedia_vi_definition | Câu định nghĩa tiếng Việt: route `wikipedia` với `lang=vi` | `wikipedia(lang=vi)` | PASS (v4) |
+| GM06_hn_then_wikipedia | Lượt 2 đổi từ hackernews sang wikipedia | `wikipedia` | PASS (v4) |
 
-Hạn chế: bộ case này viết sau khi nhóm đã biết lỗi của eval base nên khá dễ (cả v2 và v3 đều 10/10), chưa phân biệt được hai version. Chưa có case kiểm tra route tới tool mới (nhóm chưa có tool mới).
+Hạn chế: bộ case này viết sau khi nhóm đã biết lỗi của eval base nên khá dễ (cả v2 và v3 đều 10/10), chưa phân biệt được hai version. 3 case cuối kiểm tra route tới tool mới; chạy trên v4 (`runs/v4_B_group_gemini_20261110T120044119436.json`): 13/13.
 
 ## B4. Live Chat Evidence
 
@@ -134,7 +143,7 @@ Còn thiếu: lượt chat live của v3 mới có 1 lượt, chưa đủ 3 lư�
 | send (Telegram) | `tests/test_tools_todo.py::test_send_*`, run v3 case R12, G04, GM04 | `send` không gọi mạng khi `confirmed=false`; agent hỏi `yes_no` trước khi gửi (R12, G04, GM04 qua ở v3) | Chưa gửi tin thật lên Telegram (chưa có `TELEGRAM_BOT_TOKEN`), nên chưa có transcript gửi thật |
 | arXiv/company policy | `runs/v3_B_group_gemini_*.json` (GM05), `tests/test_tools_todo.py::test_policy_*` | `paper_text` đúng ID và `max_pages`; policy tách dòng "ra lệnh" vào `untrusted_text` | Policy là nội dung không tin cậy: chỉ dùng `facts`, bỏ qua `untrusted_text` |
 | UI | `app.py`, `.streamlit/config.toml` | UI Streamlit giao diện tối, chọn provider/model/version, hiện chi tiết từng tool, tự ghi transcript | Chưa có link public cho team khác dùng thử |
-| Tool unit tests (`tests/`) | `pytest` | Kết quả: **76 passed, 3 skipped** (3 skip là test cho tool mới của nhóm, chưa có tool) | Test offline, mọi HTTP bị chặn và mock bằng `fake_http` |
+| Tool unit tests (`tests/`) | `pytest` | Kết quả: **95 passed, 0 skipped** (gồm 8 test cho 2 tool mới: 4 cho hackernews, 4 cho wikipedia) | Test offline, mọi HTTP bị chặn và mock bằng `fake_http` |
 
 Tool unit tests: nhóm điền toàn bộ stub cho tool có sẵn (clarify, format, send, lookup, fetch, timeline, social_search, policy). Chưa tìm bug nào trong tool có sẵn. Hai điểm cần kiểm thêm (chưa viết test): `timeline` và `social_search` dùng `int(limit or 5)` nên `limit=0` bị đổi thành 5; `send` dùng `parse_mode: Markdown` nên văn bản có ký tự đặc biệt có thể bị Telegram từ chối.
 

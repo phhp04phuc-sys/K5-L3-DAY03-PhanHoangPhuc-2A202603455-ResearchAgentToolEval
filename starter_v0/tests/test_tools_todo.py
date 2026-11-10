@@ -7,8 +7,6 @@ Quy tắc:
 """
 from __future__ import annotations
 
-import pytest
-
 from conftest import FakeResponse
 from tools import TOOL_FUNCTIONS
 
@@ -20,9 +18,6 @@ fetch_tool = TOOL_FUNCTIONS["fetch"]
 timeline_tool = TOOL_FUNCTIONS["timeline"]
 social_search_tool = TOOL_FUNCTIONS["social_search"]
 policy_tool = TOOL_FUNCTIONS["policy"]
-
-TODO = "TODO(student): viết sau khi nhóm có tool mới"
-
 
 # ---------------- clarify ----------------
 
@@ -182,20 +177,121 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
     assert "ignore" not in probe[0]["facts"].lower()
 
 
-# ---------------- YOUR NEW TOOL(S) ----------------
-# Mỗi tool mới của nhóm cần >= 3 test:
-#   1. happy path (mock HTTP nếu gọi API)
-#   2. input xấu từ model (chuỗi rỗng, sai kiểu, ngoài enum)
-#   3. nhánh lỗi (thiếu key, HTTP error, timeout) -> trả error dict, không raise
-# Thay các stub dưới đây khi tool mới đã được đăng ký trong tools/__init__.py.
+# ---------------- TOOL MỚI: hackernews ----------------
+# Mỗi tool mới có: happy path, input xấu từ model, nhánh lỗi (trả error dict, không raise).
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+hackernews_tool = TOOL_FUNCTIONS["hackernews"]
+wikipedia_tool = TOOL_FUNCTIONS["wikipedia"]
+
+HN_HITS = {"hits": [
+    {"objectID": "101", "title": "Rust 2.0 released", "url": "https://example.com/rust", "points": 420,
+     "num_comments": 88, "created_at": "2026-11-10T01:00:00Z"},
+    {"objectID": "102", "title": "Ask HN: Best way to learn Go?", "url": None, "points": 12, "num_comments": 3},
+    {"objectID": "103", "title": None, "story_title": None},  # không có tiêu đề: phải bị bỏ qua
+]}
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+def test_hackernews_front_page_maps_stories(fake_http) -> None:
+    calls = fake_http(FakeResponse(HN_HITS))
+
+    result = hackernews_tool(limit=5)
+
+    assert calls[0]["url"] == "https://hn.algolia.com/api/v1/search"
+    assert calls[0]["params"]["tags"] == "front_page"
+    assert [item["title"] for item in result["items"]] == ["Rust 2.0 released", "Ask HN: Best way to learn Go?"]
+    assert result["items"][0]["url"] == "https://example.com/rust"
+    assert "420 điểm" in result["items"][0]["summary"]
+    # bài không có url ngoài thì trỏ về trang thảo luận trên HN
+    assert result["items"][1]["url"] == "https://news.ycombinator.com/item?id=102"
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_hackernews_query_searches_stories_and_latest_uses_date_endpoint(fake_http) -> None:
+    calls = fake_http(FakeResponse({"hits": []}))
+
+    hackernews_tool(query="  Rust   async ", sort_by="latest", limit=3)
+
+    assert calls[0]["url"] == "https://hn.algolia.com/api/v1/search_by_date"
+    assert calls[0]["params"]["query"] == "Rust async"
+    assert calls[0]["params"]["tags"] == "story"
+    assert calls[0]["params"]["hitsPerPage"] == 3
+
+
+def test_hackernews_bad_input_from_model_is_clamped_not_crashed(fake_http) -> None:
+    calls = fake_http(FakeResponse({"hits": []}))
+
+    hackernews_tool(sort_by="hottest", limit=999)
+    hackernews_tool(limit="abc")
+    hackernews_tool(limit=0)
+
+    assert calls[0]["params"]["hitsPerPage"] == 20          # vượt khoảng: ép về 20
+    assert calls[0]["params"]["tags"] == "front_page"       # sort_by lạ: về top
+    assert calls[1]["params"]["hitsPerPage"] == 5           # không phải số: mặc định 5
+    assert calls[2]["params"]["hitsPerPage"] == 1           # 0: ép lên 1
+
+
+def test_hackernews_http_error_returns_error_dict(fake_http) -> None:
+    fake_http(FakeResponse(status_code=503))
+
+    result = hackernews_tool(query="Rust")
+
+    assert result["error"] == "HTTPError"
+    assert "items" not in result
+
+
+# ---------------- TOOL MỚI: wikipedia ----------------
+
+WIKI_PAGE = {"query": {"pages": {"5042481": {
+    "title": "Rust (programming language)",
+    "extract": "Rust is a general-purpose programming language emphasizing performance and safety.",
+}}}}
+
+
+def test_wikipedia_maps_summary_and_builds_url(fake_http) -> None:
+    calls = fake_http(FakeResponse(WIKI_PAGE))
+
+    result = wikipedia_tool(query="Rust language", lang="en")
+
+    assert calls[0]["url"] == "https://en.wikipedia.org/w/api.php"
+    assert calls[0]["params"]["gsrsearch"] == "Rust language"
+    assert "User-Agent" in calls[0]["headers"]
+    item = result["items"][0]
+    assert item["title"] == "Rust (programming language)"
+    assert item["url"] == "https://en.wikipedia.org/wiki/Rust_%28programming_language%29"
+    assert item["source"] == "en.wikipedia.org"
+    assert item["summary"].startswith("Rust is a general-purpose")
+
+
+def test_wikipedia_invalid_lang_falls_back_to_en_and_cannot_change_host(fake_http) -> None:
+    calls = fake_http(FakeResponse(WIKI_PAGE))
+
+    wikipedia_tool(query="Rust", lang="evil.com/x?")
+    wikipedia_tool(query="Rust", lang="VI")
+
+    assert calls[0]["url"] == "https://en.wikipedia.org/w/api.php"   # lang xấu: về en, không đổi tên miền
+    assert calls[1]["url"] == "https://vi.wikipedia.org/w/api.php"   # chữ hoa được chuẩn hóa
+
+
+def test_wikipedia_truncates_summary_to_max_chars(fake_http) -> None:
+    fake_http(FakeResponse({"query": {"pages": {"1": {"title": "X", "extract": "a" * 3000}}}}))
+
+    result = wikipedia_tool(query="X", max_chars=200)
+
+    assert len(result["items"][0]["summary"]) == 200
+    assert result["items"][0]["summary"].endswith("...")
+
+
+def test_wikipedia_empty_query_and_not_found_return_error_dict(fake_http) -> None:
+    calls = fake_http(FakeResponse({"batchcomplete": ""}))   # API không có khóa "query" khi không tìm thấy
+
+    empty = wikipedia_tool(query="   ")
+    missing = wikipedia_tool(query="zzzxqj no such page")
+
+    assert empty["error"] == "EmptyQuery"
+    assert len(calls) == 1               # query rỗng không gọi mạng
+    assert missing["error"] == "NotFound"
+
+
+def test_wikipedia_http_error_returns_error_dict(fake_http) -> None:
+    fake_http(FakeResponse(status_code=429))
+
+    assert wikipedia_tool(query="Rust")["error"] == "HTTPError"
