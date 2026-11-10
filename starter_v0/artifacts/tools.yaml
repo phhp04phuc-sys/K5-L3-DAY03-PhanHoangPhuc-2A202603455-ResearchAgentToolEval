@@ -184,3 +184,40 @@ tools:
       properties:
         url: {type: string, default: "", description: "Đường link URL cần kiểm tra và phân loại source tier"}
       required: [url]
+
+  # ---------------- Team new tools (Luu Dang Tuan) ----------------
+  - name: papers
+    description: Tìm bài báo khoa học trên arXiv theo từ khoá. Dùng khi user hỏi về paper, nghiên cứu học thuật, tài liệu khoa học.
+    parameters:
+      type: object
+      properties:
+        query:
+          type: string
+          description: "Từ khoá tìm kiếm, ví dụ 'retrieval augmented generation'"
+        max_results:
+          type: integer
+          description: "Số bài tối đa, từ 1 đến 20"
+          default: 5
+        sort_by:
+          type: string
+          enum: [relevance, date]
+          default: relevance
+      required: [query]
+
+  - name: paper_text
+    description: Tải PDF của một bài arXiv theo arXiv ID và trích xuất văn bản. Dùng khi user cần nội dung chi tiết của một bài cụ thể.
+    parameters:
+      type: object
+      properties:
+        arxiv_id:
+          type: string
+          description: "arXiv ID, ví dụ '2401.00001' hoặc URL arxiv.org"
+        max_chars:
+          type: integer
+          description: "Số ký tự tối đa trả về, mặc định 8000"
+          default: 8000
+        page_limit:
+          type: integer
+          description: "Số trang đọc tối đa, mặc định 10"
+          default: 10
+      required: [arxiv_id]
