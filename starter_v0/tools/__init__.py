@@ -21,6 +21,10 @@ from .sentiment.tool import analyze_sentiment
 from .extract_keywords.tool import extract_keywords
 from .github_search.tool import search_github_repos
 from .hf_models.tool import search_hf_models
+from .citation_format.tool import format_citation
+from .url_check.tool import validate_research_url
+from .papers import search_papers
+from .paper_text import get_paper_text
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -43,6 +47,10 @@ TOOL_FUNCTIONS = {
     "extract_keywords": extract_keywords,
     "github_search": search_github_repos,
     "hf_models": search_hf_models,
+    "citation_format": format_citation,
+    "url_check": validate_research_url,
+    "papers": search_papers,
+    "paper_text": get_paper_text,
     # TODO(student): register your new tool here, e.g. "my_tool": my_tool_function,
     # then declare it in artifacts/tools.yaml and run `pytest tests/test_tool_contract.py`.
 }
@@ -61,4 +69,3 @@ def to_openai_tools(declarations: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "parameters": item.get("parameters", {"type": "object", "properties": {}}),
         },
     } for item in declarations]
-
