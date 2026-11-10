@@ -12,7 +12,7 @@
   - **Nguyễn Tiến Cường (`2A202603425`)** — Phát triển & kiểm thử 2 tool mới (`sentiment`, `extract_keywords`), viết `TOOL.md`, 6 unit tests và kiểm tra live routing cho 2 tool mới.
   - **Lý Thành Lập (`2A202603414`)** — Phát triển & kiểm thử 2 tool mới (`github_search`, `hf_models`), viết `TOOL.md`, 6 unit tests (`tests/test_tools_lap.py`), tối ưu prompt/eval và dựng Streamlit UI.
   - **Lê Văn Hoàng (`2A202603357` — `@hoanglv2k9`)** — Phát triển & kiểm thử 2 tool mới (`citation_format`, `url_check`), viết `TOOL.md`, 6 unit tests (`tests/test_tools_hoang.py`), rà soát schema và đồng bộ hợp đồng tool contract.
-  -**Lưu Đăng Tuấn ('2A202603454')**— Phát triển & kiểm thử 2 tool mới (`tool_1`, `tool_2`), viết `TOOL.md`, xây dựng 6 unit tests (`tests/test_tools_tuan.py`), kiểm tra live routing cho 2 tool và tích hợp tool vào hệ thống.
+ - **Lưu Đăng Tuấn (`2A202603454`)** — Phát triển & kiểm thử 2 tool mới (`tool_1`, `tool_2`), viết `TOOL.md`, xây dựng 6 unit tests (`tests/test_tools_tuan.py`), kiểm tra live routing cho 2 tool và tích hợp tool vào hệ thống.
 - Provider/model: `<Điền provider/model chính của bản merge vào main>` *(2 tool mới đã kiểm thử trên Google Gemini `gemini-3.5-flash` & OpenRouter `openai/gpt-4o-mini`)*
 
 ---
@@ -151,7 +151,7 @@ Use `transcripts/*.transcript.json`:
 ### Phần đúc kết của Lê Văn Hoàng (đóng góp 2 tool mới `citation_format`, `url_check` & unit test):
 - Thiết kế tool học thuật (`citation_format`) và kiểm tra nguồn (`url_check`) cần định nghĩa rõ kiểu dữ liệu trong `tools.yaml` (ví dụ `style` enum, `authors` list/string), giúp LLM không tự ý sinh tham số sai lệch.
 - Việc bổ sung unit test (≥ 3 tests mỗi tool) với các trường hợp biên (URL không có scheme, tác giả dạng chuỗi/danh sách) đảm bảo tool luôn trả kết quả ổn định và bắt lỗi an toàn trước khi tích hợp vào agent.
-### Phần đúc kết của `<tên bạn>` (đóng góp 2 tool mới `papers`, `paper_text` & unit test):
+### Phần đúc kết của Lưu Đăng Tuấn (đóng góp 2 tool mới `papers`, `paper_text` & unit test):
 - Khi thiết kế tool mới cho Research Agent (`papers`, `paper_text`), phần mô tả "khi nào dùng / KHÔNG dùng" trong `tools.yaml` và chuẩn frontmatter `TOOL.md` giúp model phân biệt rạch ròi với các tool sẵn có (`lookup`, `format`), không gây nhiễu cho bộ core eval. `papers` chỉ dùng cho nghiên cứu học thuật trên arXiv, không dùng cho tin tức; `paper_text` chỉ dùng khi đã có arXiv ID hoặc URL, còn nếu user chỉ có tên bài thì gọi `papers` trước.
 - Unit test offline (kiểm tra happy path, kiểu dữ liệu lỗi từ model, input rỗng) là lớp bảo vệ bắt buộc vì eval chỉ kiểm tra model có chọn đúng tên tool và tham số hay không, chứ không bắt được lỗi logic bên trong hàm thực thi tool. Bộ test của `papers` và `paper_text` dùng mock nên không cần mạng hay API key, bao phủ parse Atom XML, chuẩn hoá ID/URL.
 
