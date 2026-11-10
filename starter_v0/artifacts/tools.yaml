@@ -134,3 +134,13 @@ tools:
         lang: {type: string, default: "en", description: "Wikipedia language code: 'vi' when the user writes Vietnamese and wants a Vietnamese page, otherwise 'en'"}
         max_chars: {type: integer, default: 1200, description: "Maximum characters of the summary, 100 to 5000"}
       required: [query]
+
+  - name: math_solve
+    description: "Solve math with a computer algebra system: evaluate an expression, simplify, factor, solve an equation, take a derivative, or integrate. Use it whenever the user asks to calculate or solve a math problem (for example 'tính 15% của 240', 'giải phương trình 2x+6=0', 'đạo hàm của x^3', 'nguyên hàm của x^2'). Always call it instead of computing in your head, then report its result. Do NOT use it to write code or for word problems you must first translate into a formula; translate them into an expression yourself, then call it."
+    parameters:
+      type: object
+      properties:
+        expression: {type: string, default: "", description: "The math expression or equation in plain notation, for example '(3+4)*5^2', '2x+6=0', 'x^2-5x+6=0', 'sin(x)*x', 'sqrt(16)'. Use ^ for powers, * for multiplication, pi for the constant. Only math characters, single-letter variables and basic functions (sin, cos, tan, exp, log, ln, sqrt, abs)"}
+        task: {type: string, enum: [evaluate, simplify, solve, derivative, integral, factor], default: "evaluate", description: "evaluate = compute a value; simplify; factor; solve = solve an equation or find roots; derivative = đạo hàm; integral = nguyên hàm (indefinite integral)"}
+        variable: {type: string, default: "x", description: "The variable to solve for or to differentiate/integrate with respect to, one letter; default x"}
+      required: [expression]

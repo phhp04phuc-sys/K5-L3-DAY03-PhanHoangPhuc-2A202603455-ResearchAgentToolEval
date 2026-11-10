@@ -7,6 +7,8 @@ Quy tắc:
 """
 from __future__ import annotations
 
+import pytest
+
 from conftest import FakeResponse
 from tools import TOOL_FUNCTIONS
 
@@ -295,3 +297,64 @@ def test_wikipedia_http_error_returns_error_dict(fake_http) -> None:
     fake_http(FakeResponse(status_code=429))
 
     assert wikipedia_tool(query="Rust")["error"] == "HTTPError"
+
+
+# ---------------- TOOL MỚI: math_solve ----------------
+
+math_tool = TOOL_FUNCTIONS["math_solve"]
+
+
+def test_math_evaluate_returns_exact_and_numeric() -> None:
+    assert math_tool(expression="(3+4)*5^2")["result"] == "175"
+    root = math_tool(expression="sqrt(2)")
+    assert root["result"] == "sqrt(2)"
+    assert root["numeric"] == pytest.approx(1.4142135624)
+
+
+def test_math_solve_equation_returns_all_roots_and_implicit_multiplication() -> None:
+    assert math_tool(expression="2x+6=0", task="solve")["solutions"] == ["-3"]
+    assert sorted(math_tool(expression="x^2-5x+6=0", task="solve")["solutions"]) == ["2", "3"]
+
+
+def test_math_derivative_and_integral_use_variable_and_integral_mentions_constant() -> None:
+    assert math_tool(expression="x^3", task="derivative")["result"] == "3*x^2"
+    integral = math_tool(expression="x^2", task="integral")
+    assert integral["result"] == "x^3/3"
+    assert "C" in integral["note"]
+    assert math_tool(expression="t^2", task="derivative", variable="t")["result"] == "2*t"
+
+
+def test_math_factor_and_simplify() -> None:
+    assert math_tool(expression="x^2-9", task="factor")["result"] == "(x - 3)*(x + 3)"
+    assert math_tool(expression="x+x+x", task="simplify")["result"] == "3*x"
+
+
+@pytest.mark.parametrize("evil", [
+    "__import__('os').system('ls')",
+    "open('/etc/passwd')",
+    "Integer(5)",
+    "x.__class__",
+    "exec(1)",
+    "lambda: 1",
+])
+def test_math_rejects_code_injection_and_unknown_names(evil: str) -> None:
+    result = math_tool(expression=evil)
+    assert result["error"] == "InvalidExpression"
+    assert "result" not in result
+
+
+def test_math_blocks_huge_or_nested_powers_and_long_input() -> None:
+    assert math_tool(expression="9^9^9")["error"] == "InvalidExpression"
+    assert math_tool(expression="2^100000")["error"] == "InvalidExpression"
+    assert math_tool(expression="1+" * 200 + "1")["error"] == "InvalidExpression"
+
+
+def test_math_empty_division_by_zero_and_bad_equation_return_error_dict() -> None:
+    assert math_tool(expression="   ")["error"] == "InvalidExpression"
+    assert math_tool(expression="1/0")["error"] == "InvalidExpression"
+    assert math_tool(expression="1=2=3", task="solve")["error"] == "InvalidExpression"
+
+
+def test_math_bad_task_and_bad_variable_fall_back_to_defaults() -> None:
+    assert math_tool(expression="2+2", task="teleport")["result"] == "4"
+    assert math_tool(expression="x^2", task="derivative", variable="xyz")["variable"] == "x"

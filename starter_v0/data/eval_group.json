@@ -346,6 +346,81 @@
         "difficulty": "hard",
         "what_it_tests": "Lượt 2 đổi ý từ hackernews sang wikipedia; chỉ gọi wikipedia."
       }
+    },
+    {
+      "id": "G08_math_solve_equation",
+      "phase": "B",
+      "suite": "group",
+      "query": "Giải giúp mình phương trình 2x + 6 = 0",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "solve"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "route_math",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu giải phương trình phải gọi math_solve với task=solve, không tự tính."
+      }
+    },
+    {
+      "id": "G09_math_integral",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm nguyên hàm của x^2",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "integral"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "route_math_calculus",
+        "difficulty": "medium",
+        "what_it_tests": "Giải tích nay nằm trong phạm vi: nguyên hàm phải gọi math_solve với task=integral (khác R08 base, vốn mong đợi từ chối)."
+      }
+    },
+    {
+      "id": "GM07_math_derivative_then_integral",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tính đạo hàm của x^3"
+        },
+        {
+          "role": "user",
+          "content": "Còn nguyên hàm của nó thì sao?"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "math_solve",
+            "args": {
+              "task": "integral"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "carry_math_context",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt 2 đổi task từ derivative sang integral, giữ nguyên biểu thức."
+      }
     }
   ]
 }

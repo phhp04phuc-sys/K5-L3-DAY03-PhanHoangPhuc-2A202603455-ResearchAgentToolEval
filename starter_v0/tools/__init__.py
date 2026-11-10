@@ -19,6 +19,7 @@ from .send.tool import send_telegram
 from .lookup.tool import web_search
 from .hackernews.tool import search_hacker_news
 from .wikipedia.tool import get_wikipedia_summary
+from .math_solver.tool import solve_math
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -39,6 +40,7 @@ TOOL_FUNCTIONS = {
     "paper_text": get_arxiv_paper_text,
     "hackernews": search_hacker_news,
     "wikipedia": get_wikipedia_summary,
+    "math_solve": solve_math,
 }
 
 
