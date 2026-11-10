@@ -11,7 +11,7 @@
 - Thành viên:
   - **Nguyễn Tiến Cường (`2A202603425`)** — Phát triển & kiểm thử 2 tool mới (`sentiment`, `extract_keywords`), viết `TOOL.md`, 6 unit tests và kiểm tra live routing cho 2 tool mới.
   - **Lý Thành Lập (`2A202603414`)** — Phát triển & kiểm thử 2 tool mới (`github_search`, `hf_models`), viết `TOOL.md`, 6 unit tests (`tests/test_tools_lap.py`), tối ưu prompt/eval và dựng Streamlit UI.
-  - `<Thành viên 4 — Họ tên (MSSV) — Phần việc phụ trách>`
+  - **Lê Văn Hoàng (`2A202603357` — `@hoanglv2k9`)** — Phát triển & kiểm thử 2 tool mới (`citation_format`, `url_check`), viết `TOOL.md`, 6 unit tests (`tests/test_tools_hoang.py`), rà soát schema và đồng bộ hợp đồng tool contract.
 - Provider/model: `<Điền provider/model chính của bản merge vào main>` *(2 tool mới đã kiểm thử trên Google Gemini `gemini-3.5-flash` & OpenRouter `openai/gpt-4o-mini`)*
 
 ---
@@ -46,6 +46,8 @@ Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng
 | `extract_keywords` | Trích xuất `top_n` từ khóa chính (lọc stopwords), hashtag (`#tag`), tổng số từ và thời gian đọc ước tính | **Có (Mới)** | **Nguyễn Tiến Cường** |
 | `github_search` | Tìm kiếm mã nguồn mở và GitHub repositories theo từ khóa, sắp xếp theo `stars`/`forks`/`updated` | **Có (Mới)** | **Lý Thành Lập** |
 | `hf_models` | Tìm kiếm mô hình AI/ML trên Hugging Face Hub theo từ khóa, sắp xếp theo `downloads`/`likes`/`lastModified` | **Có (Mới)** | **Lý Thành Lập** |
+| `citation_format` | Tạo chuỗi trích dẫn chuẩn học thuật (APA, BibTeX, Markdown) từ tiêu đề, URL, tác giả và năm | **Có (Mới)** | **Lê Văn Hoàng** |
+| `url_check` | Kiểm tra cú pháp URL và phân loại độ tin cậy nguồn tin theo chuẩn công ty (tier_1/2/3) | **Có (Mới)** | **Lê Văn Hoàng** |
 
 ## A3. Câu hỏi mẫu để thử
 
@@ -55,6 +57,8 @@ Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng
 4. *(Test tool `extract_keywords` — Nguyễn Tiến Cường)*: `"Trích xuất 3 từ khóa chính, hashtag và thời gian đọc của bài viết này: 'Artificial Intelligence #AI and Machine Learning #ML transform modern research. AI enables fast analysis.'"`
 5. *(Test tool `github_search` — Lý Thành Lập)*: `"Tìm giúp mình 5 GitHub repository nhiều sao (stars) nhất về langgraph"`
 6. *(Test tool `hf_models` — Lý Thành Lập)*: `"Tìm 3 model trên Hugging Face về Qwen2.5 được tải nhiều nhất"`
+7. *(Test tool `citation_format` — Lê Văn Hoàng)*: `"Tạo trích dẫn chuẩn APA cho bài báo 'Attention Is All You Need' của tác giả 'Vaswani et al.' năm '2017' tại link https://arxiv.org/abs/1706.03762"`
+8. *(Test tool `url_check` — Lê Văn Hoàng)*: `"Kiểm tra độ tin cậy và phân loại source tier của đường link này giúp mình: https://arxiv.org/abs/2210.03629"`
 
 ---
 
