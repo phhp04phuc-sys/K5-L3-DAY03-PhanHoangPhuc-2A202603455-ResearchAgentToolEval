@@ -1,7 +1,300 @@
 {
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp (10 cases: 5 single-turn + 5 multi-turn, bao gồm routing tới các tool mới github_search, hf_models, hn_search, wiki_summary).",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_github_repo_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm giúp mình 5 GitHub repository nhiều sao (stars) nhất về langgraph",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "langgraph",
+              "sort": "stars",
+              "max_results": 5
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_github_search",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu tìm repo mã nguồn mở trên GitHub → gọi tool mới github_search với sort=stars và max_results=5."
+      }
+    },
+    {
+      "id": "G02_hf_models_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm 3 model trên Hugging Face về Qwen2.5 được tải nhiều nhất",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hf_models",
+            "args": {
+              "query": "Qwen2.5",
+              "sort": "downloads",
+              "max_results": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_hf_models",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu tìm model AI trên Hugging Face Hub → gọi tool mới hf_models với sort=downloads và max_results=3."
+      }
+    },
+    {
+      "id": "G03_hn_search_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Trên Hacker News đang thảo luận gì về Rust?",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "Rust"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_hn_search",
+        "difficulty": "easy",
+        "what_it_tests": "Thảo luận trên Hacker News → gọi tool mới hn_search thay vì lookup hay social_search."
+      }
+    },
+    {
+      "id": "G04_wiki_summary_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tra cứu tóm tắt Wikipedia tiếng Anh về Alan Turing giúp mình",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wiki_summary",
+            "args": {
+              "topic": "Alan Turing",
+              "lang": "en"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_wiki_summary",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu tra cứu tóm tắt trên Wikipedia → gọi tool mới wiki_summary với topic='Alan Turing' và lang='en'."
+      }
+    },
+    {
+      "id": "G05_parallel_policy_and_arxiv",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm paper arXiv về multimodal LLM và kiểm tra policy công ty về bảo mật dữ liệu (data privacy).",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "papers",
+            "args": {}
+          },
+          {
+            "name": "policy",
+            "args": {
+              "policy_area": "data_privacy"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "parallel_papers_and_policy",
+        "difficulty": "hard",
+        "what_it_tests": "Gọi song song papers (arXiv) và policy (data_privacy) trong cùng một lượt."
+      }
+    },
+    {
+      "id": "GM01_multiturn_confirm_send",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin này lên Telegram giúp mình: OpenAI vừa giới thiệu mô hình mới."
+        },
+        {
+          "role": "user",
+          "content": "Đúng rồi, nội dung là: OpenAI vừa giới thiệu mô hình mới."
+        },
+        {
+          "role": "user",
+          "content": "Mình xác nhận đồng ý gửi nhé, gửi lên Telegram ngay đi."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_send_after_confirmation",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Sau khi người dùng đã xác nhận đồng ý gửi ở lượt cuối → gọi send với confirmed=true."
+      }
+    },
+    {
+      "id": "GM02_multiturn_switch_to_github",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm thông tin về vLLM trên web"
+        },
+        {
+          "role": "user",
+          "content": "Thôi đừng tìm web nữa, chuyển sang tìm trực tiếp repository trên GitHub đi"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 GitHub repo về vLLM nhiều stars nhất nhé"
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "vLLM",
+              "sort": "stars",
+              "max_results": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_switch_to_new_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Chuyển hướng từ tìm web sang tìm repo trên GitHub → gọi github_search với query=vLLM, sort=stars, max_results=3."
+      }
+    },
+    {
+      "id": "GM03_multiturn_handle_and_limit",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Cho mình xem 5 tweet mới nhất của Yann LeCun"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang lấy 4 tweet thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Yann LeCun nhé"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "ylecun",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_handle_limit_carryover",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: Map tên Yann LeCun -> ylecun và cập nhật limit từ 5 -> 4."
+      }
+    },
+    {
+      "id": "GM04_multiturn_arxiv_id_fill",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đọc giúp mình nội dung bài báo arXiv này với"
+        },
+        {
+          "role": "user",
+          "content": "Mã arXiv của bài đó là 2305.10601"
+        },
+        {
+          "role": "user",
+          "content": "Lấy text 3 trang đầu của bài arXiv 2305.10601 đó nhé"
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "2305.10601",
+              "max_pages": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_arxiv_paper_text",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Bổ sung mã arXiv ID ở lượt 2 và số trang ở lượt 3 → gọi paper_text(arxiv_url='2305.10601', max_pages=3)."
+      }
+    },
+    {
+      "id": "GM05_multiturn_abort_to_out_of_scope",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tin tức AI hôm nay có gì mới?"
+        },
+        {
+          "role": "user",
+          "content": "Thôi khoan, đừng tìm tin tức nữa"
+        },
+        {
+          "role": "user",
+          "content": "Giải giúp mình phương trình bậc hai x^2 - 5x + 6 = 0 là được"
+        }
+      ],
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "multiturn_out_of_scope_refusal",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: Lượt cuối đổi sang giải toán phương trình bậc hai ngoài phạm vi → không gọi tool (no_tool)."
+      }
+    }
+  ]
 }

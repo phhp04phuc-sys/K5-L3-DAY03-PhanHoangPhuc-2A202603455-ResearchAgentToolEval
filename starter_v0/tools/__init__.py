@@ -19,6 +19,8 @@ from .send.tool import send_telegram
 from .lookup.tool import web_search
 from .github_search.tool import search_github_repos
 from .hf_models.tool import search_hf_models
+from .hn_search.tool import search_hacker_news
+from .wiki_summary.tool import get_wikipedia_summary
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -39,6 +41,8 @@ TOOL_FUNCTIONS = {
     "paper_text": get_arxiv_paper_text,
     "github_search": search_github_repos,
     "hf_models": search_hf_models,
+    "hn_search": search_hacker_news,
+    "wiki_summary": get_wikipedia_summary,
 }
 
 
