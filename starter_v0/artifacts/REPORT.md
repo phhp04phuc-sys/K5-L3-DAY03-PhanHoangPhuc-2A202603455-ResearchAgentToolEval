@@ -10,7 +10,7 @@
 - Trưởng nhóm: **Phan Hoàng Phúc (`2A202603455`)** — `<Điền phần việc phụ trách>`
 - Thành viên:
   - **Nguyễn Tiến Cường (`2A202603425`)** — Phát triển & kiểm thử 2 tool mới (`sentiment`, `extract_keywords`), viết `TOOL.md`, 6 unit tests và kiểm tra live routing cho 2 tool mới.
-  - `<Thành viên 3 — Họ tên (MSSV) — Phần việc phụ trách>`
+  - **Lý Thành Lập (`2A202603414`)** — Phát triển & kiểm thử 2 tool mới (`github_search`, `hf_models`), viết `TOOL.md`, 6 unit tests (`tests/test_tools_lap.py`), tối ưu prompt/eval và dựng Streamlit UI.
   - `<Thành viên 4 — Họ tên (MSSV) — Phần việc phụ trách>`
 - Provider/model: `<Điền provider/model chính của bản merge vào main>` *(2 tool mới đã kiểm thử trên Google Gemini `gemini-3.5-flash` & OpenRouter `openai/gpt-4o-mini`)*
 
@@ -22,7 +22,7 @@
 
 > `<Trưởng nhóm / thành viên phụ trách bản main bổ sung mô tả tổng quan sau khi ghép xong các tool của nhóm>`
 
-Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, gửi lên Telegram khi được xác nhận, đồng thời hỗ trợ phân tích cảm xúc văn bản (`sentiment`) và trích xuất từ khóa / thống kê đọc (`extract_keywords`).
+Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, gửi lên Telegram khi được xác nhận, đồng thời hỗ trợ phân tích cảm xúc văn bản (`sentiment`), trích xuất từ khóa / thống kê đọc (`extract_keywords`), tìm kiếm mã nguồn mở trên GitHub (`github_search`) và tìm kiếm mô hình AI/ML trên Hugging Face Hub (`hf_models`).
 
 **Link dùng thử (deploy):**
 
@@ -44,8 +44,8 @@ Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng
 | `paper_text` | Tải PDF arXiv và trích xuất văn bản | Không | Có sẵn (Starter) |
 | `sentiment` | Phân tích sắc thái cảm xúc (tích cực, tiêu cực, trung lập), chấm điểm `[-1.0, 1.0]` và chỉ báo cảm xúc (hỗ trợ tiếng Việt & tiếng Anh) | **Có (Mới)** | **Nguyễn Tiến Cường** |
 | `extract_keywords` | Trích xuất `top_n` từ khóa chính (lọc stopwords), hashtag (`#tag`), tổng số từ và thời gian đọc ước tính | **Có (Mới)** | **Nguyễn Tiến Cường** |
-| `<tool_moi_3>` | `<Thành viên khác điền mô tả tool mới tại đây>` | Có | `<Tên thành viên>` |
-| `<tool_moi_4>` | `<Thành viên khác điền mô tả tool mới tại đây>` | Có | `<Tên thành viên>` |
+| `github_search` | Tìm kiếm mã nguồn mở và GitHub repositories theo từ khóa, sắp xếp theo `stars`/`forks`/`updated` | **Có (Mới)** | **Lý Thành Lập** |
+| `hf_models` | Tìm kiếm mô hình AI/ML trên Hugging Face Hub theo từ khóa, sắp xếp theo `downloads`/`likes`/`lastModified` | **Có (Mới)** | **Lý Thành Lập** |
 
 ## A3. Câu hỏi mẫu để thử
 
@@ -53,7 +53,8 @@ Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng
 2. `<Câu hỏi mẫu cho core agent — thành viên phụ trách main điền>`
 3. *(Test tool `sentiment` — Nguyễn Tiến Cường)*: `"Phân tích cảm xúc đoạn tin: 'Công nghệ AI vừa đạt bước đột phá xuất sắc và thành công vang dội'"`
 4. *(Test tool `extract_keywords` — Nguyễn Tiến Cường)*: `"Trích xuất 3 từ khóa chính, hashtag và thời gian đọc của bài viết này: 'Artificial Intelligence #AI and Machine Learning #ML transform modern research. AI enables fast analysis.'"`
-5. `<Câu hỏi mẫu cho tool mới của thành viên khác>`
+5. *(Test tool `github_search` — Lý Thành Lập)*: `"Tìm giúp mình 5 GitHub repository nhiều sao (stars) nhất về langgraph"`
+6. *(Test tool `hf_models` — Lý Thành Lập)*: `"Tìm 3 model trên Hugging Face về Qwen2.5 được tải nhiều nhất"`
 
 ---
 
@@ -87,6 +88,7 @@ List the 10 cases added to `data/eval_group.json` (5 single turn + 5 multi turn)
 | `<G01...>` | | | | `<Thành viên phụ trách main>` |
 | | | | | |
 | *(Đề xuất cho tool mới — Nguyễn Tiến Cường)* | Kiểm tra model route đúng vào `sentiment` khi yêu cầu phân tích cảm xúc & `extract_keywords` khi yêu cầu rút trích từ khóa | `sentiment(...)` / `extract_keywords(...)` | PASS trên nhánh cá nhân `nguyentiencuong-2A202603425` | Nguyễn Tiến Cường |
+| *(Đề xuất cho tool mới — Lý Thành Lập)* | `G01_github_repo_routing`, `G02_hf_models_routing`, `GM02_multiturn_switch_to_github`: kiểm tra single-turn & multi-turn routing vào `github_search` và `hf_models` | `github_search(query="langgraph", sort="stars", max_results=5)` / `hf_models(query="Qwen2.5", sort="downloads", max_results=3)` | PASS 100% trên nhánh cá nhân `lythanhlap-2A202603414` | Lý Thành Lập |
 
 ## B4. Live Chat Evidence
 
@@ -97,7 +99,8 @@ Use `transcripts/*.transcript.json`:
 | `<Turn của bản main>` | | | | | `<Thành viên phụ trách main>` |
 | Tool `sentiment` | "Phân tích cảm xúc đoạn này giúp mình: 'Công nghệ AI vừa đạt bước đột phá xuất sắc và thành công vang dội'" | `sentiment(text="...")` | `v3+p6cd3e198919a` | Trả về đúng `positive`, `score=1.0` | Nguyễn Tiến Cường |
 | Tool `extract_keywords` | "Trích xuất 3 từ khóa chính, hashtag và thời gian đọc của bài viết này..." | `extract_keywords(top_n=3, text="...")` | `v3-gemini+p604e6c0a7a2e` | Gemini gọi đúng tool, trích xuất `AI`, `Artificial`, `Intelligence`, `#AI`, `#ML`, 14 từ | Nguyễn Tiến Cường |
-| `<Turn của thành viên khác>` | | | | | |
+| Tool `policy` (`external_publishing`) | "Theo policy công ty, đăng bản tin lên Telegram channel có cần xác nhận trước không?" | `policy(query="đăng bản tin lên Telegram", policy_area="external_publishing")` | `v3+pada960ec5ce4+t5b22a2476d41` | Trích xuất đúng mục `Telegram channel` và `Publishing approval` từ handbook nội bộ | Lý Thành Lập |
+| Tool `github_search` & `hf_models` | "Tìm giúp mình 5 GitHub repository nhiều sao nhất về langgraph" / "Tìm 3 model trên Hugging Face về Qwen2.5 được tải nhiều nhất" | `github_search(query="langgraph", sort="stars", max_results=5)` / `hf_models(query="Qwen2.5", sort="downloads", max_results=3)` | `v3+pc46c75e36ae9+tb8c05fc889da` | Model chọn đúng tool và truyền chính xác `sort`, `max_results` | Lý Thành Lập |
 
 ## B5. Bonus Evidence
 
@@ -107,8 +110,8 @@ Use `transcripts/*.transcript.json`:
 | arXiv/company policy | | | | `<Thành viên phụ trách main>` |
 | UI | | | | `<Thành viên phụ trách main>` |
 | 2 Tool mới (`sentiment`, `extract_keywords`) | `tools/sentiment/`, `tools/extract_keywords/` | `sentiment` xử lý tiếng Việt có dấu & tiếng Anh; `extract_keywords` tách từ khóa ≥ 2 ký tự, `#tag` & tính reading time | Kiểm tra kiểu dữ liệu đầu vào (`TypeError`/`ValueError`), trả về error dict an toàn thay vì crash | **Nguyễn Tiến Cường** |
-| Tool unit tests (`tests/`) | `tests/test_tools_cuong.py` | **6 unit tests** riêng cho 2 tool mới (`sentiment` + `extract_keywords`) pass offline 100% *(chờ ghép tổng hợp với unit tests của nhánh `main` và các thành viên khác)* | Cô lập hoàn toàn offline, kiểm tra cả happy path, bad input type và empty input | **Nguyễn Tiến Cường** *(+ thành viên khác điền thêm)* |
-| `<Tool mới khác của nhóm>` | | | | `<Thành viên khác>` |
+| 2 Tool mới (`github_search`, `hf_models`) | `tools/github_search/`, `tools/hf_models/` | Tìm kiếm repo trên GitHub REST API (`stars`/`forks`/`updated`) và model trên Hugging Face Hub API (`downloads`/`likes`/`lastModified`) | Giới hạn `max_results` trong `[1, 10]`, kiểm tra chuỗi rỗng và bắt lỗi mạng qua `err()` | **Lý Thành Lập** |
+| Tool unit tests (`tests/`) | `tests/test_tools_cuong.py`, `tests/test_tools_lap.py` | **6 unit tests** của Nguyễn Tiến Cường + **6 unit tests** của Lý Thành Lập pass offline 100% | Cô lập hoàn toàn offline với `fake_http`, kiểm tra cả happy path, bad input và HTTP failure | **Nguyễn Tiến Cường, Lý Thành Lập** |
 
 **Ví dụ lỗi thực tế ở 2 tool mới mà Unit test / Live test bắt được nhưng Eval không bắt được (Nguyễn Tiến Cường):**
 1. **Tool `sentiment`**: Khi test live câu tiếng Việt có dấu *"Công nghệ AI vừa đạt bước đột phá xuất sắc và thành công vang dội"*, Eval chỉ chấm tên tool (`name == "sentiment"`) nên vẫn báo PASS, nhưng thực tế kết quả trả về `score = 0.0 (neutral)` vì logic tách từ đơn lẻ không khớp cụm 2 chữ có dấu (`"xuất sắc"`, `"thành công"`). Sau khi dùng `fold_text` + regex khớp cụm từ và viết test kiểm chứng tiếng Việt có dấu, tool trả về chuẩn `score = 1.0 (positive)`.
@@ -125,6 +128,10 @@ Use `transcripts/*.transcript.json`:
 ### Phần đúc kết của Nguyễn Tiến Cường (đóng góp 2 tool mới & unit test):
 - Khi thiết kế tool mới cho Research Agent (`sentiment`, `extract_keywords`), phần mô tả "khi nào dùng / KHÔNG dùng" trong `tools.yaml` và chuẩn frontmatter `TOOL.md` giúp model phân biệt rạch ròi với các tool sẵn có (`lookup`, `format`), không gây nhiễu cho bộ core eval.
 - Unit test offline (kiểm tra happy path, kiểu dữ liệu lỗi từ model, input rỗng) là lớp bảo vệ bắt buộc vì eval chỉ kiểm tra model có chọn đúng tên tool và tham số hay không, chứ không bắt được lỗi logic bên trong hàm thực thi tool.
+
+### Phần đúc kết của Lý Thành Lập (đóng góp 2 tool mới `github_search`, `hf_models` & unit test):
+- Với các công cụ gọi REST API bên ngoài (`github_search`, `hf_models`), việc chuẩn hoá tham số đầu vào (cắt khoảng trắng thừa của `query`, giới hạn `max_results` trong khoảng `1..10`, ép `sort` về giá trị hợp lệ) giúp công cụ hoạt động ổn định ngay cả khi LLM truyền giá trị biên.
+- Viết unit test với fixture `fake_http` giúp xác minh đồng thời cả URL/query params gửi lên server lẫn cấu trúc dữ liệu trả về (`items`, `source`, `url`) hoàn toàn offline mà không phụ thuộc vào hạn mức rate-limit của GitHub hay Hugging Face.
 
 ### Phần nhận xét / bổ sung của Trưởng nhóm (Phan Hoàng Phúc) & các thành viên khác:
 - `<Phan Hoàng Phúc và các thành viên khác viết cảm nhận & đúc kết tại đây>`

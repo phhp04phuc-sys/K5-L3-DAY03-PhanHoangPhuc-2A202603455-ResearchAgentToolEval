@@ -142,3 +142,24 @@ tools:
         text: {type: string, default: "", description: "Đoạn văn bản hoặc nội dung bài viết cần trích xuất từ khóa"}
         top_n: {type: integer, default: 5, description: "Số lượng từ khóa nổi bật nhất muốn lấy (mặc định 5)"}
       required: [text]
+
+  # ---------------- Team new tools (Ly Thanh Lap) ----------------
+  - name: github_search
+    description: "Tìm kiếm mã nguồn mở và GitHub repositories theo từ khóa. Chỉ dùng khi người dùng yêu cầu tìm repo/project trên GitHub. KHÔNG dùng cho tìm kiếm tin tức web thông thường (dùng lookup)."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Từ khóa tìm kiếm GitHub repository"}
+        sort: {type: string, enum: [stars, forks, updated, best-match], default: "stars", description: "Tiêu chí sắp xếp"}
+        max_results: {type: integer, default: 5, description: "Số lượng repository trả về (1-10)"}
+      required: [query]
+
+  - name: hf_models
+    description: "Tìm kiếm các mô hình AI/ML trên Hugging Face Hub theo từ khóa. Chỉ dùng khi người dùng yêu cầu tìm model trên Hugging Face. KHÔNG dùng cho bài báo arXiv (dùng papers) hay repo GitHub (dùng github_search)."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Từ khóa hoặc tên model trên Hugging Face"}
+        sort: {type: string, enum: [downloads, likes, lastModified], default: "downloads", description: "Tiêu chí sắp xếp"}
+        max_results: {type: integer, default: 5, description: "Số lượng model trả về (1-10)"}
+      required: [query]

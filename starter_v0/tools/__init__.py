@@ -19,6 +19,8 @@ from .send.tool import send_telegram
 from .lookup.tool import web_search
 from .sentiment.tool import analyze_sentiment
 from .extract_keywords.tool import extract_keywords
+from .github_search.tool import search_github_repos
+from .hf_models.tool import search_hf_models
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -39,6 +41,8 @@ TOOL_FUNCTIONS = {
     "paper_text": get_arxiv_paper_text,
     "sentiment": analyze_sentiment,
     "extract_keywords": extract_keywords,
+    "github_search": search_github_repos,
+    "hf_models": search_hf_models,
     # TODO(student): register your new tool here, e.g. "my_tool": my_tool_function,
     # then declare it in artifacts/tools.yaml and run `pytest tests/test_tool_contract.py`.
 }
