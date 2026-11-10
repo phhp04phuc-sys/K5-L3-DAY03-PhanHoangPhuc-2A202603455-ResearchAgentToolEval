@@ -123,3 +123,23 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  - name: github_search
+    description: "Tìm kiếm mã nguồn mở và GitHub repositories theo từ khóa. Chỉ dùng khi người dùng yêu cầu tìm repo trên GitHub."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Từ khóa tìm kiếm GitHub repository"}
+        sort: {type: string, enum: [stars, forks, updated, best-match], default: "stars", description: "Tiêu chí sắp xếp"}
+        max_results: {type: integer, default: 5, description: "Số lượng repository trả về (1-10)"}
+      required: [query]
+
+  - name: hf_models
+    description: "Tìm kiếm các mô hình AI/ML trên Hugging Face Hub theo từ khóa. Chỉ dùng khi người dùng yêu cầu tìm model trên Hugging Face."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Từ khóa hoặc tên model trên Hugging Face"}
+        sort: {type: string, enum: [downloads, likes, lastModified], default: "downloads", description: "Tiêu chí sắp xếp"}
+        max_results: {type: integer, default: 5, description: "Số lượng model trả về (1-10)"}
+      required: [query]
