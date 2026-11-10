@@ -1,0 +1,33 @@
+{
+  "version": "v3",
+  "timestamp": "2026-11-10T12:16:05.307703",
+  "messages": [
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I assist you today?",
+      "tool_events": []
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hi there! What can I help you with today?",
+      "tool_events": []
+    },
+    {
+      "role": "user",
+      "content": "bạn đang dùng model nào"
+    },
+    {
+      "role": "assistant",
+      "content": "Tôi là một trợ lý nghiên cứu được thiết kế để hỗ trợ tìm kiếm thông tin, tin tức và bài viết. Tôi không thể cung cấp thông tin chi tiết về mô hình cụ thể mà tôi đang sử dụng. Tuy nhiên, tôi có thể giúp bạn với các yêu cầu nghiên cứu hoặc thông tin mà bạn cần. Bạn có câu hỏi nào không?",
+      "tool_events": []
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "timestamp": "2026-11-10T11:13:23.496290",
+  "messages": [
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I assist you today?",
+      "tool_events": []
+    }
+  ]
+}

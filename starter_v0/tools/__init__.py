@@ -28,11 +28,6 @@ from .citation_format.tool import format_citation
 from .url_check.tool import validate_research_url
 
 
-# NOTE (starter_v0): tool names here are intentionally vague. These keys are the
-# names the model sees AND the names data/eval_base.json + data/eval_research_extension.json
-# match against. If a team renames a tool, it MUST stay in sync across ALL of:
-#   artifacts/tools.yaml  ->  this dict  ->  data/eval_base.json + data/eval_research_extension.json
-# Otherwise the eval raises "not declared in tools.yaml" or scores every call as a name mismatch.
 TOOL_FUNCTIONS = {
     "clarify": ask_user,
     "timeline": get_user_tweets,
